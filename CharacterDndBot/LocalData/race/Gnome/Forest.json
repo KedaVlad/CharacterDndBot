@@ -1,0 +1,55 @@
+{
+   "speed":25,
+   "raceName":"Gnome",
+   "subRace":"Forest",
+   "specials":[
+      {
+         "UP_COMAND":{
+            "name":"Intelligence",
+            "key":180000000,
+            "value":2
+         }
+      },
+      {
+         "UP_COMAND":{
+            "name":"Dexterity",
+            "key":180000000,
+            "value":1
+         }
+      },
+      {
+         "ADD_COMAND":{
+            "target":[
+               {
+                  "FEATURE":{
+                     "name":"Natural Illusion",
+                     "description":"Natural Illusion",
+                     "depend":null
+                  }
+               },
+               {
+                  "FEATURE":{
+                     "name":"Communication with small animals",
+                     "description":"Communication with small animals",
+                     "depend":null
+                  }
+               },
+               {
+                  "FEATURE":{
+                     "name":"Dark vision",
+                     "description":"Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can�t discern color in darkness, only shades of gray.",
+                     "depend":null
+                  }
+               },
+               {
+                  "FEATURE":{
+                     "name":"Gnome cunning",
+                     "description":"You have advantage on all Intelligence, Wisdom, and Charisma saving throws against magic.",
+                     "depend":null
+                  }
+               }
+            ]
+         }
+      }
+   ]
+}

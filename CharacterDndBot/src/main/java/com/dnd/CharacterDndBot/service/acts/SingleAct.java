@@ -1,0 +1,44 @@
+package com.dnd.CharacterDndBot.service.acts;
+
+import com.dnd.CharacterDndBot.service.acts.actions.BaseAction;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class SingleAct extends ActiveAct {
+ 
+	private BaseAction action;
+	private String text;
+
+	public static SingleActBuilder builder() {
+		return new SingleActBuilder();
+	}
+
+	@Override
+	public boolean hasAction() {
+		return action != null;
+	}
+
+	@Override
+	public boolean hasMediator() {
+		return action != null && action.isMediator();
+	}
+
+	@Override
+	public boolean hasReply(String string) {
+		return action != null && action.replyContain(string);
+	}
+
+	@Override
+	public boolean hasCloud() {
+		return action != null && action.isCloud();
+	}
+
+	@Override
+	public BaseAction getAction() {
+		return action;
+	}
+
+}

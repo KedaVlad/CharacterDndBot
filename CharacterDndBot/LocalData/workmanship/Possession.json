@@ -1,0 +1,103 @@
+[
+//SKILLS POSSESSION
+   {
+   "name":"SR Dexterity",
+   "inerComand":{
+      "cloud":false,
+      "effect":true,
+      "back":false,
+      "key":"=wedklsdfwobf=",
+      "comand":[
+         [
+            "SR Dexterity"
+         ]
+      ]
+   }
+},
+{
+   "name":"SR Intelligense",
+   "inerComand":{
+      "cloud":false,
+      "effect":true,
+      "back":false,
+      "key":"=wedklsdfwobf=",
+      "comand":[
+         [
+            "SR Intelligense"
+         ]
+      ]
+   }
+},
+//WEAPON POSSESSION
+{
+      "name":"Simple Weapon",
+      "inerComand":{
+         "back":false,
+         "cloud":false,
+         "effect":true,
+         "key":"=wefsdfaavgbf==dsfdfklfropkk=",
+         "comand":[
+            [
+               "SIMPLE"
+            ]
+         ]
+      }
+   },
+   {
+      "name":"Hand Crossbows",
+      "inerComand":{
+         "back":false,
+         "cloud":false,
+         "effect":true,
+         "key":"=wefsdfaavgbf==dsffdkllovnnnk=",
+         "comand":[
+            [
+               "CROSSBOW_HAND"
+            ]
+         ]
+      }
+   },
+   {
+   "name":"Long Swords",
+   "inerComand":{
+      "back":false,
+      "cloud":false,
+      "effect":true,
+      "key":"=wefsdfaavgbf==dsffdkllovnnnk=",
+      "comand":[
+         [
+            "LONGSWORD"
+         ]
+      ]
+   }
+   
+},
+{
+   "name":"Rapiers",
+   "inerComand":{
+      "back":false,
+      "cloud":false,
+      "effect":true,
+      "key":"=wefsdfaavgbf==dsffdkllovnnnk=",
+      "comand":[
+         [
+            "RAPIER"
+         ]
+      ]
+   }
+}, 
+{
+   "name":"Short Swords",
+   "inerComand":{
+      "cloud":false,
+      "effect":true,
+      "back":false,
+      "key":"=wefsdfaavgbf==dsffdkllovnnnk=",
+      "comand":[
+         [
+            "SHORTSWORD"
+         ]
+      ]
+   }
+}
+]

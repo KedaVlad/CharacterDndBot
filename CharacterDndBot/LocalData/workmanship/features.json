@@ -1,0 +1,111 @@
+[
+   {
+      "name":"Competence",
+      "description":"Choose your two skill proficiencies or one skill proficiency and thieves' tools proficiency. Your proficiency bonus is doubled for all ability checks you make using any of the chosen proficiencies. At 6th level, you can choose two more proficiencies (skills or thieves' tools) to gain the same benefit.",
+      "act":null,
+      "inerComands":[
+         {
+            "cloud":true,
+            "key":"sdkfwfwmsd",
+            "comand":[
+               [
+                  2,
+                  "Choose your two skill proficiencies or one skill proficiency and thieves' tools proficiency.Your proficiency bonus is doubled for all ability checks you make using any of the chosen proficiencies."
+               ],
+               [
+                  "Acrobatics",
+                  "Animal Handing",
+                  "Arcana",
+                  "Athletix",
+                  "Deception",
+                  "History",
+                  "Insight",
+                  "Intimidation",
+                  "Investigation",
+                  "Medicine",
+                  "Nature",
+                  "Perception",
+                  "Performance",
+                  "Persuasion",
+                  "Religion",
+                  "Sleigth of Hand",
+                  "Stelth",
+                  "Survival"
+               ]
+            ]
+         }
+      ]
+   },
+   {
+      "name":"Sneak Attack",
+      "description":"Once per turn, you can deal extra damage (Sneak Attack die (level/2 rounded down)d6) to one of the creatures you hit with an attack made with advantage on the attack roll. The attack must use a ranged weapon or a weapon with the Fencing property. You don't need to have advantage on the attack roll if another enemy of the target is within 5 feet of it. This enemy must not be incapacitated, and you must not have disadvantage on this attack roll.",
+      "act":null,
+      "inerComands":null
+   },
+   {
+   "name":"Thieves Jargon",
+   "description":"During rogue training, you learned thieves' jargon, a secret mixture of dialect, jargon, and cipher that allows you to hide messages in seemingly ordinary conversation. Only another being who knows the thieves' jargon understands such messages. It takes four times as long as sending the same words in plain text. In addition, you understand the set of secret characters and symbols used to send short and simple messages. For example, whether the area is dangerous or thieves' guild territory, whether there is loot nearby, whether the people in the area are innocent, and whether it provides a safe haven for thieves on the run.",
+   "act":null,
+   "inerComands":null
+   },
+   {
+   "name":"Tricky Action",
+   "description":"You can take a bonus action each turn of combat. This action can only be used to [Charge], [Withdraw], or [Ambush].",
+   "act":null,
+   "inerComands":null
+   },
+   {
+   "name":"Precise Aiming",
+   "description":"As a bonus action, you can give yourself advantage on your next attack roll this turn. You can use this bonus action only if you didn't move during this turn, and after using the bonus action, your speed will be 0 until the end of the current turn",
+   "act":null,
+   "inerComands":null
+   },
+   {
+   "name":"Incredible Evasion",
+   "description":"When an attacker you can see hits you with an attack, you can use your reaction to halve the damage that attack deals to you.",
+   "act":null,
+   "inerComands":null
+   },
+   {
+   "name":"Evasiveness",
+   "description":"If you are affected by an effect that allows you to make a [Dexterity saving] throw to take only half damage, instead you take no damage at all if the save succeeds, and only half damage if it fails.",
+   "act":null,
+   "inerComands":null
+   },
+   {
+   "name":"Reliable Talent",
+   "description":"You improve your chosen skills until they reach perfection. Whenever you make an ability check that adds a proficiency bonus, you can count a 10 on a d20 on a 1-9.",
+   "act":null,
+   "inerComands":null
+   },
+   {
+   "name":"Blind Sight",
+   "description":"If you can hear, you know the location of all hidden and invisible creatures within 10 feet of you.",
+   "act":null,
+   "inerComands":null
+   },
+   {
+   "name":"Slippery Mind",
+   "description":"You gain proficiency with [Wisdom saving throws].",
+   "act":null,
+   "inerComands":[
+      {
+         "cloud":false,
+         "key":"<",
+         "comand":[
+            [
+               "SR Wisdom"
+            ]
+         ]
+      }
+   ]
+},
+{
+   "name":"Elusiveness",
+   "description":"You can dodge so well that it is extremely rare for an opponent to get the better of you. No attack rolls gain advantage over you until you are incapacitated.",
+   "act":null,
+   "inerComands":null
+}
+
+   
+]
