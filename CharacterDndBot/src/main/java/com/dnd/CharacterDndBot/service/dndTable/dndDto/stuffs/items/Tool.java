@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("TOOL")
 public class Tool extends Items {
 
+	private static final long serialVersionUID = 1L;
+
 	public Tool() {}
 
 	public Tool(Tools type) {

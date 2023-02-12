@@ -1,7 +1,5 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndDto.characteristics;
 
-import org.springframework.stereotype.Component;
-
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.ObjectDnd;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.characteristics.SaveRoll.SaveRolls;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.characteristics.Skill.Skills;
@@ -10,13 +8,13 @@ import com.dnd.CharacterDndBot.service.dndTable.dndDto.characteristics.Stat.Stat
 import lombok.Data;
 
 @Data
-@Component
 public class Characteristics implements ObjectDnd {
 	
+	private static final long serialVersionUID = 1L;
 	private Skill initiative;
 	private Stat[] stats;
 	private Skill[] skills;
-	private Skill[] saveRolls;
+	private SaveRoll[] saveRolls;
 
 	{
 

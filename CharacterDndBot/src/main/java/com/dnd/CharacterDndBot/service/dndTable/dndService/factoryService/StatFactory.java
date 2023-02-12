@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.dnd.CharacterDndBot.service.User;
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
+import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.characteristics.Stat.Stats;
 import com.dnd.CharacterDndBot.service.dndTable.dndMath.Formalizer;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;

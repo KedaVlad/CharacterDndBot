@@ -1,15 +1,15 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndDto.ability.proficiency;
  
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.stereotype.Component;
+ 
 import lombok.Data;
 
 @Data
-@Component
-public class Proficiencies { 
+public class Proficiencies implements Serializable{ 
 	
+	private static final long serialVersionUID = 1L;
 	private int proficiency;
 	private List<Possession> possessions;
 

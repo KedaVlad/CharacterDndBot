@@ -11,7 +11,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ActiveFeature extends Feature implements Refreshable {
- 
+
+	private static final long serialVersionUID = 1L;
 	private int charges;
 	private int targetCells;
 	private Time time;

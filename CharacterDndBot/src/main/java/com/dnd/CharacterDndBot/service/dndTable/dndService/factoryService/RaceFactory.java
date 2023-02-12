@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dnd.CharacterDndBot.service.User;
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
+import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.CharacterDnd;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.RaceDnd;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;

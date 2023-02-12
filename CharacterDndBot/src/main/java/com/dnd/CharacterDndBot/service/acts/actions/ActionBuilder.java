@@ -14,10 +14,10 @@ public class ActionBuilder extends BaseActionBuilder<ActionBuilder> {
 		return this;
 	}
 
-	//public ActionBuilder objectDnd(ObjectDnd objectDnd) {
-	//	this.objectDnd = objectDnd;
-	//	return this;
-	//}
+	public ActionBuilder objectDnd(ObjectDnd objectDnd) {
+		this.objectDnd = objectDnd;
+		return this;
+	}
 
 	public Action build() {
 		Action action = new Action();

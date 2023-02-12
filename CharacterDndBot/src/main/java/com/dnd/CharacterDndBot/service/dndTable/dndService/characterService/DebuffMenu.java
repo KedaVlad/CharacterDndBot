@@ -1,10 +1,10 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.characterService;
 
-import com.dnd.CharacterDndBot.service.User;
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
+import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 

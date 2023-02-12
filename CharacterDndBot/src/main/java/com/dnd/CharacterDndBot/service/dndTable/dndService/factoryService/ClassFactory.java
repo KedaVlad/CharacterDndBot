@@ -1,51 +1,68 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService;
 
 import java.io.File;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.dnd.CharacterDndBot.service.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.dnd.CharacterDndBot.datacontrol.ClassDndService;
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
+import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.CharacterDnd;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.ClassDnd;
+import com.dnd.CharacterDndBot.service.dndTable.dndDto.comands.InerComand;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ClassFactory extends Executor<Action> {
-	private final static File CLASS_DIRECTORY = new File(
-			"C:\\Users\\ALTRON\\eclipse-workspace\\CharacterDndBot\\LocalData\\classes");
+public class ClassFactory implements Executor<Action> {
 
-	public ClassFactory(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private StartCreateClass startCreateClass;
+	@Autowired
+	private ChooseArchetype chooseArchetype;
+	@Autowired
+	private ChooseClassLvl chooseClassLvl;
+	@Autowired
+	private CheckLvlCondition checkLvlCondition;
+	@Autowired
+	private FinishClass finishClass;
+	
 	@Override
-	public Act executeFor(User user) {
-		int condition = 0;
-		if (action.getAnswers() != null) condition = action.getAnswers().length;
-		switch (condition) {
+	public Act executeFor(Action action, User user) {
+
+		switch (action.condition()) {
 		case 0:
-			return startCreate();
+			return startCreateClass.executeFor(action, user);
 		case 1:
-			return chooseArchetype();
+			return chooseArchetype.executeFor(action, user);
 		case 2:
-			return chooseLvl();
+			return chooseClassLvl.executeFor(action, user);
 		case 3:
-			return checkCondition();
+			return checkLvlCondition.executeFor(action, user);
 		case 4:
-			return finish(user);
+			return finishClass.executeFor(action, user);
 		}
 		log.error("ClassFactory: out of bounds condition");
 		return null;
 	}
+}
 
-	private Act startCreate() {
+@Component
+class StartCreateClass implements Executor<Action> {
+
+	@Autowired
+	private ClassDndService classDndService;
+	@Override
+	public Act executeFor(Action action, User user) {
 		return ReturnAct.builder()
 				.target(START_B)
 				.act(SingleAct.builder()
@@ -59,7 +76,23 @@ public class ClassFactory extends Executor<Action> {
 				.build();
 	}
 
-	private Act chooseArchetype() {
+	private String[][] getClassArray() {
+		List<String> all = classDndService.findDistinctClassName();
+		String[][] allClasses = new String[all.size()][1];
+		for (int i = 0; i < all.size(); i++) {
+			allClasses[i][0] = all.get(i);
+		}
+		return allClasses;
+	}
+}
+
+@Component
+class ChooseArchetype implements Executor<Action> {
+
+	@Autowired
+	private ClassDndService classDndService;
+	@Override
+	public Act executeFor(Action action, User user) {
 		action.setButtons(getArchetypeArray(action.getAnswers()[0]));
 		return SingleAct.builder()
 				.name("ChooseClassArchtype")
@@ -68,7 +101,21 @@ public class ClassFactory extends Executor<Action> {
 				.build();
 	}
 
-	private SingleAct chooseLvl() {
+	private String[][] getArchetypeArray(String className) {
+		List<String> all = classDndService.findDistinctArchetypeByClassName(className);
+		String[][] allArchetypes = new String[all.size()][1];
+		for (int i = 0; i < all.size(); i++) {
+			allArchetypes[i][0] = all.get(i);
+		}
+		return allArchetypes;
+	}
+}
+
+@Component
+class ChooseClassLvl implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
 		action.setMediator(true);
 		return SingleAct.builder()
 				.name("ChooseClassLvl")
@@ -76,8 +123,16 @@ public class ClassFactory extends Executor<Action> {
 				.action(action)
 				.build();
 	}
+}
 
-	private SingleAct checkCondition() {
+@Component
+class CheckLvlCondition implements Executor<Action> {
+
+	@Autowired
+	private ClassInformator classInformator;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
 		int lvl = 0;
 		Pattern pat = Pattern.compile("[-]?[0-9]+(.[0-9]+)?");
 		Matcher matcher = pat.matcher(action.getAnswers()[2]);
@@ -89,7 +144,7 @@ public class ClassFactory extends Executor<Action> {
 			action.setButtons(new String[][] { { "Yeah, right" } });
 			return SingleAct.builder()
 					.name("checkClassCondition")
-					.text(getObgectInfo(action.getAnswers()[0], action.getAnswers()[1])
+					.text(classInformator.getObgectInfo(action.getAnswers()[0], action.getAnswers()[1])
 							+ "\nIf not, select another option above.")
 					.action(action)
 					.build();
@@ -99,53 +154,64 @@ public class ClassFactory extends Executor<Action> {
 			return SingleAct.builder()
 					.name("checkClassCondition")
 					.text(lvl + "??? I see you're new here. Let's start with lvl 1.\nAre you satisfied with this option?/n"
-							+ getObgectInfo(action.getAnswers()[0], action.getAnswers()[1])
+							+ classInformator.getObgectInfo(action.getAnswers()[0], action.getAnswers()[1])
 							+ "\nIf not, select another option above.")
 					.action(action)
 					.build();
 		}
 	}
+}
 
-	private Act finish(User user) {
+@Component
+class FinishClass implements Executor<Action> {
+
+	@Autowired
+	private ClassDndService classDndService;
+	@Autowired
+	private StatFactory statFactory;
+	@Autowired
+	private ClassIntegrator classIntegrator;
+
+	@Override
+	public Act executeFor(Action action, User user) {
 		String className = action.getAnswers()[0];
 		String archetype = action.getAnswers()[1];
 		int lvl = ((Integer) Integer.parseInt(action.getAnswers()[2]));
-		integrator(user.getCharactersPool().getActual(), desirializer(className, archetype), lvl);
-		return new StatFactory(Action.builder().build()).executeFor(user);
+		ClassDnd classDnd = classDndService.findByClassNameAndArchetype(className, archetype).get(0);
+		classIntegrator.integrate(user.getCharactersPool().getActual(), classDnd, lvl);
+		return statFactory.executeFor(Action.builder().build(), user);
 	}
+}
 
-	private ClassDnd desirializer(String className, String archetype) {
-		return new ClassDnd();
-	}
+@Component
+class ClassIntegrator {
 
-	private void integrator(CharacterDnd character, ClassDnd clazz, int lvl) {
+	@Autowired
+	private ScriptReader scriptReader;
+	@Autowired
+	private ClassInformator classInformator;
+
+	public void integrate(CharacterDnd character, ClassDnd clazz, int lvl) {
+		clazz.setLvl(lvl);
 		character.setDndClass(new ClassDnd[] { clazz });
-		// character.getMyMemoirs().add(getObgectInfo(raceName, subRace));
-	}
-
-	private static String[][] getClassArray() {
-		String[] all = CLASS_DIRECTORY.list();
-		String[][] allClasses = new String[all.length][1];
-		for (int i = 0; i < all.length; i++) {
-			allClasses[i][0] = all[i];
+		for (int i = 0; i < lvl; i++) {
+			for (InerComand comand : clazz.getGrowMap()[i]) {
+				scriptReader.execute(character, comand);
+			}
 		}
-		return allClasses;
 	}
+}
 
-	private static String[][] getArchetypeArray(String className) {
-		File dirArchetype = new File(CLASS_DIRECTORY + "\\" + className);
-		String[] all = dirArchetype.list();
-		String[][] allArchetypes = new String[all.length][1];
-		for (int i = 0; i < all.length; i++) {
-			allArchetypes[i][0] = all[i].replaceAll("([a-zA-Z]*)(.json)", "$1");
-		}
-		return allArchetypes;
-	}
+@Component
+class ClassInformator {
 
-	private static String getObgectInfo(String classDnd, String archetype) {
+	@Autowired
+	private ClassDndService classDndService;
+	
+	public String getObgectInfo(String classDnd, String archetype) {
 
 		String answer = classDnd + archetype;
 		return answer;
 	}
-
 }
+

@@ -15,6 +15,7 @@ import lombok.Data;
 @Data
 public class AttackModification implements ObjectDnd { 
 	
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private WeaponProperties[] requirement;
 	private boolean permanent;

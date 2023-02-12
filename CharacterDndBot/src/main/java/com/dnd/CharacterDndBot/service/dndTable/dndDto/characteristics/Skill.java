@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class Skill implements ObjectDnd {
 
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private Stats depends;
 	private Proficiency proficiency;

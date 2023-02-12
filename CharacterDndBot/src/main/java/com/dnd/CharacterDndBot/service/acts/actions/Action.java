@@ -3,10 +3,13 @@ package com.dnd.CharacterDndBot.service.acts.actions;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.ObjectDnd;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class Action extends BaseAction implements Cloneable {
 
+	private static final long serialVersionUID = 1L;
 	private String[][] buttons;
 	private String[] answers;
 	private ObjectDnd objectDnd;

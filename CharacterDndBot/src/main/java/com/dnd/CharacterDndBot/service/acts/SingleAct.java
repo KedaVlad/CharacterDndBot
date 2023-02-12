@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class SingleAct extends ActiveAct {
  
+	private static final long serialVersionUID = 1L;
 	private BaseAction action;
 	private String text;
 

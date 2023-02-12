@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class Possession implements ObjectDnd {
 
+	private static final long serialVersionUID = 1L;
 	private Proficiency prof;
 	private String name;
 	

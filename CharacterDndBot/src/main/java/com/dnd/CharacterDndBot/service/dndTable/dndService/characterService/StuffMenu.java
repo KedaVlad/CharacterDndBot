@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.dnd.CharacterDndBot.service.User;
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
 import com.dnd.CharacterDndBot.service.acts.actions.BaseAction;
 import com.dnd.CharacterDndBot.service.acts.actions.PoolActions;
+import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.Stuff;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.Wallet;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Ammunition;
@@ -33,7 +33,7 @@ public class StuffMenu extends Executor<Action> {
 			if (action.condition() == 0) {
 				return stuff(user);
 			} else {
-				String targetMenu = action.getAnswers()[0];
+		/*		String targetMenu = action.getAnswers()[0];
 				if (targetMenu.equals(CARRYING_STUFF_B)) {
 					return carrying.execute(action);
 				} else if (targetMenu.equals(BAG_B)) {
@@ -52,11 +52,12 @@ public class StuffMenu extends Executor<Action> {
 				} else {
 					return bag.execute(action);
 				}
-			} else {
-				return SingleAct.builder().returnTo(MENU_B, MENU_B).build();
+			} else { */
+				return null; //SingleAct.builder().returnTo(MENU_B, MENU_B).build();
 			}
 
 		}
+		return null; 
 	}
 
 	private Act stuff(User user) {
@@ -131,7 +132,7 @@ class WalletMenu extends Executor<Action> {
 	}
 	
 }
-
+/*
 class BagMenu extends Executor<Action> {
 
 	private static final String WEAR = "WEAR";
@@ -396,3 +397,4 @@ class CarryingMenu extends Executor<Action> {
 	}
 	
 }
+*/

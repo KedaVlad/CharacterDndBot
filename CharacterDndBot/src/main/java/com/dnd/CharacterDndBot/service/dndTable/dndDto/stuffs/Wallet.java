@@ -1,12 +1,13 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs;
 
-import org.springframework.stereotype.Component;
+import java.io.Serializable;
+
 import lombok.Data;
 
 @Data
-@Component
-public class Wallet {
+public class Wallet implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private int bronze = 0;// CP
 	private int silver = 0;// SP
 	private int gold = 0;// GP

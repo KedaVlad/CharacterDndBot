@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public abstract class ActiveAct implements Act{
  
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private List<Integer> actCircle;
 	

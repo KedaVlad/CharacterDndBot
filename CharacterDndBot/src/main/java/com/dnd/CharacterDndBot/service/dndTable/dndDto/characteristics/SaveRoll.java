@@ -4,6 +4,8 @@ import com.dnd.CharacterDndBot.service.dndTable.dndDto.characteristics.Stat.Stat
 
 public class SaveRoll extends Skill {
  
+	private static final long serialVersionUID = 1L;
+
 	public SaveRoll(String name, Stats depends) {
 		super(name, depends);
 	}

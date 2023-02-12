@@ -9,5 +9,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class InerFeature extends Feature { 
+	private static final long serialVersionUID = 1L;
 	private InerComand[] comand;
 }

@@ -1,16 +1,10 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService;
 
-import com.dnd.CharacterDndBot.service.User;
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.actions.BaseAction;
+import com.dnd.CharacterDndBot.service.bot.user.User;
 
-public abstract class Executor<T extends BaseAction> implements ButtonName {
+public interface Executor<T extends BaseAction> extends ButtonName {
 
-	protected T action;
-
-	public Executor(T action) {
-		this.action = action;
-	}
-
-	public abstract Act executeFor(User user);
+	public abstract Act executeFor(T action, User user);
 }

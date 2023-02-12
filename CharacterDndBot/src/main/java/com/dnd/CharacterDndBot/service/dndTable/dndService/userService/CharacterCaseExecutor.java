@@ -1,21 +1,21 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.userService;
 
-import com.dnd.CharacterDndBot.service.User;
+import org.springframework.stereotype.Component;
+
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ArrayActs;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
+import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 
-public class CharacterCaseExecutor extends Executor<Action> {
-	public CharacterCaseExecutor(Action action) {
-		super(action);
-	}
-
+@Component
+public class CharacterCaseExecutor implements Executor<Action> {
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		if (user.getCharactersPool().getSavedCharacters().size() != 0) {
 			String[][] buttons = new String[user.getCharactersPool().getSavedCharacters().size()][1];
 			int i = 0;

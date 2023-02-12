@@ -13,10 +13,7 @@ import lombok.Data;
 @Data
 public class MagicSoul implements Refreshable, ObjectDnd {
 	
-	public enum SpellClass {
-
-	}
- 
+	private static final long serialVersionUID = 1L;
 	private Matrix cells;
 	private SimplePool<Spell> poolCantrips;
 	private Stats depends;

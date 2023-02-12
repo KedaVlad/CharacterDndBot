@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class Stat implements ObjectDnd {
 
+	private static final long serialVersionUID = 1L;
 	private Stats name;
 	private int value = 0;
 	private int maxValue = 20;

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("PACK")
 public class Pack extends Items {
+ 
+	private static final long serialVersionUID = 1L;
 
 	public Pack() {}
 

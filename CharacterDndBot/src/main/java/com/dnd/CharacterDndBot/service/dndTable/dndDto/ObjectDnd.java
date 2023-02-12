@@ -1,5 +1,7 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndDto;
 
+import java.io.Serializable;
+
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.ability.attacks.AttackModification;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.ability.features.Feature;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.ability.proficiency.Possession;
@@ -18,6 +20,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@JsonSubTypes.Type(value = AttackModification.class, name = "ATTACK_MODIFICATION"),
 		@JsonSubTypes.Type(value = Spell.class, name = "SPELL"),
 		@JsonSubTypes.Type(value = MagicSoul.class, name = "MAGIC_SOUL") })
-public interface ObjectDnd {
+public interface ObjectDnd extends Serializable {
 
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class ReturnAct implements Act {
 	
+	private static final long serialVersionUID = 1L;
 	private String target;
 	private String call;
 	private ActiveAct act;

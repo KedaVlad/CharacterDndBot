@@ -147,12 +147,6 @@ public abstract class Formalizer {
 		return (int) Math.round(Math.random() * 99 + 1);
 	}
 
-	public static int modificator(int stat)
-	{
-		return (stat - 10) / 2;
-	}
-	
-	
 	public static int randomStat() {
 
 		int[] allDice = { d6(), d6(), d6(), d6() };

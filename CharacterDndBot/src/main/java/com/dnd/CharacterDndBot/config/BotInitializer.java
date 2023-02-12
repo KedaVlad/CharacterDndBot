@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import com.dnd.CharacterDndBot.service.Bot;
+import com.dnd.CharacterDndBot.service.bot.Bot;
+import com.dnd.CharacterDndBot.service.bot.MessageSender;
+import com.dnd.CharacterDndBot.service.bot.Session;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 public class BotInitializer {
 	@Autowired
 	Bot bot;
+	@Autowired
+	Session session;
+	@Autowired
+	MessageSender messageSender;
 
 	@EventListener({ ContextRefreshedEvent.class })
 	public void init() throws TelegramApiException {
@@ -26,6 +32,8 @@ public class BotInitializer {
 		} catch (TelegramApiException e) {
 			log.error("Error occured: " + e.getMessage());
 		}
+		session.run();
+	    messageSender.run();
 	}
 
 }

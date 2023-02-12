@@ -1,5 +1,7 @@
 package com.dnd.CharacterDndBot.service.acts;
 
-public interface Act {
+import java.io.Serializable;
+
+public interface Act extends Serializable{
 
 }

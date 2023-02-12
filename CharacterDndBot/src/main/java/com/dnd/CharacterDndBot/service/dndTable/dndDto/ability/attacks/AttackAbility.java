@@ -1,9 +1,8 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndDto.ability.attacks;
  
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.stereotype.Component;
 
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Weapon;
 import com.dnd.CharacterDndBot.service.dndTable.dndMath.Dice;
@@ -12,9 +11,9 @@ import com.dnd.CharacterDndBot.service.dndTable.dndMath.Formalizer.Roll;
 import lombok.Data;
 
 @Data
-@Component
-public class AttackAbility {
+public class AttackAbility implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private Dice noWeapon;
 	private Integer critX;
 	private List<AttackModification> preAttacks;

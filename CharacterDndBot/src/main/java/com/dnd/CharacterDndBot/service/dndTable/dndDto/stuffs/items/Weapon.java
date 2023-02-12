@@ -17,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class Weapon extends Items {
  
+	private static final long serialVersionUID = 1L;
 	private int attack;
 	private int damage;
 

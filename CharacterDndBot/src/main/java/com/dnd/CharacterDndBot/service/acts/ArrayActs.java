@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ArrayActs extends ActiveAct { 
 	
+	private static final long serialVersionUID = 1L;
 	private SingleAct[] pool;
 	private long[] keys;
 
