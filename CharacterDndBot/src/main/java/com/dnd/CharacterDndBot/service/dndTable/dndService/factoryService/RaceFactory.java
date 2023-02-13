@@ -1,9 +1,11 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import com.dnd.CharacterDndBot.datacontrol.ClassDndService;
+import com.dnd.CharacterDndBot.datacontrol.RaceDndService;
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
@@ -11,40 +13,55 @@ import com.dnd.CharacterDndBot.service.acts.actions.Action;
 import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.CharacterDnd;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.RaceDnd;
+import com.dnd.CharacterDndBot.service.dndTable.dndDto.comands.InerComand;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
+import com.dnd.CharacterDndBot.service.dndTable.util.ArrayToOneColums;
+import com.dnd.CharacterDndBot.service.dndTable.util.ArrayToThreeColums;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RaceFactory extends Executor<Action> {
-	
-	private final static File dirRace = new File(
-			"C:\\Users\\ALTRON\\eclipse-workspace\\CharacterDndBot\\LocalData\\race");
+@Service
+public class RaceFactory implements Executor<Action> {
 
-	public RaceFactory(Action action) {
-		super(action);
-	}
+	@Autowired
+	private RaceStartCreate raceStartCreate;
+	@Autowired
+	private ChooseSubRace chooseSubRace;
+	@Autowired
+	private RaceCheckCondition raceCheckCondition;
+	@Autowired
+	private RaceFinishCreate raceFinishCreate;
 
 	@Override
-	public Act executeFor(User user) {
-		int condition = 0;
-		if (action.getAnswers() != null) condition = action.getAnswers().length;
-		switch (condition) {
+	public Act executeFor(Action action,User user) {
+		switch (action.condition()) {
 		case 0:
-			return startCreate();
+			return raceStartCreate.executeFor(action, user);
 		case 1:
-			return chooseSubRace();
+			return chooseSubRace.executeFor(action, user);
 		case 2:
-			return checkCondition();
+			return raceCheckCondition.executeFor(action, user);
 		case 3:
-			return finish(user);
+			return raceFinishCreate.executeFor(action, user);
 		}
 		log.error("RaceFactory: out of bounds condition");
 		return null;
 	}
+}
 
-	private Act startCreate() {
+@Component
+class RaceStartCreate implements Executor<Action> {
+
+	@Autowired
+	private RaceDndService raceDndService;
+	@Autowired
+	private ArrayToThreeColums arrayToThreeColums;
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		return ReturnAct.builder()
 				.target(START_B)
 				.act(SingleAct.builder()
@@ -52,81 +69,99 @@ public class RaceFactory extends Executor<Action> {
 						.text("From what family you are?")
 						.action(Action.builder()
 								.location(Location.RACE_FACTORY)
-								.buttons(getRaceArray())
+								.buttons(arrayToThreeColums.rebuild(raceDndService.findDistinctRaceName().toArray(String[]::new)))
 								.build())
 						.build())
 				.build();
 	}
+}
 
-	private Act chooseSubRace() {
-		action.setButtons(getSubRaceArray(action.getAnswers()[0]));
+@Component
+class ChooseSubRace implements Executor<Action> {
+
+	@Autowired
+	private RaceDndService raceDndService;
+	@Autowired
+	private ArrayToOneColums arrayToOneColums;
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
+		action.setButtons(arrayToOneColums.rebuild(raceDndService.findDistinctSubRaceByRaceName(action.getAnswers()[0]).toArray(String[]::new)));
 		return SingleAct.builder()
 				.name("ChooseSubRace")
 				.text(action.getAnswers()[0] + "? More specifically?")
 				.action(action)
 				.build();
 	}
+}
 
-	private Act checkCondition() {
+@Component
+class RaceCheckCondition implements Executor<Action> {
+
+	@Autowired
+	private RaceInformator raceInformator;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		action.setButtons(new String[][] { { "Yeah, right" } });
 		return SingleAct.builder()
 				.name("checkCondition")
-				.text(getObgectInfo(action.getAnswers()[0], action.getAnswers()[1])
+				.text(raceInformator.getObgectInfo(action.getAnswers()[0], action.getAnswers()[1])
 						+ "\nIf not, select another option above.")
 				.action(action).build();
 	}
+}
 
-	private Act finish(User user) {
+@Component
+class RaceFinishCreate implements Executor<Action> {
+
+	@Autowired
+	private ClassFactory classFactory;
+	@Autowired
+	private RaceDndService raceDndService;
+	@Autowired
+	private RaceIntegrator raceIntegrator;
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		String raceName = action.getAnswers()[0];
 		String subRace = action.getAnswers()[1];
-		integrator(user.getCharactersPool().getActual(), desirializer(raceName, subRace));
-		return new ClassFactory(Action.builder().build()).executeFor(user);
+		RaceDnd race = raceDndService.findByRaceNameAndSubRace(raceName, subRace).get(0);
+		raceIntegrator.integrate(user.getCharactersPool().getActual(), race);
+		return classFactory.executeFor(Action.builder().build(), user);
 	}
-
-	private RaceDnd desirializer(String race, String subRace) {
-		return new RaceDnd();
-	}
-
-	private void integrator(CharacterDnd character, RaceDnd race) {
-		character.setRace(race);
-		// character.getMyMemoirs().add(getObgectInfo(raceName, subRace));
-	}
-
-	private String[][] getRaceArray() {
-		String[] all = dirRace.list();
-		List<String[]> buttons = new ArrayList<>();
-
-		for (int i = 1; i <= all.length; i += 3) {
-			if (((i + 1) > all.length) && ((i + 2) > all.length)) {
-				buttons.add(new String[] { all[i - 1] });
-			} else if ((i + 2) > all.length) {
-				buttons.add(new String[] { all[i - 1], all[i] });
-			} else {
-				buttons.add(new String[] { all[i - 1], all[i], all[i + 1] });
-			}
-		}
-
-		String[][] allRaces = buttons.toArray(new String[buttons.size()][]);
-
-		return allRaces;
-	}
-
-	private String[][] getSubRaceArray(String race) {
-		File dirSubRace = new File(dirRace + "\\" + race);
-
-		String[] all = dirSubRace.list();
-
-		String[][] allRaces = new String[all.length][1];
-		for (int i = 0; i < all.length; i++) {
-			allRaces[i][0] = all[i].replaceAll("([a-zA-Z]*)(.json)", "$1");
-		}
-
-		return allRaces;
-	}
-
-	private String getObgectInfo(String race, String subRace) {
-
-		return race + subRace;
-	}
-
 }
+
+@Component
+class RaceIntegrator {
+
+	@Autowired
+	private ScriptReader scriptReader;
+	@Autowired
+	private ClassInformator classInformator;
+
+	public void integrate(CharacterDnd character, RaceDnd race) {
+		character.setRace(race);
+		for (InerComand comand : race.getSpecials()) {
+			scriptReader.execute(character, comand);
+		}
+	}
+}
+
+@Component
+class RaceInformator {
+
+	@Autowired
+	private ClassDndService classDndService;
+
+	public String getObgectInfo(String classDnd, String archetype) {
+
+		String answer = classDnd + archetype;
+		return answer;
+	}
+}
+
+

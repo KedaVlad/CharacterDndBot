@@ -1,5 +1,9 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.characterService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
@@ -14,28 +18,35 @@ import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RestMenu extends Executor<Action> {
+@Service
+public class RestExecutor implements Executor<Action> {
 
-	public RestMenu(Action action) {
-		super(action);
-	}
+	@Autowired
+	private StartRest startRest;
+	@Autowired
+	private EndRest endRest;
 
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		int condition = 0;
 		if (action.getAnswers() != null) condition = action.getAnswers().length;
 		switch (condition) {
 		case 0:
-			return startRest();
+			return startRest.executeFor(action, user);
 		case 1:
-			return endRest(user);
+			return endRest.executeFor(action, user);
 		}
 		log.error("RestMenu: out of bounds condition");
 		return null;
 	}
+}
 
-	private Act startRest() 
-	{
+@Component
+class StartRest implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		return ReturnAct.builder()
 				.target(MENU_B)
 				.act(SingleAct.builder()
@@ -61,8 +72,14 @@ public class RestMenu extends Executor<Action> {
 						.build())
 				.build();	
 	}
+}
 
-	private Act endRest(User user) {
+@Component
+class EndRest implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		Time time = (Time) action.getObjectDnd();
 		user.getCharactersPool().getActual().refresh(time);
 		if(time == Time.SHORT) {
@@ -80,5 +97,4 @@ public class RestMenu extends Executor<Action> {
 			return null;
 		}
 	}
-
 }

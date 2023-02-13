@@ -19,6 +19,7 @@ import com.dnd.CharacterDndBot.service.dndTable.dndDto.ClassDnd;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.comands.InerComand;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
+import com.dnd.CharacterDndBot.service.dndTable.util.ArrayToOneColums;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,6 +62,9 @@ class StartCreateClass implements Executor<Action> {
 
 	@Autowired
 	private ClassDndService classDndService;
+	@Autowired
+	private ArrayToOneColums arrayToOneColums;
+	
 	@Override
 	public Act executeFor(Action action, User user) {
 		return ReturnAct.builder()
@@ -70,19 +74,10 @@ class StartCreateClass implements Executor<Action> {
 						.text("What is your class?")
 						.action(Action.builder()
 								.location(Location.CLASS_FACTORY)
-								.buttons(getClassArray())
+								.buttons(arrayToOneColums.rebuild(classDndService.findDistinctClassName().toArray(String[]::new)))
 								.build())
 						.build())
 				.build();
-	}
-
-	private String[][] getClassArray() {
-		List<String> all = classDndService.findDistinctClassName();
-		String[][] allClasses = new String[all.size()][1];
-		for (int i = 0; i < all.size(); i++) {
-			allClasses[i][0] = all.get(i);
-		}
-		return allClasses;
 	}
 }
 
@@ -90,24 +85,17 @@ class StartCreateClass implements Executor<Action> {
 class ChooseArchetype implements Executor<Action> {
 
 	@Autowired
+	private ArrayToOneColums arrayToOneColums;
+	@Autowired
 	private ClassDndService classDndService;
 	@Override
 	public Act executeFor(Action action, User user) {
-		action.setButtons(getArchetypeArray(action.getAnswers()[0]));
+		action.setButtons(arrayToOneColums.rebuild(classDndService.findDistinctArchetypeByClassName(action.getAnswers()[0]).toArray(String[]::new)));
 		return SingleAct.builder()
 				.name("ChooseClassArchtype")
 				.text(action.getAnswers()[0] + ", realy? Which one?")
 				.action(action)
 				.build();
-	}
-
-	private String[][] getArchetypeArray(String className) {
-		List<String> all = classDndService.findDistinctArchetypeByClassName(className);
-		String[][] allArchetypes = new String[all.size()][1];
-		for (int i = 0; i < all.size(); i++) {
-			allArchetypes[i][0] = all.get(i);
-		}
-		return allArchetypes;
 	}
 }
 

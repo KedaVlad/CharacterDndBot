@@ -1,14 +1,14 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
 import com.dnd.CharacterDndBot.service.bot.user.User;
-import com.dnd.CharacterDndBot.service.dndTable.dndDto.CharacterDnd;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Ammunition;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Armor;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Items;
@@ -22,40 +22,59 @@ import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Tool.Tools;
 import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Weapon.Weapons;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
+import com.dnd.CharacterDndBot.service.dndTable.util.ArrayToThreeColums;
 
-public class ItemFactory extends Executor<Action> {
+@Service
+public class ItemFactory implements Executor<Action> {
 
-	public ItemFactory(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private ItemStartCreate itemStartCreate;
+	@Autowired
+	private ElseItemsExecutor elseItemsExecutor;
+	@Autowired
+	private AmmunitionExecutor ammunitionExecutor;
+	@Autowired
+	private WeaponExecutor weaponExecutor;
+	@Autowired
+	private ToolExecutor toolExecutor;
+	@Autowired
+	private PackExecutor packExecutor;
+	@Autowired
+	private ArmorExecutor armorExecutor;
+	
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		if (action.condition() == 0) {
-			return startCreate();
+			return itemStartCreate.executeFor(action, user);
 		} else {
 			String target = action.getAnswers()[0];
 			switch(target)
 			{
 			case WEAPON_B:
-			return null;
+				return weaponExecutor.executeFor(action, user);
 			case AMNUNITION_B:
-				return null;
+				return ammunitionExecutor.executeFor(action, user);
 			case TOOL_B:
-				return null;
+				return toolExecutor.executeFor(action, user);
 			case PACK_B:
-				return null;
+				return packExecutor.executeFor(action, user);
 			case ARMOR_B:
-				return null;
+				return armorExecutor.executeFor(action, user);
 			case ELSE_B:
+				return elseItemsExecutor.executeFor(action, user);
+			default:
 				return null;
-				default:
-					return null;
 			}
 		}
 	}
+}
 
-	public Act startCreate() {
+@Component
+class ItemStartCreate implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
 		return SingleAct.builder()
 				.name("CreateItem")
 				.text("Which item you take?")
@@ -69,56 +88,52 @@ public class ItemFactory extends Executor<Action> {
 						.build())
 				.build();
 	}
-	
-	static Act finish(Action action, CharacterDnd actualGameCharacter) {
-		actualGameCharacter.getStuff().getInsideBag().add((Items)action.getObjectDnd());
-		return ReturnAct.builder().target(STUFF_B).call(BAG_B).build();
-	}
-
-	static String[][] arrayToThreeColums(Object[] array) {
-		String[] all = new String[array.length];
-		for (int i = 0; i < all.length; i++) {
-			all[i] = array[i].toString();
-		}
-		List<String[]> buttons = new ArrayList<>();
-
-		for (int i = 1; i <= all.length; i += 3) {
-			if (((i + 1) > all.length) && ((i + 2) > all.length)) {
-				buttons.add(new String[] { all[i - 1] });
-			} else if ((i + 2) > all.length) {
-				buttons.add(new String[] { all[i - 1], all[i] });
-			} else {
-				buttons.add(new String[] { all[i - 1], all[i], all[i + 1] });
-			}
-		}
-		String[][] allRaces = buttons.toArray(new String[buttons.size()][]);
-		return allRaces;
-	}
-
 }
 
-class ElseMenu extends Executor<Action> {
-
-	public ElseMenu(Action action) {
-		super(action);
-	}
+@Component
+class ItemFinishCreate implements Executor<Action> {
 
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
+		user.getCharactersPool().getActual().getStuff().getInsideBag().add((Items)action.getObjectDnd());
+		return ReturnAct.builder().target(STUFF_B).call(BAG_B).build();
+	}
+}
+
+@Component
+class ElseItemsExecutor implements Executor<Action> {
+	
+	@Autowired
+	private ElseItemsName elseItemsName;
+	@Autowired
+	private ElseItemsDescription elseItemsDescription;
+	@Autowired
+	private ElseItemsCheckCondition elseItemsCheckCondition;
+	@Autowired
+	private ItemFinishCreate itemFinishCreate;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
 		switch (action.getAnswers().length) {
 		case 1:
-			return	chooseNameItems();
+			return	elseItemsName.executeFor(action, user);
 		case 2:
-			return  chooseDescriptionItems();
+			return  elseItemsDescription.executeFor(action, user);
 		case 3:
-			return  agreedItems();
+			return  elseItemsCheckCondition.executeFor(action, user);
 		case 4:
-			return ItemFactory.finish(action, user.getCharactersPool().getActual());
+			return itemFinishCreate.executeFor(action, user);
 		}
 		return null;
 	}
+}
 
-	private SingleAct chooseNameItems() {
+@Component
+class ElseItemsName implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		action.setMediator(true);
 		return SingleAct.builder()
 				.name("chooseNameItems")
@@ -126,9 +141,14 @@ class ElseMenu extends Executor<Action> {
 				.action(action)
 				.build();
 	}
+}
 
-	private SingleAct chooseDescriptionItems() 
-	{
+@Component
+class ElseItemsDescription implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		action.setMediator(true);
 		return SingleAct.builder()
 				.name("chooseDescriptionItems")
@@ -136,9 +156,14 @@ class ElseMenu extends Executor<Action> {
 				.action(action)
 				.build();
 	}
+}
 
-	private SingleAct agreedItems() 
-	{
+@Component
+class ElseItemsCheckCondition implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		Items item = new Items();
 		item.setName(action.getAnswers()[1]);
 		item.setDescription(action.getAnswers()[2]);
@@ -150,39 +175,57 @@ class ElseMenu extends Executor<Action> {
 				.action(action)
 				.build();
 	}
-
 }
 
-class AmmunitionMenu extends Executor<Action> {
+@Component
+class AmmunitionExecutor implements Executor<Action> {
 
-	public AmmunitionMenu(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private ItemFinishCreate itemFinishCreate;
+	@Autowired
+	private AmmunitionChooseType ammunitionChooseType;
+	@Autowired
+	private AmmunitionCheckCondition ammunitionCheckCondition;
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
+
 		switch (action.condition()) {
 		case 1:
-			return chooseTypeAmmunition();
+			return ammunitionChooseType.executeFor(action, user);
 		case 2:
-			return agreedAmmunition();
+			return ammunitionCheckCondition.executeFor(action, user);
 		case 3:
-			return ItemFactory.finish(action, user.getCharactersPool().getActual());
+			return itemFinishCreate.executeFor(action, user);
 		default:
-		return null;
+			return null;
 		}
 	}
+}
 
-	private SingleAct chooseTypeAmmunition() {
-		action.setButtons(ItemFactory.arrayToThreeColums(Ammunitions.values()));
+@Component
+class AmmunitionChooseType implements Executor<Action> {
+
+	@Autowired
+	private ArrayToThreeColums arrayToThreeColums;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
+
+		action.setButtons(arrayToThreeColums.rebuild(Ammunitions.values()));
 		return SingleAct.builder()
 				.name("chooseTypeAmmunition")
 				.text("What ammunition is it?")
 				.action(action)
 				.build();
 	}
+}
 
-	private SingleAct agreedAmmunition() {
+@Component
+class AmmunitionCheckCondition implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
 		action.setButtons(new String[][] {{"Yeah, right"}});
 		Ammunition ammunition = new Ammunition(targetAmmunition(action.getAnswers()[1]));
 		action.setObjectDnd(ammunition);
@@ -203,36 +246,56 @@ class AmmunitionMenu extends Executor<Action> {
 
 }
 
-class WeaponMenu extends Executor<Action> {
+@Component
+class WeaponExecutor implements Executor<Action> {
 
-	public WeaponMenu(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private ItemFinishCreate itemFinishCreate;
+	@Autowired
+	private WeaponChooseType weaponChooseType;
+	@Autowired
+	private WeaponCheckCondition weaponCheckCondition;
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) { 
+
 		switch (action.condition()) {
 		case 1:
-			return chooseTypeWeapon();
+			return weaponChooseType.executeFor(action, user);
 		case 2:
-			return agreedWeapon();
+			return weaponCheckCondition.executeFor(action, user);
 		case 3:
-			return ItemFactory.finish(action, user.getCharactersPool().getActual());
+			return itemFinishCreate.executeFor(action, user);
 		default:
-		return null;
+			return null;
 		}
 	}
+}
 
-	private SingleAct chooseTypeWeapon() {
-		action.setButtons(ItemFactory.arrayToThreeColums(Weapons.values()));
+@Component
+class WeaponChooseType implements Executor<Action> {
+
+	@Autowired
+	private ArrayToThreeColums arrayToThreeColums;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
+
+		action.setButtons(arrayToThreeColums.rebuild(Weapons.values()));
 		return SingleAct.builder()
 				.name("ChooseTypeWeapon")
 				.text("What weapon is it?")
 				.action(action)
 				.build();
 	}
+}
 
-	private SingleAct agreedWeapon() {
+@Component
+class WeaponCheckCondition implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		action.setButtons(new String[][] {{"Yeah, right"}});
 		Weapon weapon = new Weapon(targetWeapon(action.getAnswers()[1]));
 		action.setObjectDnd(weapon);
@@ -254,38 +317,58 @@ class WeaponMenu extends Executor<Action> {
 
 }
 
-class ToolMenu extends Executor<Action> {
 
-	public ToolMenu(Action action) {
-		super(action);
-	}
+@Component
+class ToolExecutor implements Executor<Action> {
 
+	@Autowired
+	private ItemFinishCreate itemFinishCreate;
+	@Autowired
+	private ToolChooseType toolChooseType;
+	@Autowired
+	private ToolCheckCondition toolCheckCondition;
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		switch (action.condition()) {
 		case 1:
-			return chooseTypeTool();
+			return toolChooseType.executeFor(action, user);
 		case 2:
-			return agreedTool();
+			return toolCheckCondition.executeFor(action, user);
 		case 3:
-			return ItemFactory.finish(action, user.getCharactersPool().getActual());
+			return itemFinishCreate.executeFor(action, user);
 		default:
-		return null;
+			return null;
 		}
 	}
+}
 
-	private SingleAct chooseTypeTool() {
-		action.setButtons(ItemFactory.arrayToThreeColums(Tools.values()));
+@Component
+class ToolChooseType implements Executor<Action> {
+
+	@Autowired
+	private ArrayToThreeColums arrayToThreeColums;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
+
+		action.setButtons(arrayToThreeColums.rebuild(Tools.values()));
 		return SingleAct.builder()
-				.name("chooseTypeAmmunition")
-				.text("What ammunition is it?")
+				.name("chooseTypeTool")
+				.text("What tool is it?")
 				.action(action)
 				.build();
 	}
+}
 
-	private SingleAct agreedTool() {
+@Component
+class ToolCheckCondition implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		action.setButtons(new String[][] {{"Yeah, right"}});
-		Tool ammunition = new Tool(targetAmmunition(action.getAnswers()[1]));
+		Tool ammunition = new Tool(targetTool(action.getAnswers()[1]));
 		action.setObjectDnd(ammunition);
 		return SingleAct.builder()
 				.name("checkCondition")
@@ -294,7 +377,7 @@ class ToolMenu extends Executor<Action> {
 				.build();
 	}
 
-	private Tools targetAmmunition(String name) {
+	private Tools targetTool(String name) {
 		for (Tools type : Tools.values()) {
 			if (type.toString().equals(name))
 				return type;
@@ -304,38 +387,57 @@ class ToolMenu extends Executor<Action> {
 
 }
 
-class PackMenu extends Executor<Action> {
+@Component
+class PackExecutor implements Executor<Action> {
 
-	public PackMenu(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private ItemFinishCreate itemFinishCreate;
+	@Autowired
+	private PackChooseType packChooseType;
+	@Autowired
+	private PackCheckCondition packCheckCondition;
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		switch (action.condition()) {
 		case 1:
-			return chooseTypePack();
+			return packChooseType.executeFor(action, user);
 		case 2:
-			return agreedPack();
+			return packCheckCondition.executeFor(action, user);
 		case 3:
-			return ItemFactory.finish(action, user.getCharactersPool().getActual());
+			return itemFinishCreate.executeFor(action, user);
 		default:
-		return null;
+			return null;
 		}
 	}
+}
 
-	private SingleAct chooseTypePack() {
-		action.setButtons(ItemFactory.arrayToThreeColums(Packs.values()));
+@Component
+class PackChooseType implements Executor<Action> {
+
+	@Autowired
+	private ArrayToThreeColums arrayToThreeColums;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
+
+		action.setButtons(arrayToThreeColums.rebuild(Packs.values()));
 		return SingleAct.builder()
-				.name("chooseTypeAmmunition")
-				.text("What ammunition is it?")
+				.name("chooseTypePack")
+				.text("What pack is it?")
 				.action(action)
 				.build();
 	}
+}
 
-	private SingleAct agreedPack() {
+@Component
+class PackCheckCondition implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		action.setButtons(new String[][] {{"Yeah, right"}});
-		Pack ammunition = new Pack(targetAmmunition(action.getAnswers()[1]));
+		Pack ammunition = new Pack(targetPack(action.getAnswers()[1]));
 		action.setObjectDnd(ammunition);
 		return SingleAct.builder()
 				.name("checkCondition")
@@ -344,7 +446,7 @@ class PackMenu extends Executor<Action> {
 				.build();
 	}
 
-	private Packs targetAmmunition(String name) {
+	private Packs targetPack(String name) {
 		for (Packs type : Packs.values()) {
 			if (type.toString().equals(name))
 				return type;
@@ -354,38 +456,61 @@ class PackMenu extends Executor<Action> {
 
 }
 
-class ArmorMenu extends Executor<Action> {
+@Component
+class ArmorExecutor implements Executor<Action> {
 
-	public ArmorMenu(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private ItemFinishCreate itemFinishCreate;
+	@Autowired
+	private ArmorChooseType armorChooseType;
+	@Autowired
+	private ArmorCheckCondition armorCheckCondition;
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
+
 		switch (action.condition()) {
 		case 1:
-			return chooseTypeArmor();
+			return armorChooseType.executeFor(action, user);
 		case 2:
-			return agreedArmor();
+			return armorCheckCondition.executeFor(action, user);
 		case 3:
-			return ItemFactory.finish(action, user.getCharactersPool().getActual());
+			return itemFinishCreate.executeFor(action, user);
 		default:
-		return null;
+			return null;
 		}
 	}
 
-	private SingleAct chooseTypeArmor() {
-		action.setButtons(ItemFactory.arrayToThreeColums(Armors.values()));
+}
+
+@Component
+class ArmorChooseType implements Executor<Action> {
+
+	@Autowired
+	private ArrayToThreeColums arrayToThreeColums;
+	
+	@Override
+	public Act executeFor(Action action, User user) {
+
+		action.setButtons(arrayToThreeColums.rebuild(Armors.values()));
 		return SingleAct.builder()
-				.name("chooseTypeAmmunition")
-				.text("What ammunition is it?")
+				.name("chooseTypeArmor")
+				.text("What armor is it?")
 				.action(action)
 				.build();
 	}
 
-	private SingleAct agreedArmor() {
+
+}
+
+@Component
+class ArmorCheckCondition implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		action.setButtons(new String[][] {{"Yeah, right"}});
-		Armor ammunition = new Armor(targetAmmunition(action.getAnswers()[1]));
+		Armor ammunition = new Armor(targetArmor(action.getAnswers()[1]));
 		action.setObjectDnd(ammunition);
 		return SingleAct.builder()
 				.name("checkCondition")
@@ -394,7 +519,7 @@ class ArmorMenu extends Executor<Action> {
 				.build();
 	}
 
-	private Armors targetAmmunition(String name) {
+	private Armors targetArmor(String name) {
 		for (Armors type : Armors.values()) {
 			if (type.toString().equals(name))
 				return type;

@@ -1,5 +1,9 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.characterService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
@@ -11,44 +15,34 @@ import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DebuffMenu extends Executor<Action> {
+@Service
+public class DebuffExecutor implements Executor<Action> {
 
-	public DebuffMenu(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private DebuffStartCreate debuffStartCreate;
+	@Autowired
+	private DebuffEndCreate debuffEndCreate;
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		int condition = 0;
 		if (action.getAnswers() != null) condition = action.getAnswers().length;
 		switch (condition) {
 		case 0:
-			return debuff();
+			return debuffStartCreate.executeFor(action, user);
 		case 1:
-			return addDebuff(user);
+			return debuffEndCreate.executeFor(action, user);
 		}
 		log.error("DebuffMenu: out of bounds condition");
 		return null;
 	}
+}
 
-	private Act addDebuff(User user) {
-		String name = "Debuff";
-		for(int i = 0; i < user.getCharactersPool().cloudsValue(); i++)
-		{
-			name += "A";
-		}
-		return SingleAct.builder()
-				.name(name)
-				.text(action.getAnswers()[0])
-				.action(Action.builder()
-						.cloud()
-						.build())
-				.build();
+@Component
+class DebuffStartCreate implements Executor<Action> {
 
-	}
-
-	private Act debuff() 
-	{
+	@Override
+	public Act executeFor(Action action, User user) {
 		return ReturnAct.builder()
 				.target(MENU_B)
 				.act(SingleAct.builder()
@@ -64,4 +58,24 @@ public class DebuffMenu extends Executor<Action> {
 				.build();
 	}
 
+}
+
+@Component
+class DebuffEndCreate implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+		String name = "Debuff";
+		for (int i = 0; i < user.getCharactersPool().cloudsValue(); i++) {
+			name += "A";
+		}
+		return SingleAct.builder()
+				.name(name)
+				.text(action.getAnswers()[0])
+				.action(Action.builder()
+						.cloud()
+						.build())
+				.build();
+
+	}
 }

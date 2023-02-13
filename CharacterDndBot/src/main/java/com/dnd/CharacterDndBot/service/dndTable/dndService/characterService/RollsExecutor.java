@@ -1,5 +1,9 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.characterService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
 import com.dnd.CharacterDndBot.service.acts.actions.Action;
@@ -11,27 +15,35 @@ import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RollsMenu extends Executor<Action> {
+@Service
+public class RollsExecutor implements Executor<Action> {
 
-	public RollsMenu(Action action) {
-		super(action);
-	}
-
+	@Autowired
+	private RollsMenu rollsMenu;
+	@Autowired
+	private CompleteCustomRoll completeCustomRoll;
+	
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		int condition = 0;
 		if (action.getAnswers() != null) condition = action.getAnswers().length;
 		switch (condition) {
 		case 0:
-			return rollsMenu();
+			return rollsMenu.executeFor(action, user);
 		case 1:
-			return compleatRoll();
+			return completeCustomRoll.executeFor(action, user);
 		}
 		log.error("RollsMenu: out of bounds condition");
 		return null;
 	}
+}
 
-	private Act rollsMenu() {
+@Component
+class RollsMenu implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+		
 		String text = "Choose a dice to throw, or write your own formula.\n"
 				+ "To refer to a dice, use the D(or d) available dices you see in the console.\n"
 				+ "For example: -d4 + 10 + 6d6 - 12 + d100";
@@ -49,8 +61,15 @@ public class RollsMenu extends Executor<Action> {
 						.build())
 				.build();
 	}
+}
 
-	private Act compleatRoll() {
+
+@Component
+class CompleteCustomRoll implements Executor<Action> {
+
+	@Override
+	public Act executeFor(Action action, User user) {
+
 		String answer = action.getAnswers()[0];
 		String text = Formalizer.formalize(answer);
 		return SingleAct.builder()
@@ -58,5 +77,4 @@ public class RollsMenu extends Executor<Action> {
 				.text(text)
 				.build();
 	}
-
 }

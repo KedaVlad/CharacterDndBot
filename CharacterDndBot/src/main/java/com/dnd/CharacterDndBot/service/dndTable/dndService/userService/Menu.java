@@ -1,5 +1,7 @@
 package com.dnd.CharacterDndBot.service.dndTable.dndService.userService;
 
+import org.springframework.stereotype.Component;
+
 import com.dnd.CharacterDndBot.service.acts.Act;
 import com.dnd.CharacterDndBot.service.acts.ReturnAct;
 import com.dnd.CharacterDndBot.service.acts.SingleAct;
@@ -10,14 +12,11 @@ import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.InformatorFactory;
 
-public class Menu extends Executor<Action>{
-
-	public Menu(Action action) {
-		super(action);
-	}
+@Component
+public class Menu implements Executor<Action>{
 
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 
 		Action[][] pool = new Action[][] {
 			{ 
@@ -46,5 +45,4 @@ public class Menu extends Executor<Action>{
 							.build())
 					.build();
 	}
-
 }

@@ -12,8 +12,19 @@ import com.dnd.CharacterDndBot.service.acts.actions.RollAction;
 import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.AbilityMenu;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.CharacterisricExecutor;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.DebuffExecutor;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.MemoirsExecutor;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.RestExecutor;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.RollsExecutor;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.characterService.StuffMenu;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService.CharacterFactory;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService.ClassFactory;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService.HpFactory;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService.ItemFactory;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService.RaceFactory;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.factoryService.StatFactory;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.userService.CharacterCaseExecutor;
+import com.dnd.CharacterDndBot.service.dndTable.dndService.userService.Menu;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.userService.Start;
 
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +70,28 @@ class ActionManager implements Manager<Action> {
 	private CharacterCaseExecutor characterCaseExecutor;
 	@Autowired
 	private CharacterFactory characterFactory;
+	@Autowired
+	private ClassFactory classFactory;
+	@Autowired
+	private DebuffExecutor debuffExecutor;
+	@Autowired
+	private HpFactory hpFactory;
+	@Autowired
+	private ItemFactory itemFactory;
+	@Autowired
+	private MemoirsExecutor memoirsExecutor;
+	@Autowired
+	private Menu menu;
+	@Autowired
+	private RaceFactory raceFactory;
+	@Autowired
+	private RestExecutor restExecutor;
+	@Autowired	
+	private RollsExecutor rollsExecutor;
+	@Autowired	
+	private StatFactory statFactory;
+	@Autowired	
+	private StuffMenu stuffMenu;
 	
 	@Override
 	public Executor<Action> find(Location location) {
@@ -74,29 +107,29 @@ class ActionManager implements Manager<Action> {
 		case CHARACTER_FACTORY:
 			return characterFactory;
 		case CLASS_FACTORY:
-			break;
+			return classFactory;
 		case DEBUFF:
-			break;
+			return debuffExecutor;
 		case DOWNLOAD:
 			break;
 		case HP_FACTORY:
-			break;
+			return hpFactory;
 		case ITEM_FACTORY:
-			break;
+			return itemFactory; 
 		case MEMOIRS:
-			break;
+			return memoirsExecutor;
 		case MENU:
-			break;
+			return menu;
 		case RACE_FACTORY:
-			break;
+			return raceFactory;
 		case REST:
-			break;
+			return restExecutor;
 		case ROLLS:
-			break;
+			return rollsExecutor;
 		case STAT_FACTORY:
-			break;
+			return statFactory;
 		case STUFF:
-			break;
+			return stuffMenu; //!!!!!!!!!!
 		case TEXT_COMAND:
 			break;
 		default:

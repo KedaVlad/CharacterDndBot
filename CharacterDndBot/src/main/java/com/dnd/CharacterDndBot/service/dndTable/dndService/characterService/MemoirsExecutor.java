@@ -7,14 +7,10 @@ import com.dnd.CharacterDndBot.service.acts.actions.Action;
 import com.dnd.CharacterDndBot.service.bot.user.User;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 
-public class MemoirsMenu extends Executor<Action>{
-
-	public MemoirsMenu(Action action) {
-		super(action);
-	}
+public class MemoirsExecutor implements Executor<Action>{
 
 	@Override
-	public Act executeFor(User user) {
+	public Act executeFor(Action action, User user) {
 		String text = "MY MEMOIRS\n";
 		int i = 1;
 		for(String string: user.getCharactersPool().getActual().getMyMemoirs()) {
@@ -33,5 +29,4 @@ public class MemoirsMenu extends Executor<Action>{
 						.build())
 				.build();
 	}
-
 }

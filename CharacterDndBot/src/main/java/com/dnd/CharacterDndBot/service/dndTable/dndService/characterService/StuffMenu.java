@@ -20,15 +20,11 @@ import com.dnd.CharacterDndBot.service.dndTable.dndDto.stuffs.items.Weapon;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Executor;
 import com.dnd.CharacterDndBot.service.dndTable.dndService.Location;
 
-public class StuffMenu extends Executor<Action> {
-
-	public StuffMenu(Action action) {
-		super(action);
-	}
+public class StuffMenu implements Executor<Action> {
 
 	@Override
-	public Act executeFor(User user) {
-
+	public Act executeFor(Action action, User user) {
+		
 		if (action.getObjectDnd() == null) {
 			if (action.condition() == 0) {
 				return stuff(user);
@@ -74,6 +70,7 @@ public class StuffMenu extends Executor<Action> {
 						.build())
 				.build();
 	}
+
 }
 
 class WalletMenu extends Executor<Action> {

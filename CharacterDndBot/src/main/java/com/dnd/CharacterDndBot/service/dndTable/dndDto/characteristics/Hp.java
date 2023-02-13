@@ -15,7 +15,7 @@ public class Hp implements Refreshable, ObjectDnd {
 	private int timeHp = 0;
 	private boolean cknoked = false;
 	private boolean dead = false;
-	private Dice hpDice;
+	private int hpBonus  = 0;
 
 	@Override
 	public void refresh(Time time) {

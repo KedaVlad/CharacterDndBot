@@ -16,6 +16,7 @@ public class CharacterCaseExecutor implements Executor<Action> {
 	
 	@Override
 	public Act executeFor(Action action, User user) {
+		
 		if (user.getCharactersPool().getSavedCharacters().size() != 0) {
 			String[][] buttons = new String[user.getCharactersPool().getSavedCharacters().size()][1];
 			int i = 0;
