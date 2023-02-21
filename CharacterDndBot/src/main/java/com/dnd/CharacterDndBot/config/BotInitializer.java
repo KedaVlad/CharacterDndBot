@@ -8,9 +8,10 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import com.dnd.CharacterDndBot.service.bot.Bot;
-import com.dnd.CharacterDndBot.service.bot.MessageSender;
-import com.dnd.CharacterDndBot.service.bot.Session;
+import com.dnd.CharacterDndBot.bot.model.Bot;
+import com.dnd.CharacterDndBot.bot.service.MessageSender;
+import com.dnd.CharacterDndBot.bot.service.Session;
+import com.dnd.CharacterDndBot.bot.service.SpamCleaner;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,11 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class BotInitializer {
 	@Autowired
-	Bot bot;
+	private Bot bot;
 	@Autowired
-	Session session;
+	private Session session;
 	@Autowired
-	MessageSender messageSender;
+	private MessageSender messageSender;
+	@Autowired
+	private SpamCleaner spamCleaner;
 
 	@EventListener({ ContextRefreshedEvent.class })
 	public void init() throws TelegramApiException {
@@ -34,6 +37,7 @@ public class BotInitializer {
 		}
 		session.run();
 	    messageSender.run();
+	    spamCleaner.run();
 	}
 
 }

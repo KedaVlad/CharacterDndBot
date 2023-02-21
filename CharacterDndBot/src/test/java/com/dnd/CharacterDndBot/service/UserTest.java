@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.dnd.CharacterDndBot.service.acts.SingleAct;
-import com.dnd.CharacterDndBot.service.bot.user.User;
-import com.dnd.CharacterDndBot.service.dndTable.dndDto.CharacterDnd;
+import com.dnd.CharacterDndBot.bot.model.act.SingleAct;
+import com.dnd.CharacterDndBot.bot.model.user.User;
+import com.dnd.CharacterDndBot.dnd.dto.CharacterDnd;
 
 class UserTest {
 
@@ -35,7 +35,8 @@ class UserTest {
 	{
 		SingleAct testAct = SingleAct.builder().name("cloud3").text("cloud text3").build();
 		character.getClouds().add(testAct);
-		assertEquals(4, user.makeSend(SingleAct.builder().name("target act").text("target text").build()).getReadyToSend().size());
+		user.targetAct(SingleAct.builder().name("target act").text("target text").build());
+		assertEquals(4, user.makeSend().getReadyToSend().size());
 	}
 
 	@Test
@@ -43,6 +44,7 @@ class UserTest {
 	{
 		user.getScript().getTrash().add(1);
 		user.getCharactersPool().getClouds().getTrash().add(2);
-		assertEquals(2, user.makeSend(SingleAct.builder().name("target act").text("target text").build()).getTrash().size());
+		user.targetAct(SingleAct.builder().name("target act").text("target text").build());
+		assertEquals(2, user.makeSend().getTrash().size());
 	}
 }
