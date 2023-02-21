@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="HOME_LOG" value="var/log/dnd.com/dnd-character-tgbot/app.log"/>
+    <property name="HOME_LOG" value="C:/Users/ALTRON/git/CharacterDndBot/CharacterDndBot/src/main/java/app/log/app.log"/>
 
     <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/dnd.com/dnd-character-tgbot/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>/C:/Users/ALTRON/git/CharacterDndBot/CharacterDndBot/src/main/java/app/log/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
             <totalSizeCap>1GB</totalSizeCap>
             <maxHistory>60</maxHistory>
@@ -17,8 +17,14 @@
             <pattern>%d{ISO8601} [%thread] %-5level %logger{35}:%line - %msg%n</pattern>
         </encoder>
     </appender>
+    
+     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{ISO8601} [%thread] %-5level %logger{35}:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-    <logger name="com.dnd.CharacterDndBot" level="debug" additivity="false">
+    <logger name="appLog" level="debug" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
 
@@ -29,5 +35,9 @@
     <root level="info">
         <appender-ref ref="FILE-ROLLING"/>
     </root>
-
+	
+	<root level="info">
+        <appender-ref ref="CONSOLE" />
+   </root>
+	
 </configuration>

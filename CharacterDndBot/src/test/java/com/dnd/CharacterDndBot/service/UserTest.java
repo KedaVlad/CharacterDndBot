@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.dnd.CharacterDndBot.bot.model.act.SingleAct;
-import com.dnd.CharacterDndBot.bot.model.user.User;
-import com.dnd.CharacterDndBot.dnd.dto.CharacterDnd;
+import app.bot.model.act.SingleAct;
+import app.bot.model.user.User;
+import app.dnd.dto.CharacterDnd;
 
 class UserTest {
 
