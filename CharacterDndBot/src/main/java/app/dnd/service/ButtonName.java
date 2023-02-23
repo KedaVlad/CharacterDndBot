@@ -39,5 +39,6 @@ public interface ButtonName {
 	public final static String BAG_B = "BAG";
 	public final static String SAVE_ROLL_B = "SAVE ROLLS";
 	public final static String WALLET_B = "WALLET";
+	public final static String ADD_B = "ADD";
 	
 }

@@ -15,7 +15,7 @@ public class PreRoll extends BaseAction {
 	private boolean criticalHit;
 
 	PreRoll() {
-		nextStep = new String[][] { { "ADVENTURE", "BASIC", "DISADVENTURE" } };
+		nextStep = new String[][] { { "ADVANTAGE", "BASIC", "DISADVANTAGE" } };
 	}
 
 	public static PreRollBuilder builder() {

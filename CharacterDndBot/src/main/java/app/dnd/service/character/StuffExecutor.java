@@ -17,6 +17,7 @@ import app.dnd.dto.stuffs.items.Ammunition;
 import app.dnd.dto.stuffs.items.Armor;
 import app.dnd.dto.stuffs.items.Items;
 import app.dnd.dto.stuffs.items.Weapon;
+import app.dnd.service.ButtonName;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
 import app.dnd.service.logic.stuff.bag.AmmunitionTopUp;
@@ -209,13 +210,13 @@ class BagMenu implements Executor<Action> {
 		String text;
 		Stuff stuff = user.getCharactersPool().getActual().getStuff();
 		if (stuff.getInsideBag().size() == 0) {
-			text = "Yor bag is empty";
+			text = "Warning: Your "+ ButtonName.BAG_B +" is currently empty. You may want to consider adding an item to assist you on your journey. Would you like to "+ButtonName.ADD_B+" an item now?";
 			buttons = new BaseAction[][] {{ Action.builder().name("ADD ITEM").location(Location.ITEM_FACTORY).build() }};
 		} else {
 			text = "Choose item";
 			buttons = new BaseAction[stuff.getInsideBag().size() + 1][];
 			buttons[0] = new BaseAction[] {
-					Action.builder().name("ADD ITEM").location(Location.ITEM_FACTORY).build() };
+					Action.builder().name(ButtonName.ADD_B).location(Location.ITEM_FACTORY).build() };
 			for (int i = 1; i < buttons.length; i++) {
 				buttons[i] = new BaseAction[] {Action.builder()
 						.name(stuff.getInsideBag().get(i-1).getName())
@@ -329,7 +330,7 @@ class CarryingMenu implements Executor<Action> {
 				}
 				return SingleAct.builder()
 						.name(CARRYING_STUFF_B)
-						.text("Items in quick access (dressed armor, sword in scabbard, potion on belt, and so on...).")
+						.text("Here, you can access and interact with the items that are you operate. You can easily manipulate and utilize these items to aid you in your adventures. Simply select an item to view its details and available actions.")
 						.action(PoolActions.builder()
 								.actionsPool(buttons)
 								.build())

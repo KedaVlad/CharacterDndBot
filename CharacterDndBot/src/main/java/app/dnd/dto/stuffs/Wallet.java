@@ -14,6 +14,6 @@ public class Wallet implements Serializable {
 	private int plate = 0;// PP
 
 	public String toString() {
-		return "WALLET: CP(" + bronze + ") SP(" + silver + ") GP(" + gold + ") PP(" + plate + ")";
+		return "CP(" + bronze + ") SP(" + silver + ") GP(" + gold + ") PP(" + plate + ")";
 	}
 }

@@ -11,9 +11,11 @@ import app.bot.model.act.actions.PreRoll;
 import app.bot.model.act.actions.RollAction;
 import app.bot.model.user.User;
 import app.dnd.service.character.AbilityExecutor;
+import app.dnd.service.character.AttackMachine;
 import app.dnd.service.character.CharacterisricExecutor;
 import app.dnd.service.character.DebuffExecutor;
 import app.dnd.service.character.MemoirsExecutor;
+import app.dnd.service.character.PreRollExecuter;
 import app.dnd.service.character.RestExecutor;
 import app.dnd.service.character.RollsExecutor;
 import app.dnd.service.character.StuffExecutor;
@@ -24,6 +26,7 @@ import app.dnd.service.factory.ItemFactory;
 import app.dnd.service.factory.RaceFactory;
 import app.dnd.service.factory.StatFactory;
 import app.dnd.service.gamer.CharacterCaseExecutor;
+import app.dnd.service.gamer.ComandTextExecutor;
 import app.dnd.service.gamer.DownloadOrDeleteExecutor;
 import app.dnd.service.gamer.Menu;
 import app.dnd.service.gamer.Start;
@@ -59,6 +62,7 @@ interface Manager<T extends BaseAction> {
 	abstract Executor<?> find(Location location);
 }
 
+@Slf4j
 @Component
 class ActionManager implements Manager<Action> {
 	@Autowired
@@ -95,10 +99,14 @@ class ActionManager implements Manager<Action> {
 	private StuffExecutor stuffExecutor;
 	@Autowired	
 	private DownloadOrDeleteExecutor downloadOrDeleteExecutor;
+	@Autowired	
+	private AttackMachine attackMachine;
+	@Autowired	
+	private ComandTextExecutor comandTextExecutor;
 	
 	@Override
 	public Executor<Action> find(Location location) {
-		
+		log.info("ActionManager : " + location);
 		switch (location) {
 		case START:
 			return start;
@@ -135,23 +143,25 @@ class ActionManager implements Manager<Action> {
 		case STUFF:
 			return stuffExecutor;
 		case TEXT_COMAND:
-			break;
+			return comandTextExecutor;
+		case ATTACK_MACHINE:
+			return attackMachine;
 		default:
-			break;
+			return null;
 		
 		}
-		return null;
 	}
-
 }
 
 @Component
 class PreRollManager implements Manager<PreRoll> {
 	
+	@Autowired
+	private PreRollExecuter preRollExecuter;
+	
 	@Override
 	public Executor<PreRoll> find(Location location) {
-		// TODO Auto-generated method stub
-		return null;
+		return preRollExecuter;
 	}
 
 }

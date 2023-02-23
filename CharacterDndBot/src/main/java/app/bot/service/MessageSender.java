@@ -27,7 +27,6 @@ import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.BaseAction;
 import app.bot.model.user.ReadyToSend;
 import app.bot.model.user.User;
-import app.repository.UserFileService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

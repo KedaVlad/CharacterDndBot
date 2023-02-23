@@ -124,6 +124,7 @@ class FinishHp implements Executor<Action> {
 	@Override
 	public Act executeFor(Action action, User user) {	
 		user.getCharactersPool().getActual().getHp().setMax((Integer) Integer.parseInt(action.getAnswers()[1]));
+		user.getCharactersPool().getActual().getHp().setNow(user.getCharactersPool().getActual().getHp().getMax());
 		user.getCharactersPool().save();
 		return  menu.executeFor(Action.builder().build(), user);
 	}

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import app.bot.model.user.User;
-import app.repository.UserFileService;
 @Service
 public class Moderator {
 

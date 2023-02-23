@@ -1,4 +1,4 @@
-package app.repository;
+package app.bot.service;
 
 
 import java.io.ByteArrayInputStream;
@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import app.bot.model.user.User;
-import app.bot.service.IdManager;
+import app.bot.model.user.UserFile;
+import app.repository.UserFileRepository;
 
 
 @Service

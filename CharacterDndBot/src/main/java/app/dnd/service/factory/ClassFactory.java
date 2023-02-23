@@ -20,8 +20,8 @@ import app.dnd.service.Executor;
 import app.dnd.service.Location;
 import app.dnd.service.logic.lvl.LvlAddExperience;
 import app.dnd.service.logic.proficiencies.UpProficiency;
+import app.dnd.service.wrapp.ClassDndWrappService;
 import app.dnd.util.ArrayToOneColums;
-import app.repository.ClassDndWrappService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

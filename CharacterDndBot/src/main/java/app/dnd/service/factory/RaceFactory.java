@@ -15,9 +15,9 @@ import app.dnd.dto.comands.InerComand;
 import app.dnd.dto.wrap.RaceDndWrapp;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
+import app.dnd.service.wrapp.RaceDndWrappService;
 import app.dnd.util.ArrayToOneColums;
 import app.dnd.util.ArrayToThreeColums;
-import app.repository.RaceDndWrappService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

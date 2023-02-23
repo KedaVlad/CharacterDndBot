@@ -1,13 +1,13 @@
-package app.repository;
+package app.dnd.service.wrapp;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import app.dnd.dto.wrap.ClassDndWrapp;
+import app.repository.ClassDndWrappRepository;
 
 @Service
 public class ClassDndWrappService {
@@ -18,8 +18,6 @@ public class ClassDndWrappService {
 	public List<String> findDistinctClassName() {
 		return classDndWrappRepository.findDistinctClassName();
 	}
-	
-	@PostConstruct
 	
 	public List<String> findDistinctArchetypeByClassName(String className) {
 		return classDndWrappRepository.findDistinctArchetypeByClassName(className);

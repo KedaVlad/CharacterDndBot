@@ -1,4 +1,4 @@
-package app.repository;
+package app.bot.model.user;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

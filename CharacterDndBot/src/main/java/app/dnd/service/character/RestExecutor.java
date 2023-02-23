@@ -11,6 +11,7 @@ import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
 import app.dnd.dto.Refreshable.Time;
 import app.dnd.service.Executor;
+import app.dnd.service.Location;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -41,14 +42,13 @@ class StartRest implements Executor<Action> {
 	@Override
 	public Act executeFor(Action action, User user) {
 
+		action.setButtons(new String[][] {{Time.LONG.toString(), Time.SHORT.toString()},{RETURN_TO_MENU}});
+		action.setReplyButtons(true);
 		return ReturnAct.builder()
 				.target(MENU_B)
 				.act(SingleAct.builder()
 						.name("startRest")
-						.action(Action.builder()
-								.replyButtons()
-								.buttons(new String[][] {{Time.LONG.toString(), Time.SHORT.toString()},{"RETURN TO MENU"}})
-								.build())
+						.action(action)
 						.text("You are resting... How many hours did you have time to rest?\n"
 								+ "Long rest - if 8 or more.\n"
 								+ "Short rest - if more than 1.5 and less than 8.")
@@ -57,12 +57,14 @@ class StartRest implements Executor<Action> {
 	}
 }
 
+@Slf4j
 @Component
 class EndRest implements Executor<Action> {
 
 	@Override
 	public Act executeFor(Action action, User user) {
-
+		log.info("EndRest : " + action.getObjectDnd() + action.getLocation());
+		
 		String timeInString = action.getAnswers()[0];
 		if(timeInString.equals(Time.SHORT.toString())) {
 			user.getCharactersPool().getActual().refresh(Time.SHORT);
