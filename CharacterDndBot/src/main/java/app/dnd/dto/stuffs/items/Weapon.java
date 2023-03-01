@@ -11,13 +11,13 @@ import app.dnd.util.math.DamageDice.TypeDamage;
 import app.dnd.util.math.Formalizer.Roll;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 @JsonTypeName("weapon")
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class Weapon extends Items {
  
-	private static final long serialVersionUID = 1L;
 	private int attack;
 	private int damage;
 
@@ -423,6 +423,7 @@ public class Weapon extends Items {
 		}
 
 		private String name;
+		@Getter
 		private AttackModification[] attackTypes;
 
 		public String toString() {

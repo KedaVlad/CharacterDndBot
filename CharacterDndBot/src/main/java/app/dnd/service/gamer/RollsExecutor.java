@@ -1,4 +1,4 @@
-package app.dnd.service.character;
+package app.dnd.service.gamer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

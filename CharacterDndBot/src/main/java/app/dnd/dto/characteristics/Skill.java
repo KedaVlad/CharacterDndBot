@@ -13,7 +13,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class Skill extends ObjectDnd {
 
-	private static final long serialVersionUID = 1L;
 	private String name;
 	private Stats depends;
 	private Proficiency proficiency;

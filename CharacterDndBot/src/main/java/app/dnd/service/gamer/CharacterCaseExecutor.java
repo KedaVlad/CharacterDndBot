@@ -1,27 +1,36 @@
 package app.dnd.service.gamer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 import app.bot.model.act.Act;
 import app.bot.model.act.ArrayActs;
 import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
+import app.bot.model.user.CharactersPool;
 import app.bot.model.user.User;
+import app.bot.service.CharactersPoolService;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
 
 @Component
 public class CharacterCaseExecutor implements Executor<Action> {
 	
+	@Autowired
+	private CharactersPoolService charactersPoolService;
+	
 	@Override
 	public Act executeFor(Action action, User user) {
 		
-		if (user.getCharactersPool().getSavedCharacters().size() != 0) {
-			String[][] buttons = new String[user.getCharactersPool().getSavedCharacters().size()][1];
+		CharactersPool charactersPool = charactersPoolService.getById(user.getId());
+		
+		if (charactersPool.getSavedCharacters().size() != 0) {
+			String[][] buttons = new String[charactersPool.getSavedCharacters().size()][1];
 			int i = 0;
-			for (String character : user.getCharactersPool().getSavedCharacters().keySet()) {
-				buttons[i][0] = user.getCharactersPool().getSavedCharacters().get(character).getName();
+			for (String character : charactersPool.getSavedCharacters().keySet()) {
+				buttons[i][0] = charactersPool.getSavedCharacters().get(character).getName();
 				i++;
 			}
 			return ReturnAct.builder()

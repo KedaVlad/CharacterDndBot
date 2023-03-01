@@ -10,83 +10,77 @@ import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.BaseAction;
 import app.bot.model.user.User;
+import app.bot.model.wrapp.ActWrapp;
+import app.bot.model.wrapp.BaseActionWrapp;
 import app.dnd.service.ActionHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class ActHandler {
-	
+public class ActHandler implements EndHandler<ActWrapp, User> {
+
+	private ReturnActInitializer returnActInitializer;
 	@Autowired
 	private ActiveActInitializer activeActInitializer;
 	@Autowired
 	private ActionHandler actionHandler;
-	private ReturnActInitializer returnActInitializer;
-	
+
 	@Autowired
 	public ActHandler() {
 		returnActInitializer = new ReturnActInitializer();
 	}
-	
-	public User handle(Act act, User user) {
-		
+
+	@Override
+	public User handle(ActWrapp wrapp) {
+		Act act = wrapp.getTarget();
+
 		if (act instanceof ReturnAct) {
-			return returnActInitializer.initFor((ReturnAct)act, user);
+			return returnActInitializer.initFor((ReturnAct) act, wrapp.getUser());
 		} else if (act instanceof ActiveAct) {
-			return activeActInitializer.initFor((ActiveAct) act, user);
+			return activeActInitializer.initFor((ActiveAct) act, wrapp.getUser());
 		} else {
-			log.debug("ActHandler: Unattended type act");
-			return user;
+			log.error("ActHandler: Unattended type act");
+			return wrapp.getUser();
 		}
 	}
-	
-	private class ReturnActInitializer implements ActInitializer<ReturnAct> {
-		
-		@Override
+
+	private class ReturnActInitializer {
+
 		public User initFor(ReturnAct act, User user) {
-			log.debug("ReturnActInitializer : target: "  + act.getTarget() + ", user: " + user.getId() + " , call: " + act.getCall());
-			
-			if (act.getTarget() != null && user.getScript().targeting(act.getTarget())) {
+
+			if (act.getTarget() != null && user.getScript().targeting(act.getTarget(), user.getTrash())) {
 				if (act.getAct() != null) {
 					return activeActInitializer.initFor(act.getAct(), user);
 				} else if (act.getAction() != null) {
-					return handle(actionHandler.handle(act.getAction(), user), user);
+					return handle(actionHandler.handle(new BaseActionWrapp(user, act.getAction())));
 				} else if (act.getCall() != null && !act.getCall().equals(act.getTarget())) {
-					BaseAction action = user.getScript().getMainTree().getLast().getAction().continueAction(act.getCall());
-					return handle(actionHandler.handle(action, user), user);
+					BaseAction action = user.getScript().getMainTree().getLast().getAction()
+							.continueAction(act.getCall());
+					return handle(actionHandler.handle(new BaseActionWrapp(user, action)));
 				} else {
 					return user;
 				}
 			} else {
 				log.error("ReturnActInitializer: Target is null or MainTree has no target from return act");
-				return null;
+				return user;
 			}
 		}
 	}
-	
-}
 
-interface ActInitializer<T extends Act> {
-	public abstract User initFor(T t, User user);
 }
-
 
 @Component
-class ActiveActInitializer implements ActInitializer<ActiveAct> {
-	
-	@Override
+class ActiveActInitializer {
+
 	public User initFor(ActiveAct act, User user) {
 		if (act instanceof SingleAct && act.hasCloud()) {
-			user.getCharactersPool().getClouds().getCloudsTarget().add((SingleAct) act);
+			user.getClouds().getCloudsTarget().add((SingleAct) act);
 			return user;
 		} else {
-			if (user.getScript().getMainTree().getLast().getName().equals(act.getName())) {
-				user.getScript().getTrash().addAll(user.getScript().getMainTree().getLast().getActCircle());
-				user.getScript().getMainTree().removeLast();
-			}
-			user.targetAct(act);
+			user.getScript().prepareScript(act.getName(), user.getTrash());
+			user.setAct(act);
 			return user;
 		}
 	}
-}
 
+}

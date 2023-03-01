@@ -12,7 +12,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class Stat extends ObjectDnd {
 
-	private static final long serialVersionUID = 1L;
 	private Stats name;
 	private int value = 0;
 	private int minValue = 3;

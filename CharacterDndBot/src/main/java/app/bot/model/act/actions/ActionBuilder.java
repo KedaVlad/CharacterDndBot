@@ -2,6 +2,7 @@ package app.bot.model.act.actions;
 
 import app.dnd.dto.ObjectDnd;
 
+
 public class ActionBuilder extends BaseActionBuilder<ActionBuilder> {
 	
 	private String[][] buttons;
@@ -9,21 +10,23 @@ public class ActionBuilder extends BaseActionBuilder<ActionBuilder> {
 
 	ActionBuilder() {}
 
+	public ActionBuilder objectDnd(ObjectDnd objectDnd) {
+		this.objectDnd = objectDnd;
+		return this;
+	}
+	
 	public ActionBuilder buttons(String[][] buttons) {
 		this.buttons = buttons;
 		return this;
 	}
 
-	public ActionBuilder objectDnd(ObjectDnd objectDnd) {
-		this.objectDnd = objectDnd;
-		return this;
-	}
 
 	public Action build() {
 		Action action = new Action();
 		action.setName(name);
 		action.setReplyButtons(replyButtons);
 		action.setMediator(mediator);
+		action.setObjectDnd(objectDnd);
 		if (this.cloud) {
 			action.setCloud(cloud);
 			if (buttons == null) {
@@ -38,7 +41,6 @@ public class ActionBuilder extends BaseActionBuilder<ActionBuilder> {
 			}
 		}
 		action.setButtons(buttons);
-		action.setObjectDnd(objectDnd);
 		action.setLocation(location);
 		return action;
 	}

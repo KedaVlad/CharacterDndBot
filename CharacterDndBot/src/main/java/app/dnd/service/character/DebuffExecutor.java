@@ -8,6 +8,7 @@ import app.bot.model.act.Act;
 import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
+import app.bot.model.user.Clouds;
 import app.bot.model.user.User;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
@@ -64,8 +65,10 @@ class DebuffEndCreate implements Executor<Action> {
 
 	@Override
 	public Act executeFor(Action action, User user) {
+		
+		Clouds clouds = user.getClouds();
 		String name = "Debuff";
-		for (int i = 0; i < user.getCharactersPool().cloudsValue(); i++) {
+		for (int i = 0; i < clouds.cloudsValue(); i++) {
 			name += "A";
 		}
 		return SingleAct.builder()

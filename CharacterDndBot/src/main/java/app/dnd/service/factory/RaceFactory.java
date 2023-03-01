@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import app.bot.model.ActualHero;
 import app.bot.model.act.Act;
 import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
+import app.bot.service.ActualHeroService;
 import app.dnd.dto.CharacterDnd;
 import app.dnd.dto.RaceDnd;
 import app.dnd.dto.comands.InerComand;
@@ -16,8 +18,7 @@ import app.dnd.dto.wrap.RaceDndWrapp;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
 import app.dnd.service.wrapp.RaceDndWrappService;
-import app.dnd.util.ArrayToOneColums;
-import app.dnd.util.ArrayToThreeColums;
+import app.dnd.util.ArrayToColumns;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +35,7 @@ public class RaceFactory implements Executor<Action> {
 	private RaceFinishCreate raceFinishCreate;
 
 	@Override
-	public Act executeFor(Action action,User user) {
+	public Act executeFor(Action action, User user) {
 		log.info("RaceFactory (executrFor) condition: " + action.condition());
 		switch (action.condition()) {
 		case 0:
@@ -58,7 +59,7 @@ class RaceStartCreate implements Executor<Action> {
 	@Autowired
 	private RaceDndWrappService raceDndWrappService;
 	@Autowired
-	private ArrayToThreeColums arrayToThreeColums;
+	private ArrayToColumns arrayToColumns;
 
 	@Override
 	public Act executeFor(Action action, User user) {
@@ -70,7 +71,7 @@ class RaceStartCreate implements Executor<Action> {
 						.text("From what family you are?")
 						.action(Action.builder()
 								.location(Location.RACE_FACTORY)
-								.buttons(arrayToThreeColums.rebuild(raceDndWrappService.findDistinctRaceName().toArray(String[]::new)))
+								.buttons(arrayToColumns.rebuild(raceDndWrappService.findDistinctRaceName().toArray(String[]::new),3, String.class))
 								.build())
 						.build())
 				.build();
@@ -83,12 +84,12 @@ class ChooseSubRace implements Executor<Action> {
 	@Autowired
 	private RaceDndWrappService raceDndWrappService;
 	@Autowired
-	private ArrayToOneColums arrayToOneColums;
+	private ArrayToColumns arrayToColumns;
 
 	@Override
 	public Act executeFor(Action action, User user) {
 
-		action.setButtons(arrayToOneColums.rebuild(raceDndWrappService.findDistinctSubRaceByRaceName(action.getAnswers()[0]).toArray(String[]::new)));
+		action.setButtons((String[][]) arrayToColumns.rebuild(raceDndWrappService.findDistinctSubRaceByRaceName(action.getAnswers()[0]).toArray(String[]::new),1, String.class));
 		return SingleAct.builder()
 				.name("ChooseSubRace")
 				.text(action.getAnswers()[0] + "? More specifically?")
@@ -126,14 +127,18 @@ class RaceFinishCreate implements Executor<Action> {
 	private RaceDndWrappService raceDndWrappService;
 	@Autowired
 	private RaceIntegrator raceIntegrator;
+	@Autowired
+	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
 
+		ActualHero actualHero = actualHeroService.getById(user.getId());
 		String raceName = action.getAnswers()[0];
 		String subRace = action.getAnswers()[1];
 		RaceDndWrapp raceWrapp = raceDndWrappService.findByRaceNameAndSubRace(raceName, subRace);
-		raceIntegrator.integrate(user.getCharactersPool().getActual(), raceWrapp);
+		raceIntegrator.integrate(actualHero.getCharacter(), raceWrapp);
+		actualHeroService.save(actualHero);
 		return classFactory.executeFor(Action.builder().build(), user);
 	}
 }

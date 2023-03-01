@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class PreRoll extends BaseAction { 
 
-	private static final long serialVersionUID = 1L;
 	String[][] nextStep;
 	RollAction action;
 	private String status;

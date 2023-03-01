@@ -1,50 +1,85 @@
 package app.bot.model.user;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import app.bot.model.act.ActiveAct;
-import app.bot.model.act.SingleAct;
 import lombok.Data;
 
 @Data
-public class Script implements Serializable { 
+@Document("script")
+public class Script { 
 	
-	private static final long serialVersionUID = 1L;
-	private final LinkedList<ActiveAct> mainTree;
-	private final List<Integer> trash;
+	@Id
+	private Long id;
+	private LinkedList<ActiveAct> mainTree = new LinkedList<>();
 
-	Script(long id) {
-		mainTree = new LinkedList<>();
-		trash = new ArrayList<>();
-		mainTree.add(SingleAct.builder().name(id + "").build());
-	}
-
-	public boolean targeting(String target) {
+	public boolean targeting(String target, Trash trash) {		
 		for (int i = 0; i < mainTree.size(); i++) {
 			if (mainTree.get(i).getName().equals(target)) {
-				backTo(i);
+				backTo(i, trash);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void backTo(int target) {
-		
+	public void backTo(int target, Trash trash) {
 		for (int j = mainTree.size() - 1; j > target; j--) {
-			trash.addAll(mainTree.getLast().getActCircle());
+			trash.getCircle().addAll(mainTree.getLast().getActCircle());
+			mainTree.removeLast();
+		}
+	}
+	
+	public void prepareScript(String actName, Trash trash) {
+		if(mainTree.getLast().getName().equals(actName)) {
+			trash.getCircle().addAll(mainTree.getLast().getActCircle());
 			mainTree.removeLast();
 		}
 	}
 
-	List<Integer> trashThrowOut() {
-		List<Integer> throwed = new ArrayList<>();
-		throwed.addAll(trash);
-		trash.clear();
-		return throwed;
+	public ActiveAct getActByTargeting(String target, Trash trash) {
+		targeting(target, trash);
+		return mainTree.getLast();
 	}
 
+	public ActiveAct getActByMassageTargeting(Message message, Trash trash) {
+
+		if (findReply(message.getText(), trash) || findMediator(trash)) {
+			mainTree.getLast().getActCircle().add(message.getMessageId());
+			return mainTree.getLast();
+		} else {
+			return null;
+		}
+	}
+
+	private boolean findReply(String target, Trash trash) {
+		for (int i = mainTree.size() - 1; i > 0; i--) {
+			if (mainTree.get(i).hasReply(target)) {
+				backTo(i, trash);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean findMediator(Trash trash) {
+
+		if (mainTree.getLast().hasMediator()) {
+			return true;
+		} else if (mainTree.size() > 1
+				&& mainTree.get(mainTree.size() - 2).hasMediator()) {
+			trash.getCircle().addAll(mainTree.getLast().getActCircle());
+			mainTree.removeLast();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 }
+
+

@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class Spell extends ObjectDnd {
-	 
-	private static final long serialVersionUID = 1L;
+	
 	private int lvlSpell;
 	private Cast cast;
 	private String name;

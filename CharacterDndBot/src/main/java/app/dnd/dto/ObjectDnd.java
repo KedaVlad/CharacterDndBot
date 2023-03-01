@@ -1,6 +1,6 @@
 package app.dnd.dto;
 
-import java.io.Serializable;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -14,6 +14,7 @@ import app.dnd.dto.characteristics.Stat;
 import app.dnd.dto.characteristics.Stat.Stats;
 import app.dnd.dto.comands.InerComand;
 import app.dnd.dto.stuffs.items.Items;
+import lombok.Data;
 
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME, property = "_class")
 @JsonSubTypes({ @JsonSubTypes.Type(value = Items.class, name = "items"),
@@ -25,7 +26,8 @@ import app.dnd.dto.stuffs.items.Items;
 		@JsonSubTypes.Type(value = MagicSoul.class, name = "magic_soul"),
 		@JsonSubTypes.Type(value = Stats.class, name = "stats"),
         @JsonSubTypes.Type(value = Stat.class, name = "stat") })
-public abstract class ObjectDnd implements Serializable, Informator {
-	private static final long serialVersionUID = 1L;
-
+@Data
+public abstract class ObjectDnd implements Informator {
+	
+	private String privateKey = UUID.randomUUID().toString();
 }

@@ -8,33 +8,36 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
+import app.bot.model.act.ActiveAct;
 import app.bot.model.act.ArrayActs;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.act.actions.BaseAction;
 import app.bot.model.user.Clouds;
 import app.bot.model.user.Script;
+import app.bot.model.user.Trash;
 import app.bot.model.user.User;
+import app.bot.model.wrapp.BaseActionWrapp;
 import app.dnd.service.ButtonName;
 import app.dnd.service.Location;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class UpdateHandler {
+public class UpdateHandler implements StartHandler<User, BaseActionWrapp> {
 	@Autowired
-	private CallbackHandler callbackHandler;
+	private CallbackHandlerService callbackHandler;
 	@Autowired
 	private MessageHandler messageHandler;
+	
+	@Override
+	public BaseActionWrapp handle(User user) {
 
-	public BaseAction handle(Update update, User user) {
-		user.setTargetAct(null);
-		if (update.hasCallbackQuery()) {
-			return callbackHandler.handleFor(update.getCallbackQuery(), user);
-		} else if (update.hasMessage()) {
-			return messageHandler.handleFor(update.getMessage(), user);
+		if (user.getUpdate().hasCallbackQuery()) {
+			return callbackHandler.handle(user);
+		} else if (user.getUpdate().hasMessage()) {
+			return messageHandler.handle(user);
 		} else {
 			log.error("HandlerFactory: Unattended type update");
 			return null;
@@ -42,123 +45,99 @@ public class UpdateHandler {
 	}
 }
 
-interface Handler<T> extends ButtonName {
-
-	final static long CLOUD_ACT_K = 100000001;
-	final static long MAIN_TREE_K = 100000002;
-
-	public abstract BaseAction handleFor(T update, User user);
-}
 
 @Component
-@Slf4j
-class CallbackHandler implements Handler<CallbackQuery> {
+class CallbackHandlerService implements StartHandler<User, BaseActionWrapp> {
 
 	@Autowired
 	private CallbackCloud callbackCloud;
 	@Autowired
 	private CallbackScript callbackScript;
-	
+
 	@Override
-	public BaseAction handleFor(CallbackQuery callbackQuery, User user) {
-		
-		log.info("CallbackHandler call: " + callbackQuery.getData());
-		
+	public BaseActionWrapp handle(User user) {
+
+		CallbackQuery callbackQuery = user.getUpdate().getCallbackQuery();
 		String target = callbackQuery.getData().replaceAll("([a-zA-Z `�-]+)(\\d{9})(.+)", "$1");
-		long key = Long.parseLong(callbackQuery.getData().replaceAll("([a-zA-Z `�-]+)(\\d{9})(.+)", "$2"));
 		String callback = callbackQuery.getData().replaceAll("([a-zA-Z `�-]+)(\\d{9})(.+)", "$3");
-		if (key == CLOUD_ACT_K) {
-			return callbackCloud.handle(user.getCharactersPool().getClouds(), target, callback);
+		long key = Long.parseLong(callbackQuery.getData().replaceAll("([a-zA-Z `�-]+)(\\d{9})(.+)", "$2"));
+		if (key == ButtonName.CLOUD_ACT_K) {
+			return new BaseActionWrapp(user, callbackCloud.handle(user, target, callback));
 		} else {
-			return callbackScript.handle(user.getScript(), target, callback, key);
+			return new BaseActionWrapp(user, callbackScript.handle(user, target, callback, key)); 
 		}
 	}
 }
 
-@Slf4j
 @Component
 class CallbackCloud {
 
-	public BaseAction handle(Clouds clouds, String target, String callback) {
-		log.info("CallbackCloud target " + target + " callback " + callback);
-		System.out.println(callback.equals(ButtonName.ELIMINATION_B));
+	public BaseAction handle(User user, String target, String callback) {
+
+		Clouds clouds = user.getClouds();
+		ActiveAct act = clouds.findActInCloud(target);
 		if (callback.equals(ButtonName.ELIMINATION_B)) {
-			for (int i = 0; i < clouds.getCloudsWorked().size(); i++) {
-				if (clouds.getCloudsWorked().get(i).getName().equals(target)) {
-					clouds.getTrash().addAll(clouds.getCloudsWorked().get(i).getActCircle());
-					clouds.getCloudsWorked().remove(i);
-					return null;
-				}
-			}
-			log.error("CallbackHandler: Eliminated act not found");
+			Trash trash = user.getTrash();
+			trash.getCircle().addAll(act.getActCircle());
+			clouds.getCloudsWorked().remove(act);
 			return null;
 		} else {
-			for (SingleAct act : clouds.getCloudsWorked()) {
-				if (act.getName().equals(target)) {
-					return act.getAction().continueAction(callback);
-				}
-			}
-			log.error("CallbackHandler: Cloud act not found");
-			return null;
+			return act.getAction().continueAction(callback);
 		}
 	}
 }
 
-@Slf4j
 @Component
 class CallbackScript {
 
-	public BaseAction handle(Script script, String target, String callback, long key) {
-		log.info("CallbackScript: target: " + target + " callback: " + callback);
-		if (script.targeting(target)) {
-			if (key == Handler.MAIN_TREE_K) {
-				return script.getMainTree().getLast().getAction().continueAction(callback);
-			} else {
-				ArrayActs pool = (ArrayActs) script.getMainTree().getLast();
-				return pool.getTarget(key).getAction().continueAction(callback);
-			}
+	public BaseAction handle(User user, String target, String callback, long key) {
+
+		ActiveAct act = user.getScript().getActByTargeting(target, user.getTrash());
+		if (key == ButtonName.MAIN_TREE_K) {
+			return act.getAction().continueAction(callback);
 		} else {
-			log.error("CallbackScript: Act in main tree not found");
-			return null;
+			ArrayActs pool = (ArrayActs) act;
+			return pool.getTarget(key).getAction().continueAction(callback);
 		}
 	}
 }
 
 @Component
-class MessageHandler implements Handler<Message> {
+class MessageHandler implements StartHandler<User, BaseActionWrapp> {
 
 	@Autowired
 	private MessageComandEntity messageComandEntity;
 	@Autowired
 	private MessageScript messageScript;
-	
+	@Autowired
+	private CharactersPoolControler charactersPoolControler;
+
 	@Override
-	public BaseAction handleFor(Message message, User user) {
-		
-		Script script = user.getScript();
-		if(message.hasEntities()) {
-			return messageComandEntity.handle(script, message);
-		} else if(message.getText().equals(RETURN_TO_MENU) && user.getCharactersPool().hasReadyHero()) {
-			user.getScript().getTrash().add(message.getMessageId());
-			return Action.builder().location(Location.MENU).build();
+	public BaseActionWrapp handle(User user) {
+
+		Message message = user.getUpdate().getMessage();
+		if (message.hasEntities()) {
+			user.getTrash().getCircle().add(message.getMessageId());
+			return new BaseActionWrapp(user, messageComandEntity.handle(message));
+		} else if (message.getText().equals(ButtonName.RETURN_TO_MENU)
+				&& charactersPoolControler.hasReadyHeroById(message.getChatId())) {
+			user.getTrash().getCircle().add(message.getMessageId());
+			return new BaseActionWrapp(user, Action.builder().location(Location.MENU).build());
 		} else {
-			return messageScript.handle(script, message);
-		}	
+			return new BaseActionWrapp(user, messageScript.handle(user, message));
+		}
 	}
 }
 
 interface MessageSubHandler {
-	
+
 	public abstract BaseAction handle(Script script, Message message);
 }
 
 @Component
-class MessageTextComand implements MessageSubHandler {
+class MessageTextComand {
 
-	@Override
-	public BaseAction handle(Script script, Message message) {
-
-		script.getTrash().add(message.getMessageId());
+	public BaseAction handle(Message message) {
 		Action action = Action.builder().location(Location.TEXT_COMAND).build();
 		action.setAnswers(new String[] { message.getText() });
 		return action;
@@ -167,81 +146,52 @@ class MessageTextComand implements MessageSubHandler {
 
 @Slf4j
 @Component
-class MessageComandEntity implements MessageSubHandler {
+class MessageComandEntity {
 
 	@Autowired
 	private MessageTextComand messageTextComand;
 
-	@Override
-	public BaseAction handle(Script script, Message message) {
+	public BaseAction handle(Message message) {
 
-		Optional<MessageEntity> commandEntity = message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
+		Optional<MessageEntity> commandEntity = message.getEntities().stream()
+				.filter(e -> "bot_command".equals(e.getType())).findFirst();
 
 		if (commandEntity.isPresent()) {
 			String comand = message.getText().substring(commandEntity.get().getOffset(),
 					commandEntity.get().getLength());
 			switch (comand) {
 			case "/start":
-				script.getTrash().add(message.getMessageId());
 				return Action.builder().location(Location.START).build();
 
 			case "/characters":
-				script.getTrash().add(message.getMessageId());
 				return Action.builder().location(Location.CHARACTER_CASE).build();
 			}
 		}
 		log.error("MessageHandler: Comand not exist");
-		return messageTextComand.handle(script, message);
+		return messageTextComand.handle(message);
 	}
 }
 
-
 @Component
-class MessageScript implements MessageSubHandler {
+class MessageScript {
 
 	@Autowired
 	private MessageTextComand messageTextComand;
 
-	public BaseAction handle(Script script, Message message) {
+	public BaseAction handle(User user, Message message) {
 
-		if(findMediator(script, message) || findReply(script, message)) {
+		ActiveAct act = user.getScript().getActByMassageTargeting(user.getUpdate().getMessage(), user.getTrash());
 
-			if(script.getMainTree().getLast() instanceof ArrayActs) {
-				ArrayActs pool = (ArrayActs) script.getMainTree().getLast();
-				return pool.getPool()[0].getAction().continueAction(message.getText());
-			} else {
-				return script.getMainTree().getLast().getAction().continueAction(message.getText());
-			}
+		if (act == null) {
+			user.getTrash().getCircle().add(message.getMessageId());
+			return messageTextComand.handle(message);
+		} else if (act instanceof ArrayActs) {
+			ArrayActs pool = (ArrayActs) act;
+			return pool.getPool()[0].getAction().continueAction(message.getText());
+		} else if (act instanceof SingleAct) {
+			return act.getAction().continueAction(message.getText());
 		} else {
-			return messageTextComand.handle(script, message);
+			return null;
 		}
 	}
-
-	private boolean findReply(Script script, Message message) {
-		for (int i = script.getMainTree().size() - 1; i > 0; i--) {
-			if (script.getMainTree().get(i).hasReply(message.getText())) {
-				script.backTo(i);
-				script.getMainTree().getLast().getActCircle().add(message.getMessageId());
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean findMediator(Script script, Message message) {
-	
-		if (script.getMainTree().getLast().hasMediator()) {
-			script.getMainTree().getLast().getActCircle().add(message.getMessageId());
-			return true;
-		} else if (script.getMainTree().size() > 1
-				&& script.getMainTree().get(script.getMainTree().size() - 2).hasMediator()) {
-			script.getTrash().addAll(script.getMainTree().getLast().getActCircle());
-			script.getMainTree().removeLast();
-			script.getMainTree().getLast().getActCircle().add(message.getMessageId());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 }

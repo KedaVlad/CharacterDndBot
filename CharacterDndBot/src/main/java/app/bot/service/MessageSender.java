@@ -1,6 +1,5 @@
 package app.bot.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -20,21 +19,30 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import app.bot.model.Bot;
 import app.bot.model.act.ActiveAct;
 import app.bot.model.act.ArrayActs;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.BaseAction;
-import app.bot.model.user.ReadyToSend;
+import app.bot.model.user.Clouds;
+import app.bot.model.user.Script;
+import app.bot.model.user.Trash;
 import app.bot.model.user.User;
+import app.dnd.service.ButtonName;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class MessageSender {
 
+
 	@Autowired
-	private UserFileService userFileService;
+	private IdManager idManager;
+	@Autowired
+	private TrashService1 trashService;
+	@Autowired
+	private ScriptService1 scriptService;
+	@Autowired
+	private CloudsService1 cloudsService;
 	@Autowired
 	private Bot bot;
 
@@ -59,49 +67,60 @@ public class MessageSender {
 		});
 	}
 
-	private void cleanTrash(ReadyToSend readyToSendActs) {
-		try {
-			for (Integer i : readyToSendActs.getTrash()) {
-				bot.execute(DeleteMessage.builder().chatId(readyToSendActs.getId()).messageId(i).build());
+	private void cleanTrash(Trash trash) {
+		
+			for (Integer i : trash.getCircle()) {
+				try {
+				bot.execute(DeleteMessage.builder().chatId(trash.getId()).messageId(i).build());
+				} catch (TelegramApiException e) {
+					log.error("MessageSender (cleanTrash):" + e.getMessage());
+				}
 			}
-		} catch (TelegramApiException e) {
-			log.error("MessageSender (cleanTrash):" + e.getMessage());
-		}
+			trash.getCircle().clear();
 	}
 
 	public void sendMessage(User user) {
-		
-		ReadyToSend readyToSendActs = user.makeSend();
-		log.info("MessageSender sendMessage " + readyToSendActs.getReadyToSend().size() + "  " + readyToSendActs.getTrash().size());
+
+		Trash trash = user.getTrash();
+		Script script = user.getScript();
+		Clouds clouds = user.getClouds();
+
 		try {
-			for (ActiveAct act : readyToSendActs.getReadyToSend()) {
+
+			if(user.getAct() != null) {
+				ActiveAct act = user.getAct();
+				script.getMainTree().addLast(act);
 				if (act instanceof ArrayActs) {
 					ArrayActs array = (ArrayActs) act;
 					for (int i = 0; i < array.getPool().length; i++) {
 						Message arrAct = bot
-								.execute(buildMessage(array.getPool()[i], readyToSendActs.getId(), array.getKeys()[i]));
+								.execute(buildMessage(array.getPool()[i], user.getId(), array.getKeys()[i]));
 						act.toCircle(arrAct.getMessageId());
 					}
 				} else if (act instanceof SingleAct) {
-					long key;
-					if (act.hasAction() && act.getAction().isCloud()) {
-						key = Handler.CLOUD_ACT_K;
-					} else {
-						key = Handler.MAIN_TREE_K;
-					}
-					Message message = bot.execute(buildMessage((SingleAct) act, readyToSendActs.getId(), key));
+
+					Message message = bot.execute(buildMessage((SingleAct) act, user.getId(), ButtonName.MAIN_TREE_K));
 					act.toCircle(message.getMessageId());
 				}
 			}
+
+
+			for(ActiveAct cloud: clouds.getCloudsTarget()) {
+				Message message = bot.execute(buildMessage((SingleAct) cloud, user.getId(), ButtonName.CLOUD_ACT_K));
+				cloud.toCircle(message.getMessageId());
+			}
+			clouds.getCloudsWorked().addAll(clouds.getCloudsTarget());
+			clouds.getCloudsTarget().clear();
+			cleanTrash(trash);
+
 		} catch (TelegramApiException e) {
 			log.error("MessageSender (send Message):" + e.getMessage());
 		}
-		cleanTrash(readyToSendActs);
-		try {
-			userFileService.save(user);
-		} catch (IOException e) {
-			log.error("MessageSender (save user):" + e.getMessage());
-		}
+		
+		cloudsService.save(clouds);
+		scriptService.save(script);
+		trashService.save(trash);
+		idManager.getInSession().remove(user.getId());
 	}
 
 	private SendMessage buildMessage(SingleAct act, long chatId, long key) {

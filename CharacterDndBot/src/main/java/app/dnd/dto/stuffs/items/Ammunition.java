@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Ammunition extends Items {
 
-	private static final long serialVersionUID = 1L;
 	private int value;
 
 	public Ammunition() {}

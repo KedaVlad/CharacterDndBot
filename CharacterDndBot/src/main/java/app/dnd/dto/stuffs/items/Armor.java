@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Armor extends Items {
 
-	private static final long serialVersionUID = 1L;
 	private Armors type;
 
 	public Armor() {}

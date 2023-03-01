@@ -1,14 +1,12 @@
 package app.bot.model.act.actions;
  
-import java.io.Serializable;
 
 import app.dnd.service.Location;
 import lombok.Data;
 
 @Data
-public abstract class BaseAction implements Serializable{
+public abstract class BaseAction{
 
-	private static final long serialVersionUID = 1L;
 	private Location location;
 	private boolean mediator;
 	private boolean replyButtons;

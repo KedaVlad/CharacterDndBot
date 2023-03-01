@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import app.bot.model.Bot;
+import app.bot.service.Bot;
 import app.bot.service.MessageSender;
 import app.bot.service.Session;
 import app.bot.service.SpamCleaner;

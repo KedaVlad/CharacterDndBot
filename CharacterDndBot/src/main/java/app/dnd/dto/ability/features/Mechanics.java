@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Mechanics extends Feature {
  
-	private static final long serialVersionUID = 1L;
 	private SimplePool<Feature> pool;
 	private Matrix matrix;
 	private Dice dice;

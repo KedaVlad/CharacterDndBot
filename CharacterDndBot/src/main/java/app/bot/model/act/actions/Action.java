@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class Action extends BaseAction implements Cloneable {
 
-	private static final long serialVersionUID = 1L;
 	private String[][] buttons;
 	private String[] answers;
 	private ObjectDnd objectDnd;
@@ -62,8 +61,8 @@ public class Action extends BaseAction implements Cloneable {
 	@Override
 	protected Action clone() {
 		Action answer = new Action();
+		answer.objectDnd = this.objectDnd; 
 		answer.setName(getName());
-		answer.objectDnd = this.objectDnd;
 		answer.answers = this.answers;
 		answer.setLocation(getLocation());
 		answer.setKey(getKey());

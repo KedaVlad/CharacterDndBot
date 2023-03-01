@@ -12,6 +12,7 @@ import app.dnd.dto.ability.features.InerFeature;
 import app.dnd.dto.ability.proficiency.Possession;
 import app.dnd.dto.ability.spells.MagicSoul;
 import app.dnd.dto.ability.spells.Spell;
+import app.dnd.dto.characteristics.SaveRoll;
 import app.dnd.dto.characteristics.Skill;
 import app.dnd.dto.comands.AddComand;
 import app.dnd.dto.comands.CloudComand;
@@ -85,7 +86,7 @@ public class ScriptReader {
 				} else if (object instanceof Possession) {
 					Possession target = (Possession) object;
 					if (target.getName().matches("^SR.*")) {
-						for (Skill article : character.getCharacteristics().getSaveRolls()) {
+						for (SaveRoll article : character.getCharacteristics().getSaveRolls()) {
 							if (article.getName().equals(target.getName())) {
 								article.setProficiency(target.getProf());
 								break;

@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class InerFeature extends Feature { 
-	private static final long serialVersionUID = 1L;
 	private InerComand[] comand;
 	
 	public static InerFeature create(String string, String string2, InerComand... create) {

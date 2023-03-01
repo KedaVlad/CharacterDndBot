@@ -7,7 +7,7 @@ import app.dnd.dto.characteristics.Hp;
 @Component
 public class HpGrow {
 
-	public void grow(Hp hp, int value) {
+	void grow(Hp hp, int value) {
 		hp.setMax(hp.getMax() + value);
 		hp.setNow(hp.getMax());
 	}

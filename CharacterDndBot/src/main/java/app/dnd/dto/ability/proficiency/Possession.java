@@ -12,7 +12,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class Possession extends ObjectDnd {
 
-	private static final long serialVersionUID = 1L;
 	private Proficiency prof;
 	private String name;
 	
@@ -31,6 +30,6 @@ public class Possession extends ObjectDnd {
 	public String toString() {
 		String answer = name;
 		if(prof != null) answer += " (" + prof.toString() + ")";
-		return answer + "\n";
+		return answer;
 	}
 }

@@ -28,10 +28,10 @@ public class UpdateManager {
 	public void addUpdate(Update update) {
 		try {
 			if(idManager.getInSession().contains(userIdFinder.byUpdate(update))) {
-				log.info("UpdateManager (addUpdate): add spamm");
+				log.info("UpdateManager (addUpdate): add to spam --- for " + userIdFinder.byUpdate(update));
 				spamConteiner.getSpammQueue().put(update);
 			} else {
-				log.info("UpdateManager (addUpdate): add update");
+				log.info("UpdateManager (addUpdate): add to session --- for: " + userIdFinder.byUpdate(update));
 				idManager.getInSession().add(userIdFinder.byUpdate(update));
 				sessionConteiner.getUpdateQueue().put(update);
 			}

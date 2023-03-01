@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class AddComand extends InerComand {
-	private static final long serialVersionUID = 1L;
 	private ObjectDnd[] targets;
 	
 	public static AddComand create(ObjectDnd... objects) {

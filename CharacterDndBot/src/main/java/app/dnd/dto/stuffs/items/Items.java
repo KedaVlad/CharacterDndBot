@@ -22,7 +22,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class Items extends ObjectDnd {
 	
-	private static final long serialVersionUID = 1L;
 	private String name;
 	private String description;
 	private boolean used;

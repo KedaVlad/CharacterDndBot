@@ -1,9 +1,12 @@
 package app.dnd.service.character;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import app.bot.service.ActualHeroService;
 import app.bot.model.act.Act;
 import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
@@ -22,6 +25,7 @@ import app.dnd.service.Location;
 import app.dnd.service.logic.proficiencies.HintList;
 import app.dnd.service.logic.proficiencies.ProficienciesAddPossession;
 import app.dnd.service.logic.proficiencies.ProficienciesInformator;
+import app.dnd.util.ArrayToColumns;
 
 @Service
 public class AbilityExecutor implements Executor<Action> {
@@ -30,6 +34,7 @@ public class AbilityExecutor implements Executor<Action> {
 	private AbilityMenu abilityMenu;
 	@Autowired
 	private AbilityTypeMenu abilityTypeMenu;
+
 
 	@Override
 	public Act executeFor(Action action, User user) {
@@ -45,30 +50,39 @@ public class AbilityExecutor implements Executor<Action> {
 @Component
 class AbilityMenu implements Executor<Action> {
 
+	@Autowired
+	private ActualHeroService actualHeroService;
+
 	@Override
 	public Act executeFor(Action action, User user) {
-		{
-			String instruction = "Some instruction for ABILITY interface";
-			String[][] buttons;	
-			if (user.getCharactersPool().getActual().getAbility().getMagicSoul() == null) {
-				buttons = new String[][] { { FEATURE_B, POSSESSION_B }, { RETURN_TO_MENU } };
-			} else {
-				buttons = new String[][] { { FEATURE_B, SPELL_B, POSSESSION_B }, { RETURN_TO_MENU } };
-			}
 
-			return ReturnAct.builder()
-					.target(MENU_B)
-					.act(SingleAct.builder()
-							.name(ABILITY_B)
-							.text(instruction)
-							.action(Action.builder()
-									.buttons(buttons)
-									.location(Location.ABILITY)
-									.replyButtons()
-									.build())
-							.build())
-					.build();
+		Ability ability = actualHeroService.getById(user.getId()).getCharacter().getAbility();
+		String instruction = "Here, you can access and manage your character's ta talents, including " + TRAIT_B + ", " + FEATURE_B + ", " + FEAT_B + ", " + POSSESSION_B + " and " + SPELL_B;
+		String[][] buttons;	
+
+		if (ability.getMagicSoul() == null && ability.getFeats().size() == 0) {
+			buttons = new String[][] {{ FEATURE_B, POSSESSION_B }, { RETURN_TO_MENU }};
+		} else if(ability.getMagicSoul() == null) {
+			buttons = new String[][] {{ FEATURE_B, POSSESSION_B }, {TRAIT_B, FEAT_B}, { RETURN_TO_MENU }};
+		} else if(ability.getFeats().size() == 0) {
+			buttons = new String[][] {{ TRAIT_B, POSSESSION_B }, {FEATURE_B, SPELL_B}, { RETURN_TO_MENU }};
+		} else {
+			buttons = new String[][] {{ TRAIT_B, FEATURE_B, FEAT_B}, { POSSESSION_B, SPELL_B}, { RETURN_TO_MENU }};
 		}
+
+		return ReturnAct.builder()
+				.target(MENU_B)
+				.act(SingleAct.builder()
+						.name(ABILITY_B)
+						.text(instruction)
+						.action(Action.builder()
+								.buttons(buttons)
+								.location(Location.ABILITY)
+								.replyButtons()
+								.build())
+						.build())
+				.build();
+
 	}
 }
 
@@ -81,23 +95,23 @@ class AbilityTypeMenu implements Executor<Action> {
 	private SpellExecutor spellExecutor;
 	@Autowired
 	private PossessionExecutor possessionExecutor;
+	@Autowired
+	private FeatureTarget featureTarget;
 
 	@Override
 	public Act executeFor(Action action, User user) {
 		if (action.getObjectDnd() == null) {
 			String target = action.getAnswers()[0];
-			if (target.equals(FEATURE_B)) {
-				return featureExecutor.executeFor(action, user);
-			} else if (target.equals(POSSESSION_B)) {
+			if (target.equals(POSSESSION_B)) {
 				return possessionExecutor.executeFor(action, user);
 			} else if (target.equals(SPELL_B)) {
 				return spellExecutor.executeFor(action, user);
 			} else {
-				return ReturnAct.builder().target(MENU_B).build();
+				return featureExecutor.executeFor(action, user);
 			}
 		} else {
 			if (action.getObjectDnd() instanceof Feature) {
-				return featureExecutor.executeFor(action, user);
+				return featureTarget.executeFor(action, user);
 			} else if (action.getObjectDnd() instanceof Spell) {
 				return spellExecutor.executeFor(action, user);
 			} else {
@@ -111,44 +125,53 @@ class AbilityTypeMenu implements Executor<Action> {
 class FeatureExecutor implements Executor<Action> {
 
 	@Autowired
-	private FeatureMenu featureMenu;
+	private ArrayToColumns arrayToColumns;
 	@Autowired
-	private FeatureTarget featureTarget;
+	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
 
-		if (action.getObjectDnd() == null) {
-			return featureMenu.executeFor(action, user);
-		} else {
-			return featureTarget.executeFor(action, user);
+		Ability ability = actualHeroService.getById(user.getId()).getCharacter().getAbility();
+		String text = "ERROR";
+		BaseAction[][] pool = null;
+		switch(action.getAnswers()[0]) {
+		case FEATURE_B:
+			text = "Here, you can find the features. Talents that are bestowed upon you by your class.";
+			pool = featuresToColumns(ability.getFeatures());
+			break;
+		case FEAT_B:
+			text = "Here, you can find the feats.";
+			pool = featuresToColumns(ability.getFeats());
+			break;
+		case TRAIT_B:
+			text = "Here, you can find the traits. Talents that are bestowed upon you by your race.";
+			pool = featuresToColumns(ability.getTraits());
+			break;
 		}
-	}
-}
 
-@Component
-class FeatureMenu implements Executor<Action> {
-
-	@Override
-	public Act executeFor(Action action, User user) {
-
-		Ability ability = user.getCharactersPool().getActual().getAbility();
-		BaseAction[][] pool = new BaseAction[ability.getFeatures().size()][1];
-		for(int i = 0; i < ability.getFeatures().size(); i++)
-		{
-			Feature feature = ability.getFeatures().get(i);
-			pool[i][0] = Action.builder().name(feature.getName()).location(Location.ABILITY).objectDnd(feature).build();
-		}
 		return ReturnAct.builder()
 				.target(ABILITY_B)
 				.act(SingleAct.builder()
 						.name(FEATURE_B)
-						.text("This is your feature. Choose some for more infotmation")
+						.text(text)
 						.action(PoolActions.builder()
 								.actionsPool(pool)
 								.build())
 						.build())
 				.build();
+	}
+
+	private BaseAction[][] featuresToColumns(List<Feature> list) {
+		BaseAction[] all = new BaseAction[list.size()];
+		for(int i = 0; i < list.size(); i++) {
+			all[i] = Action.builder()
+					.name(list.get(i).getName())
+					.objectDnd(list.get(i))
+					.location(Location.ABILITY)
+					.build();
+		}
+		return arrayToColumns.rebuild(all, 1, BaseAction.class);
 	}
 }
 
@@ -204,10 +227,13 @@ class SpellExecutor implements Executor<Action> {
 @Component
 class SpellMenu implements Executor<Action> {
 
+	@Autowired
+	private ActualHeroService actualHeroService;
+
 	@Override
 	public Act executeFor(Action action, User user) {
 
-		MagicSoul magicSoul = user.getCharactersPool().getActual().getAbility().getMagicSoul();
+		MagicSoul magicSoul = actualHeroService.getById(user.getId()).getCharacter().getAbility().getMagicSoul();
 
 		BaseAction[][] pool = new BaseAction[magicSoul.getPoolCantrips().getActive().size() + magicSoul.getPoolSpells().getActive().size()][1];
 		int i = 0;
@@ -223,7 +249,7 @@ class SpellMenu implements Executor<Action> {
 				.target(ABILITY_B)
 				.act(SingleAct.builder()
 						.name(FEATURE_B)
-						.text("This is your feature. Choose some for more infotmation")
+						.text("This is your spells. Choose some for more infotmation")
 						.action(PoolActions.builder()
 								.actionsPool(pool)
 								.build())
@@ -260,7 +286,7 @@ class PossessionExecutor implements Executor<Action> {
 	private PossessionCreate possessionCreate;
 	@Autowired
 	private PossessionAnswerForCall possessionAnswerForCall;
-	
+
 	@Override
 	public Act executeFor(Action action, User user) {
 
@@ -283,6 +309,8 @@ class PossessionMenu implements Executor<Action> {
 
 	@Autowired
 	private ProficienciesInformator proficienciesInformator;
+	@Autowired
+	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
@@ -292,7 +320,7 @@ class PossessionMenu implements Executor<Action> {
 				.target(ABILITY_B)
 				.act(SingleAct.builder()
 						.name(POSSESSION_B)
-						.text(proficienciesInformator.info(user.getCharactersPool().getActual().getAbility().getProficiencies()))
+						.text(proficienciesInformator.info(actualHeroService.getById(user.getId()).getCharacter().getAbility().getProficiencies()))
 						.action(action)
 						.build())
 				.build();
@@ -334,7 +362,7 @@ class PossessionAnswerForCall implements Executor<Action> {
 		} else if(action.getAnswers()[2].equals("Hint list")) {
 			return SingleAct.builder().name("Hint list").text(hintList.build()).build();
 		} else {
-			proficienciesAddPossession.add(user.getCharactersPool().getActual().getAbility().getProficiencies(), new Possession(action.getAnswers()[2]));
+			proficienciesAddPossession.add(user.getId(), new Possession(action.getAnswers()[2]));
 			return ReturnAct.builder().target(ABILITY_B).call(POSSESSION_B).build();
 		}
 	}

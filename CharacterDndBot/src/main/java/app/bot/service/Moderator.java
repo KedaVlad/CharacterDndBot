@@ -8,33 +8,31 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import app.bot.model.user.User;
+
 @Service
 public class Moderator {
 
 	@Autowired
-	private UserFileService userFileService;
-	@Autowired
 	private Player player;
 	@Autowired
-	private UserIdFinder userIdFinder;
+	private UserService userService;
 
 	GameTable play(Update update) throws ClassNotFoundException, IOException {
-		return new GameTable(userFileService.getUserById(userIdFinder.byUpdate(update)),update);
+		return new GameTable(update);
 	}
 
 	class GameTable implements Callable<User>  {
 
-		private final User user;
 		private final Update update;
 
-		public GameTable(User user, Update update) {
-			this.user = user;
+		public GameTable(Update update) {
 			this.update = update;
 		}
 
 		@Override
 		public User call() throws Exception {
-			return player.playFor(update, user);
+			return player.playFor(userService.getByUpdate(update));
 		}
 	}
 }
+

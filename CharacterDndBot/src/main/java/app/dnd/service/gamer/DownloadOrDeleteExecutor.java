@@ -9,6 +9,9 @@ import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
+import app.bot.service.ActualHeroService;
+import app.bot.service.CharactersPoolControler;
+import app.dnd.dto.CharacterDnd;
 import app.dnd.service.Executor;
 import app.dnd.service.factory.ClassFactory;
 import app.dnd.service.factory.HpFactory;
@@ -75,19 +78,23 @@ class DownloadHero implements Executor<Action> {
 	private StatFactory statFactory;
 	@Autowired
 	private HpFactory hpFactory;
-
+	@Autowired
+	private CharactersPoolControler charactersPoolControler;
+	@Autowired 
+	private ActualHeroService actualHeroService;
+	
 	@Override
 	public Act executeFor(Action action, User user) {
 		
-		user.getCharactersPool().download(action.getAnswers()[0]);
-		
-		if(user.getCharactersPool().hasReadyHero()) {
+		charactersPoolControler.download(user, action.getAnswers()[0]);
+		CharacterDnd actual = actualHeroService.getById(user.getId()).getCharacter();
+		if(charactersPoolControler.hasReadyHeroById(user.getId())) {
 			return menu.executeFor(Action.builder().build(), user);
-		} else if(user.getCharactersPool().getActual().getRace() == null) {
+		} else if(actual.getRace() == null) {
 			return raceFactory.executeFor(Action.builder().build(), user);
-		} else if(user.getCharactersPool().getActual().getDndClass().isEmpty()) {
+		} else if(actual.getDndClass().isEmpty()) {
 			return classFactory.executeFor(Action.builder().build(), user);
-		} else if(user.getCharactersPool().getActual().getCharacteristics().getStats()[0].getValue() == 0) {
+		} else if(actual.getCharacteristics().getStats()[0].getValue() == 0) {
 			return statFactory.executeFor(Action.builder().build(), user);
 		} else {
 			return hpFactory.executeFor(Action.builder().build(), user);
@@ -113,10 +120,13 @@ class StartDeleteHero implements Executor<Action> {
 @Component
 class EndDeleteHero implements Executor<Action> {
 
+	@Autowired
+	private CharactersPoolControler charactersPoolControler;
+	
 	@Override
 	public Act executeFor(Action action, User user) {
 		if(action.getAnswers()[2].equals("Yes")) {
-			user.getCharactersPool().delete(action.getAnswers()[0]);
+			charactersPoolControler.delete(user.getId(), action.getAnswers()[0]);
 			return ReturnAct.builder().target(START_B).build();
 		} else {
 			return ReturnAct.builder().target("DownloadOrDeleteMenu").build();

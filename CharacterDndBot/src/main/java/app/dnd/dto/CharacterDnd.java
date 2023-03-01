@@ -1,8 +1,9 @@
 package app.dnd.dto;
  
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.data.annotation.Id;
 
 import app.bot.model.act.SingleAct;
 import app.dnd.dto.ability.Ability;
@@ -14,9 +15,9 @@ import app.dnd.dto.stuffs.Stuff;
 import lombok.Data;
 
 @Data
-public class CharacterDnd implements Informator, Serializable , Refreshable { 
+public class CharacterDnd implements Informator, Refreshable { 
 	 
-	private static final long serialVersionUID = 1L;
+	@Id
 	private String name;
 	private int speed = 25;
 	private String nature;
@@ -46,7 +47,7 @@ public class CharacterDnd implements Informator, Serializable , Refreshable {
 
 	@Override
 	public void refresh(Time time) {
-		// TODO Auto-generated method stub
-		
+		hp.refresh(time);
+		ability.refresh(time);
 	}
 }

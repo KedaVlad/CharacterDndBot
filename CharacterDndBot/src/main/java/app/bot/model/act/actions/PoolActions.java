@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class PoolActions extends BaseAction {
 
-	private static final long serialVersionUID = 1L;
 	private BaseAction[][] pool;
 
 	PoolActions() {

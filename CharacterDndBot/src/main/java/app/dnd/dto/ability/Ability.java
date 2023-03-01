@@ -1,5 +1,5 @@
 package app.dnd.dto.ability;
- 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,13 @@ public class Ability implements Refreshable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private MagicSoul magicSoul;
 	private List<Feature> features;
+	private List<Feature> traits;
+	private List<Feature> feats;
 	private Proficiencies proficiencies;
 
 	{
+		traits = new ArrayList<>();
+		feats =	new ArrayList<>();	
 		features = new ArrayList<>();
 		proficiencies = new Proficiencies();
 	}

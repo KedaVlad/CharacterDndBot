@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class RollAction extends BaseAction {
 
-	private static final long serialVersionUID = 1L;
 	private Stats depends;
 	private Proficiency proficiency;
 	private Dice[] base;

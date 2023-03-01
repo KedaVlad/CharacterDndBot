@@ -25,7 +25,7 @@ public class ReturnActBuilder {
 		return this;
 	}
 	
-	public ReturnActBuilder act(Action action) {
+	public ReturnActBuilder action(Action action) {
 		this.action = action;
 		this.act = null;
 		return this;

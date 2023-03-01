@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class CloudComand extends InerComand {
-	private static final long serialVersionUID = 1L;
 	protected String name;
 	protected String text;
 	public static CloudComand create(String name, String text) {

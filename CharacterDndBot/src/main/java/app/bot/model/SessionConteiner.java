@@ -5,7 +5,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
 import app.bot.model.user.User;
 import lombok.Data;
 @Data

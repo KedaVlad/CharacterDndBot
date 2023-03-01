@@ -11,7 +11,7 @@ import app.dnd.dto.stuffs.items.Armor.ClassArmor;
 public class ArmorWear {
 
 	@Autowired
-	private CarringRemove carringRemove;
+	private ArmorRemove armorRemove;
 
 	public void wear(Stuff stuff, Armor armor) {
 
@@ -20,7 +20,7 @@ public class ArmorWear {
 			position = 1;
 		}
 		if (stuff.getWeared()[position] != null) {
-			carringRemove.remove(stuff, armor);
+			armorRemove.remove(stuff, armor);
 		}
 		stuff.getWeared()[position] = armor;
 	}

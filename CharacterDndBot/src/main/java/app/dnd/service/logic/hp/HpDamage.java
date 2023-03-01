@@ -7,7 +7,8 @@ import app.dnd.dto.characteristics.Hp;
 @Component
 public class HpDamage {
 
-	public void damaged(Hp hp, int value) {
+	void damaged(Hp hp, int value) {
+
 		if (hp.getTimeHp() > 0) {
 			hp.setTimeHp(hp.getTimeHp() - value);
 			if (hp.getTimeHp() < 0) {

@@ -13,7 +13,7 @@ import app.bot.model.act.actions.PoolActions;
 import app.bot.model.act.actions.PreRoll;
 import app.bot.model.act.actions.RollAction;
 import app.bot.model.user.User;
-import app.dnd.dto.ability.proficiency.Possession;
+import app.bot.service.ActualHeroService;
 import app.dnd.dto.ability.proficiency.Proficiencies.Proficiency;
 import app.dnd.dto.characteristics.SaveRoll;
 import app.dnd.dto.characteristics.Skill;
@@ -23,9 +23,9 @@ import app.dnd.service.Location;
 import app.dnd.service.logic.characteristic.SaveRollsButtonsBuilder;
 import app.dnd.service.logic.characteristic.SkillButtonsBuilder;
 import app.dnd.service.logic.characteristic.SkillSingleButtonBuilder;
+import app.dnd.service.logic.characteristic.SkillUp;
 import app.dnd.service.logic.characteristic.StatButtonsBuilder;
 import app.dnd.service.logic.characteristic.StatUp;
-import app.dnd.service.logic.proficiencies.ProficienciesAddPossession;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -41,6 +41,7 @@ public class CharacterisricExecutor implements Executor<Action> {
 	private SaveRollMenu saveRollMenu;
 	@Autowired
 	private SingleSkillExecutor singleSkillExecutor;
+	
 	@Override
 	public Act executeFor(Action action, User user) {
 
@@ -54,12 +55,9 @@ public class CharacterisricExecutor implements Executor<Action> {
 				return ReturnAct.builder().target(CHARACTERISTIC_B).call(CHARACTERISTIC_B).build();
 			}
 		} else {
-			if(action.getObjectDnd() instanceof Stat)
-			{
+			if (action.getObjectDnd() instanceof Stat) {
 				return statExecutor.executeFor(action, user);
-			}
-			else
-			{
+			} else {
 				return singleSkillExecutor.executeFor(action, user);
 			}
 		}
@@ -82,16 +80,13 @@ public class CharacterisricExecutor implements Executor<Action> {
 @Component
 class CharacteristicMenu implements Executor<Action> {
 
-	@Autowired
-	private InformatorHandler InformatorHandlet;
-	
 	@Override
 	public Act executeFor(Action action, User user) {
 		return ReturnAct.builder()
 				.target(MENU_B)
 				.act(SingleAct.builder()
 						.name(CHARACTERISTIC_B)
-						.text(InformatorHandlet.handle(user.getCharactersPool().getActual().getCharacteristics()))
+						.text("Here you can operate your abilities, rollig and changing value")
 						.action(Action.builder()
 								.location(Location.CHARACTERISTIC)
 								.buttons(new String[][]{{STAT_B, SAVE_ROLL_B, SKILL_B},{RETURN_TO_MENU}})
@@ -130,36 +125,24 @@ class StatExecutor implements Executor<Action> {
 
 @Component
 class StatMenu implements Executor<Action> {
- 
+
 	@Autowired
 	private StatButtonsBuilder statButtonsBuilder;
-	
+
 	@Override
 	public Act executeFor(Action action, User user) {
-		Stat[] stats = user.getCharactersPool().getActual().getCharacteristics().getStats();
-		String[] statButtons = statButtonsBuilder.build(user.getCharactersPool().getActual());
-		BaseAction[][] pool = new BaseAction[][] {
-			{
-				Action.builder().name(statButtons[0]).objectDnd(stats[0]).location(Location.CHARACTERISTIC).build(),
-				Action.builder().name(statButtons[1]).objectDnd(stats[1]).location(Location.CHARACTERISTIC).build()
-			},{
-				Action.builder().name(statButtons[2]).objectDnd(stats[2]).location(Location.CHARACTERISTIC).build(),
-				Action.builder().name(statButtons[3]).objectDnd(stats[3]).location(Location.CHARACTERISTIC).build()
-			},{
-				Action.builder().name(statButtons[4]).objectDnd(stats[4]).location(Location.CHARACTERISTIC).build(),
-				Action.builder().name(statButtons[5]).objectDnd(stats[5]).location(Location.CHARACTERISTIC).build()
-			}};
 
-			return ReturnAct.builder()
-					.target(CHARACTERISTIC_B)
-					.act(SingleAct.builder()
-							.name(STAT_B)
-							.text("Choose stat which you want to roll or change")
-							.action(PoolActions.builder()
-									.actionsPool(pool)
-									.build())
-							.build())
-					.build();
+		BaseAction[][] pool = statButtonsBuilder.build(user.getId());
+		return ReturnAct.builder()
+				.target(CHARACTERISTIC_B)
+				.act(SingleAct.builder()
+						.name(STAT_B)
+						.text("Choose stat which you want to roll or change")
+						.action(PoolActions.builder()
+								.actionsPool(pool)
+								.build())
+						.build())
+				.build();
 	}
 
 }
@@ -172,22 +155,22 @@ class SingleStatMenu implements Executor<Action> {
 		Stat stat = (Stat) action.getObjectDnd();
 		action.setButtons(buildStatChangeButtons(stat));
 		return ArrayActsBuilder.builder()
-						.name("StatCase")
-						.pool(SingleAct.builder()
-								.name("ChangeValue")
-								.action(action)
-								.text(stat.getName().toString() + " " + stat.getValue() + ". If u have reason to change value...")
-								.build(),
-								SingleAct.builder()
-								.name("Roll")
-								.text("... or roll.")
-								.action(PreRoll.builder()
-										.roll(RollAction.buider()
-												.statDepend(stat.getName())
-												.build())
+				.name("StatCase")
+				.pool(SingleAct.builder()
+						.name("ChangeValue")
+						.action(action)
+						.text(stat.getName().toString() + " " + stat.getValue() + ". If u have reason to change value...")
+						.build(),
+						SingleAct.builder()
+						.name("Roll")
+						.text("... or roll.")
+						.action(PreRoll.builder()
+								.roll(RollAction.buider()
+										.statDepend(stat.getName())
 										.build())
 								.build())
-						.build();	
+						.build())
+				.build();	
 	}
 
 	public String[][] buildStatChangeButtons(Stat stat) {
@@ -214,7 +197,6 @@ class SingleStatMenu implements Executor<Action> {
 	}
 }
 
-@Slf4j
 @Component
 class ChangeStat implements Executor<Action> {
 
@@ -225,10 +207,7 @@ class ChangeStat implements Executor<Action> {
 	public Act executeFor(Action action, User user) {
 		Stat stat = (Stat) action.getObjectDnd();
 		int value = Integer.parseInt(action.getAnswers()[0]);
-
-		log.info("ChangeStat value check: " + value );
-		statUp.up(stat, value);
-		log.info("ChangeStat return check: " + CHARACTERISTIC_B + " " + STAT_B );
+		statUp.up(user.getId(), stat.getName(), value);
 		return ReturnAct.builder().target(CHARACTERISTIC_B).call(STAT_B).build();
 	}	
 }
@@ -244,26 +223,8 @@ class SkillMenu implements Executor<Action> {
 
 	@Override
 	public Act executeFor(Action action, User user) {
-		Skill[] skills = user.getCharactersPool().getActual().getCharacteristics().getSkills();
-		String[] skillButtons = skillButtonsBuilder.build(user.getCharactersPool().getActual());
-		BaseAction[][] pool = new BaseAction[skills.length/2][2];
-		int j = 0;
-		for(int i = 0; i < skills.length; i++) {
-			if(i < 9) {
-				pool[i][0] = Action.builder()
-						.name(skillButtons[i])
-						.location(Location.CHARACTERISTIC)
-						.objectDnd(skills[i])
-						.build();
-			} else {
-				pool[j][1] = Action.builder()
-						.name(skillButtons[i])
-						.location(Location.CHARACTERISTIC)
-						.objectDnd(skills[i])
-						.build();
-				j++;
-			}
-		}
+
+		BaseAction[][] pool = skillButtonsBuilder.build(user.getId());
 		return ReturnAct.builder()
 				.target(CHARACTERISTIC_B)
 				.act(SingleAct.builder()
@@ -284,30 +245,19 @@ class SaveRollMenu implements Executor<Action> {
 	private SaveRollsButtonsBuilder saveRollsButtonsBuilder;
 
 	@Override
-	public Act executeFor(Action action,User user) {
-		Skill[] saveRolls = user.getCharactersPool().getActual().getCharacteristics().getSaveRolls();
-		String[] saveRollButtons = saveRollsButtonsBuilder.build(user.getCharactersPool().getActual());
-		BaseAction[][] pool = new BaseAction[][] {
-			{
-				Action.builder().name(saveRollButtons[0]).objectDnd(saveRolls[0]).location(Location.CHARACTERISTIC).build(),
-				Action.builder().name(saveRollButtons[1]).objectDnd(saveRolls[1]).location(Location.CHARACTERISTIC).build()
-			},{
-				Action.builder().name(saveRollButtons[2]).objectDnd(saveRolls[2]).location(Location.CHARACTERISTIC).build(),
-				Action.builder().name(saveRollButtons[3]).objectDnd(saveRolls[3]).location(Location.CHARACTERISTIC).build()
-			},{
-				Action.builder().name(saveRollButtons[4]).objectDnd(saveRolls[4]).location(Location.CHARACTERISTIC).build(),
-				Action.builder().name(saveRollButtons[5]).objectDnd(saveRolls[5]).location(Location.CHARACTERISTIC).build()
-			}};
-			return ReturnAct.builder()
-					.target(CHARACTERISTIC_B)
-					.act(SingleAct.builder()
-							.name(SAVE_ROLL_B)
-							.text("Choose Save Roll which you want to roll or change")
-							.action(PoolActions.builder()
-									.actionsPool(pool)
-									.build())
-							.build())
-					.build();			
+	public Act executeFor(Action action, User user) {
+
+		BaseAction[][] pool = saveRollsButtonsBuilder.build(user.getId());
+		return ReturnAct.builder()
+				.target(CHARACTERISTIC_B)
+				.act(SingleAct.builder()
+						.name(SAVE_ROLL_B)
+						.text("Choose Save Roll which you want to roll or change")
+						.action(PoolActions.builder()
+								.actionsPool(pool)
+								.build())
+						.build())
+				.build();			
 	}
 }
 
@@ -331,16 +281,18 @@ class SingleSkillExecutor implements Executor<Action> {
 
 @Component
 class SingleSkillMenu implements Executor<Action> {
-	
+
 	@Autowired
 	private SkillSingleButtonBuilder skillSingleButtonBuilder;
-	
+	@Autowired
+	private ActualHeroService actualHeroService;
+
 	@Override
 	public Act executeFor(Action action, User user) {
 		Skill article = (Skill) action.getObjectDnd();
 		String[][] buttonsChange = buildSkillChangeButtons(article);
 		String returnTo = SKILL_B;
-		String text = skillSingleButtonBuilder.build(article, user.getCharactersPool().getActual());
+		String text = skillSingleButtonBuilder.build(article, actualHeroService.getById(user.getId()).getCharacter());
 		if(article instanceof SaveRoll) {
 			returnTo = SAVE_ROLL_B;
 		}
@@ -383,6 +335,7 @@ class SingleSkillMenu implements Executor<Action> {
 	}
 
 	private String[][] buildSkillChangeButtons(Skill article) {
+		
 		if(article.getProficiency() != null) {
 			if(article.getProficiency().equals(Proficiency.BASE)) {
 				return new String[][] {{"Up to COMPETENSE"}};
@@ -401,7 +354,7 @@ class SingleSkillMenu implements Executor<Action> {
 class ChangeSkillExecutor implements Executor<Action> { 
 
 	@Autowired
-	private ProficienciesAddPossession proficienciesAddPossession;
+	private SkillUp skillUp;
 
 	@Override
 	public Act executeFor(Action action, User user) {
@@ -409,11 +362,11 @@ class ChangeSkillExecutor implements Executor<Action> {
 		switch(action.getAnswers()[0]) {
 		case "Up to COMPETENSE":
 			skill.setProficiency(Proficiency.COMPETENSE);
-			proficienciesAddPossession.add(user.getCharactersPool().getActual().getAbility().getProficiencies(), new Possession(skill.getName(), Proficiency.COMPETENSE));
+			skillUp.up(user.getId(), skill);
 			break;
 		case "Up to PROFICIENCY":
 			skill.setProficiency(Proficiency.BASE);
-			proficienciesAddPossession.add(user.getCharactersPool().getActual().getAbility().getProficiencies(), new Possession(skill.getName(), Proficiency.BASE));
+			skillUp.up(user.getId(), skill);
 			break;
 		} 
 		if(skill instanceof SaveRoll) {

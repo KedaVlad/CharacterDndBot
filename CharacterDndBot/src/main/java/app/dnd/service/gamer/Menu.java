@@ -9,20 +9,22 @@ import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.act.actions.PoolActions;
 import app.bot.model.user.User;
+import app.bot.service.ActualHeroService;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
-import app.dnd.service.character.InformatorHandler;
+import app.dnd.service.factory.InformatorHandler;
 
 @Component
 public class Menu implements Executor<Action>{
 
 	@Autowired
 	private InformatorHandler informatorHandler;
-	
+	@Autowired 
+	private ActualHeroService actualHeroService;
+
 	@Override
 	public Act executeFor(Action action, User user) {
 
-		user.getCharactersPool().save();
 		Action[][] pool = new Action[][] {
 			{ 
 				Action.builder().name(ABILITY_B).location(Location.ABILITY).build(),
@@ -42,7 +44,7 @@ public class Menu implements Executor<Action>{
 					.target(START_B)
 					.act(SingleAct.builder()
 							.name(MENU_B)
-							.text(informatorHandler.handle(user.getCharactersPool().getActual()))
+							.text(informatorHandler.handle(actualHeroService.getById(user.getId()).getCharacter()))
 							.action(PoolActions.builder()
 									.actionsPool(pool)
 									.replyButtons()

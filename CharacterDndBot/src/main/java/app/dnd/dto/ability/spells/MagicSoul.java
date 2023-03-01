@@ -15,7 +15,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class MagicSoul extends ObjectDnd implements Refreshable {
 	
-	private static final long serialVersionUID = 1L;
 	private Matrix cells;
 	private SimplePool<Spell> poolCantrips;
 	private Stats depends;

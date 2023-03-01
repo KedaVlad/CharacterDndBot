@@ -1,9 +1,12 @@
 package app.dnd.service.logic.proficiencies;
 
+import org.springframework.stereotype.Component;
+
 import app.dnd.dto.ability.proficiency.Possession;
 import app.dnd.dto.ability.proficiency.Proficiencies;
 import app.dnd.dto.ability.proficiency.Proficiencies.Proficiency;
 
+@Component
 public class ProficienciesFinder {
 
 	public Proficiency get(Proficiencies proficiencies, String name) {

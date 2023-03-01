@@ -4,14 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import app.bot.model.ActualHero;
 import app.bot.model.act.Act;
 import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
+import app.bot.service.ActualHeroService;
 import app.dnd.dto.Refreshable.Time;
 import app.dnd.service.Executor;
-import app.dnd.service.Location;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -57,30 +58,32 @@ class StartRest implements Executor<Action> {
 	}
 }
 
-@Slf4j
 @Component
 class EndRest implements Executor<Action> {
 
+	@Autowired
+	private ActualHeroService actualHeroService;
+	
 	@Override
 	public Act executeFor(Action action, User user) {
-		log.info("EndRest : " + action.getObjectDnd() + action.getLocation());
 		
+		ActualHero actualHero = actualHeroService.getById(user.getId());
 		String timeInString = action.getAnswers()[0];
+		String text = null;
 		if(timeInString.equals(Time.SHORT.toString())) {
-			user.getCharactersPool().getActual().refresh(Time.SHORT);
-			return SingleAct.builder()
-					.name("EndRest")
-					.text("Everything that depended on a short rest is reset.\n"
-							+ "You have "+ user.getCharactersPool().getActual().getLvl().getLvl() +" Hit Dice available to restore your health.")
-					.build();
-		} else if(timeInString.equals(Time.LONG.toString())) { 
-			user.getCharactersPool().getActual().refresh(Time.LONG);
-			return SingleAct.builder()
-					.name("EndRest")
-					.text("You are fully rested and recovered!")
-					.build();
-		} else {			
-			return null;
+			actualHero.getCharacter().refresh(Time.SHORT);
+					text ="Everything that depended on a short rest is reset.\n"
+							+ "You have "+ actualHero.getCharacter().getLvl().getLvl() +" Hit Dice available to restore your health.";
+		} else { 
+			actualHero.getCharacter().refresh(Time.LONG);
+			text = "You are fully rested and recovered!";
 		}
+		actualHeroService.save(actualHero);
+			return SingleAct.builder()
+					.name("EndRest")
+					.text(text)
+					.build();
+		
+			
 	}
 }

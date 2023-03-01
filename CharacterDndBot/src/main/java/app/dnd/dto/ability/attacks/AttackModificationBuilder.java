@@ -15,16 +15,11 @@ public class AttackModificationBuilder {
 	private boolean permanent;
 	private boolean postAttack;
 	private boolean permanentCrit;
-	private List<Dice> attack;
-	private List<Dice> damage;
+	private List<Dice> attack = new ArrayList<>();
+	private List<Dice> damage = new ArrayList<>();
 	private Ammunitions ammunition;
 	private Stats statDepend;
 	private Stats secondStat;
-
-	{
-		attack = new ArrayList<>();
-		damage = new ArrayList<>();
-	}
 
 	public AttackModification build() {
 		AttackModification answer = new AttackModification();
