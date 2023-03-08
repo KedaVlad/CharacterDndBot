@@ -61,7 +61,7 @@ class StuffInformator implements InformatorExecutor<Stuff> {
 				+"\n"
 				+"\n" + ButtonName.WALLET_B  + " "+ stuff.getWallet().toString() 
 				+"\n" + ButtonName.BAG_B + " ("+ stuff.getInsideBag().size()+")"
-				+"\n" + ButtonName.CARRYING_STUFF_B +" (" + stuff.getWallet().toString()+")";
+				+"\n" + ButtonName.CARRYING_STUFF_B +" (" + stuff.getPrepeared().size()+")";
 
 	}
 
@@ -82,8 +82,8 @@ class CharacterInformator implements InformatorExecutor<CharacterDnd> {
 		String answer = characterDnd.getName() + "\n\n"		
 				+ "Race: " + characterDnd.getRace().getRaceName() + " (" + characterDnd.getRace().getSubRace() + ")\r\n"
 				+ "Class: " + characterDnd.getDndClass().get(0).getClassName() + " (" + characterDnd.getDndClass().get(0).getArchetype() + ")\r\n"
-				+ "PROFICIENCY BONUS : "+ characterDnd.getAbility().getProficiencies().getProficiency() + "\r\n"
-				+ lvlInformator.getInformation(characterDnd.getLvl())+"\r\n"
+				+ "PROFICIENCY BONUS : "+ characterDnd.getAbility().getProficiencies().getProficiency() 
+				+ "\r\n"+ lvlInformator.getInformation(characterDnd.getLvl())
 				+ "\r\n" + hpInformator.getInformation(characterDnd.getHp()) 
 				+ "\r\n" + acInformator.getInformation(characterDnd)
 				+ "\r\n" + "SPEED: "+characterDnd.getSpeed();
@@ -121,10 +121,11 @@ class LvlInformator implements InformatorExecutor<Lvl> {
 
 	@Override
 	public String getInformation(Lvl lvl) {
-		String answer = "LVL: " + lvl.getLvl() + "(" + lvl.getExperience() + "|" + lvlAddExperience.getExpPerLvl()[lvl.getLvl()]
-				+ ")";
+		String answer;
 		if (lvl.getLvl() == 20) {
 			answer = "LVL: 20(MAX LVL)";
+		} else {
+			answer = "LVL: " + lvl.getLvl() + "(" + lvl.getExperience() + "|" + lvlAddExperience.getExpPerLvl()[lvl.getLvl()]+ ")";
 		}
 		return answer + "\n";
 	}

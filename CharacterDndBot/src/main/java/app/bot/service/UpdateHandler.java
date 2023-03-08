@@ -1,5 +1,6 @@
 package app.bot.service;
 
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,8 +110,6 @@ class MessageHandler implements StartHandler<User, BaseActionWrapp> {
 	private MessageComandEntity messageComandEntity;
 	@Autowired
 	private MessageScript messageScript;
-	@Autowired
-	private CharactersPoolControler charactersPoolControler;
 
 	@Override
 	public BaseActionWrapp handle(User user) {
@@ -120,7 +119,7 @@ class MessageHandler implements StartHandler<User, BaseActionWrapp> {
 			user.getTrash().getCircle().add(message.getMessageId());
 			return new BaseActionWrapp(user, messageComandEntity.handle(message));
 		} else if (message.getText().equals(ButtonName.RETURN_TO_MENU)
-				&& charactersPoolControler.hasReadyHeroById(message.getChatId())) {
+				&& user.getActualHero().hasReadyHero()) {
 			user.getTrash().getCircle().add(message.getMessageId());
 			return new BaseActionWrapp(user, Action.builder().location(Location.MENU).build());
 		} else {
@@ -152,9 +151,8 @@ class MessageComandEntity {
 	private MessageTextComand messageTextComand;
 
 	public BaseAction handle(Message message) {
-
-		Optional<MessageEntity> commandEntity = message.getEntities().stream()
-				.filter(e -> "bot_command".equals(e.getType())).findFirst();
+		
+		Optional<MessageEntity> commandEntity = message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
 
 		if (commandEntity.isPresent()) {
 			String comand = message.getText().substring(commandEntity.get().getOffset(),
@@ -165,6 +163,10 @@ class MessageComandEntity {
 
 			case "/characters":
 				return Action.builder().location(Location.CHARACTER_CASE).build();
+				
+			case "/text_comands":
+				return Action.builder().location(Location.TEXT_COMAND_HELPER).build();
+				
 			}
 		}
 		log.error("MessageHandler: Comand not exist");

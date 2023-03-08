@@ -10,13 +10,15 @@ import app.bot.model.user.User;
 public class UserService {
 
 	@Autowired
-	private ScriptService1 scriptService;
+	private ScriptService scriptService;
 	@Autowired
-	private CloudsService1 cloudsService;
+	private CloudsService cloudsService;
 	@Autowired
-	private TrashService1 trashService;
+	private TrashService trashService;
 	@Autowired
 	private UserIdFinder userIdFinder;
+	@Autowired
+	private ActualHeroService1 actualHeroService;
 	
 	
 	public User getByUpdate(Update update) {
@@ -27,6 +29,7 @@ public class UserService {
 		user.setScript(scriptService.getById(id));
 		user.setClouds(cloudsService.getById(id));
 		user.setTrash(trashService.getById(id));
+		user.setActualHero(actualHeroService.getById(id));
 		user.setUpdate(update);
 		return user;
 	}

@@ -1,4 +1,4 @@
-package app.dnd.service.gamer;
+package app.dnd.service.character;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,9 +9,7 @@ import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.bot.service.CharactersPoolControler;
-import app.dnd.dto.CharacterDnd;
 import app.dnd.service.Executor;
 import app.dnd.service.factory.ClassFactory;
 import app.dnd.service.factory.HpFactory;
@@ -80,21 +78,18 @@ class DownloadHero implements Executor<Action> {
 	private HpFactory hpFactory;
 	@Autowired
 	private CharactersPoolControler charactersPoolControler;
-	@Autowired 
-	private ActualHeroService actualHeroService;
 	
 	@Override
 	public Act executeFor(Action action, User user) {
 		
 		charactersPoolControler.download(user, action.getAnswers()[0]);
-		CharacterDnd actual = actualHeroService.getById(user.getId()).getCharacter();
-		if(charactersPoolControler.hasReadyHeroById(user.getId())) {
+		if(user.getActualHero().hasReadyHero()) {
 			return menu.executeFor(Action.builder().build(), user);
-		} else if(actual.getRace() == null) {
+		} else if(user.getActualHero().getCharacter().getRace() == null) {
 			return raceFactory.executeFor(Action.builder().build(), user);
-		} else if(actual.getDndClass().isEmpty()) {
+		} else if(user.getActualHero().getCharacter().getDndClass().isEmpty()) {
 			return classFactory.executeFor(Action.builder().build(), user);
-		} else if(actual.getCharacteristics().getStats()[0].getValue() == 0) {
+		} else if(user.getActualHero().getCharacter().getCharacteristics().getStats()[0].getValue() == 0) {
 			return statFactory.executeFor(Action.builder().build(), user);
 		} else {
 			return hpFactory.executeFor(Action.builder().build(), user);

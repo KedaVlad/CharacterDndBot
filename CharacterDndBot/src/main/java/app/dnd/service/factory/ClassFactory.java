@@ -13,12 +13,12 @@ import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.ClassDnd;
 import app.dnd.dto.comands.InerComand;
 import app.dnd.dto.wrap.ClassDndWrapp;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
+import app.dnd.service.factory.comandreader.ClassComandReader;
 import app.dnd.service.logic.lvl.LvlAddExperience;
 import app.dnd.service.logic.proficiencies.UpProficiency;
 import app.dnd.service.wrapp.ClassDndWrappService;
@@ -39,7 +39,7 @@ public class ClassFactory implements Executor<Action> {
 	private CheckLvlCondition checkLvlCondition;
 	@Autowired
 	private FinishClass finishClass;
-	
+
 	@Override
 	public Act executeFor(Action action, User user) {
 
@@ -67,7 +67,7 @@ class StartCreateClass implements Executor<Action> {
 	private ClassDndWrappService classDndWrappService;
 	@Autowired
 	private ArrayToColumns arrayToColumns;
-	
+
 	@Override
 	public Act executeFor(Action action, User user) {
 		return ReturnAct.builder()
@@ -91,7 +91,7 @@ class ChooseArchetype implements Executor<Action> {
 	private ArrayToColumns arrayToColumns;
 	@Autowired
 	private ClassDndWrappService classDndWrappService;
-	
+
 	@Override
 	public Act executeFor(Action action, User user) {
 		action.setButtons((String[][]) arrayToColumns.rebuild(classDndWrappService.findDistinctArchetypeByClassName(action.getAnswers()[0]).toArray(String[]::new),1, String.class));
@@ -122,7 +122,7 @@ class CheckLvlCondition implements Executor<Action> {
 
 	@Autowired
 	private ClassDndWrappService classDndWrappService;
-	
+
 	@Override
 	public Act executeFor(Action action, User user) {
 		int lvl = 0;
@@ -142,7 +142,7 @@ class CheckLvlCondition implements Executor<Action> {
 					.build();
 		} else {
 			action.getAnswers()[2] = ""+1;
-			action.setButtons(new String[][] { { "Okey" } });
+			action.setButtons(new String[][] { { "Okay" } });
 			return SingleAct.builder()
 					.name("checkClassCondition")
 					.text(lvl + "??? I see you're new here. Let's start with lvl 1.\nAre you satisfied with this option?\n"
@@ -170,7 +170,7 @@ class FinishClass implements Executor<Action> {
 		String archetype = action.getAnswers()[1];
 		int lvl = ((Integer) Integer.parseInt(action.getAnswers()[2]));
 		ClassDndWrapp classDndWrapp = classDndWrappService.findByClassNameAndArchetype(className, archetype);
-		classIntegrator.integrate(user.getId(), classDndWrapp, lvl);
+		classIntegrator.integrate(user, classDndWrapp, lvl);
 		return statFactory.executeFor(Action.builder().build(), user);
 	}
 }
@@ -179,23 +179,18 @@ class FinishClass implements Executor<Action> {
 class ClassIntegrator {
 
 	@Autowired
-	private ScriptReader scriptReader;
+	private ClassComandReader classComandReader;
 	@Autowired
 	private LvlAddExperience lvlAddExperience;
 	@Autowired
 	private UpProficiency upProficiency;
-	@Autowired
-	private ActualHeroService actualHeroService;
 
-	public void integrate(Long id, ClassDndWrapp clazz, int lvl) {
-		
-		
-		ActualHero actualHero = actualHeroService.getById(id);
+	public void integrate(User user, ClassDndWrapp clazz, int lvl) {
+
+		ActualHero actualHero = user.getActualHero();
 		actualHero.getCharacter().getLvl().setLvl(lvl);
 		actualHero.getCharacter().getLvl().setExperience(lvlAddExperience.getExpPerLvl()[lvl - 1]);
 		upProficiency.build(actualHero.getCharacter());
-		actualHero.getCharacter().getMyMemoirs().add(clazz.getInformation());
-		
 		ClassDnd classDnd = new ClassDnd();
 		classDnd.setClassName(clazz.getClassName());
 		classDnd.setArchetype(clazz.getArchetype());
@@ -203,14 +198,10 @@ class ClassIntegrator {
 		classDnd.setFirstHp(clazz.getFirstHp());
 		classDnd.setLvl(lvl);
 		actualHero.getCharacter().getDndClass().add(classDnd);
-		
-		
 		for (int i = 0; i <= lvl; i++) {
 			for (InerComand comand : clazz.getGrowMap()[i]) {
-				scriptReader.execute(actualHero.getCharacter(), comand);
+				classComandReader.execute(actualHero.getCharacter(), comand);
 			}
 		}
-
-		actualHeroService.save(actualHero);
 	}
 }

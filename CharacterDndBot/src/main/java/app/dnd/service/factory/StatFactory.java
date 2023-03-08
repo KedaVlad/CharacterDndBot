@@ -128,7 +128,7 @@ class FinishBuildStat implements Executor<Action> {
 	public Act executeFor(Action action, User user) {
 
 	List<Integer> stats = statTextCompiller.compile(action.getAnswers()[0]);
-	statSetup.setup(user.getId(), stats.get(0), stats.get(1), stats.get(2), stats.get(3), stats.get(4), stats.get(5));
+	statSetup.setup(user.getActualHero().getCharacter(), stats.get(0), stats.get(1), stats.get(2), stats.get(3), stats.get(4), stats.get(5));
 	return hpFactory.executeFor(Action.builder().build(), user);
 }
 

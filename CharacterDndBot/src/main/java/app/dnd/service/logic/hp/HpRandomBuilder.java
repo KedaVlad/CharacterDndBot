@@ -17,15 +17,26 @@ public class HpRandomBuilder implements HpBuilder {
 	@Override
 	public int buildForLvlUp(CharacterDnd character, ClassDnd clazz) {
 		int modificator = statModificator.modificate(character.getCharacteristics().getStats()[2]) + character.getHp().getHpBonus();
-		return Formalizer.roll(clazz.getDiceHp()) + modificator;
+		int hp = Formalizer.roll(clazz.getDiceHp());
+		if((hp + modificator) > 0) {
+			return hp + modificator;
+		} else {
+			return 1;
+		}
 	}
 
 	@Override
 	public int buildBase(CharacterDnd character) {
 		int modificator = statModificator.modificate(character.getCharacteristics().getStats()[2]) + character.getHp().getHpBonus();
+		int hp;
 		int start = character.getDndClass().get(0).getFirstHp() + modificator;
 		for (int i = 1; i < character.getDndClass().get(0).getLvl(); i++) {
-			start += Formalizer.roll(character.getDndClass().get(0).getDiceHp()) + modificator;
+			hp = Formalizer.roll(character.getDndClass().get(0).getDiceHp()) + modificator;
+			if(hp > 0) {
+				start += hp;
+			} else {
+				start += 1;
+			}
 		}
 		return start; 
 	}

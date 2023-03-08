@@ -13,7 +13,6 @@ import app.bot.model.act.actions.PoolActions;
 import app.bot.model.act.actions.PreRoll;
 import app.bot.model.act.actions.RollAction;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.ability.proficiency.Proficiencies.Proficiency;
 import app.dnd.dto.characteristics.SaveRoll;
 import app.dnd.dto.characteristics.Skill;
@@ -132,7 +131,7 @@ class StatMenu implements Executor<Action> {
 	@Override
 	public Act executeFor(Action action, User user) {
 
-		BaseAction[][] pool = statButtonsBuilder.build(user.getId());
+		BaseAction[][] pool = statButtonsBuilder.build(user.getActualHero().getCharacter());
 		return ReturnAct.builder()
 				.target(CHARACTERISTIC_B)
 				.act(SingleAct.builder()
@@ -207,7 +206,7 @@ class ChangeStat implements Executor<Action> {
 	public Act executeFor(Action action, User user) {
 		Stat stat = (Stat) action.getObjectDnd();
 		int value = Integer.parseInt(action.getAnswers()[0]);
-		statUp.up(user.getId(), stat.getName(), value);
+		statUp.up(user.getActualHero().getCharacter(), stat.getName(), value);
 		return ReturnAct.builder().target(CHARACTERISTIC_B).call(STAT_B).build();
 	}	
 }
@@ -224,7 +223,7 @@ class SkillMenu implements Executor<Action> {
 	@Override
 	public Act executeFor(Action action, User user) {
 
-		BaseAction[][] pool = skillButtonsBuilder.build(user.getId());
+		BaseAction[][] pool = skillButtonsBuilder.build(user.getActualHero().getCharacter());
 		return ReturnAct.builder()
 				.target(CHARACTERISTIC_B)
 				.act(SingleAct.builder()
@@ -247,7 +246,7 @@ class SaveRollMenu implements Executor<Action> {
 	@Override
 	public Act executeFor(Action action, User user) {
 
-		BaseAction[][] pool = saveRollsButtonsBuilder.build(user.getId());
+		BaseAction[][] pool = saveRollsButtonsBuilder.build(user.getActualHero().getCharacter());
 		return ReturnAct.builder()
 				.target(CHARACTERISTIC_B)
 				.act(SingleAct.builder()
@@ -284,15 +283,13 @@ class SingleSkillMenu implements Executor<Action> {
 
 	@Autowired
 	private SkillSingleButtonBuilder skillSingleButtonBuilder;
-	@Autowired
-	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
 		Skill article = (Skill) action.getObjectDnd();
 		String[][] buttonsChange = buildSkillChangeButtons(article);
 		String returnTo = SKILL_B;
-		String text = skillSingleButtonBuilder.build(article, actualHeroService.getById(user.getId()).getCharacter());
+		String text = skillSingleButtonBuilder.build(article, user.getActualHero().getCharacter());
 		if(article instanceof SaveRoll) {
 			returnTo = SAVE_ROLL_B;
 		}
@@ -362,11 +359,11 @@ class ChangeSkillExecutor implements Executor<Action> {
 		switch(action.getAnswers()[0]) {
 		case "Up to COMPETENSE":
 			skill.setProficiency(Proficiency.COMPETENSE);
-			skillUp.up(user.getId(), skill);
+			skillUp.up(user.getActualHero().getCharacter(), skill);
 			break;
 		case "Up to PROFICIENCY":
 			skill.setProficiency(Proficiency.BASE);
-			skillUp.up(user.getId(), skill);
+			skillUp.up(user.getActualHero().getCharacter(), skill);
 			break;
 		} 
 		if(skill instanceof SaveRoll) {

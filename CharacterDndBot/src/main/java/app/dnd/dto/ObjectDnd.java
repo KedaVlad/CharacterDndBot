@@ -10,8 +10,9 @@ import app.dnd.dto.ability.features.Feature;
 import app.dnd.dto.ability.proficiency.Possession;
 import app.dnd.dto.ability.spells.MagicSoul;
 import app.dnd.dto.ability.spells.Spell;
+import app.dnd.dto.characteristics.Hp;
+import app.dnd.dto.characteristics.Skill;
 import app.dnd.dto.characteristics.Stat;
-import app.dnd.dto.characteristics.Stat.Stats;
 import app.dnd.dto.comands.InerComand;
 import app.dnd.dto.stuffs.items.Items;
 import lombok.Data;
@@ -24,7 +25,8 @@ import lombok.Data;
 		@JsonSubTypes.Type(value = AttackModification.class, name = "attack_modification"),
 		@JsonSubTypes.Type(value = Spell.class, name = "spell"),
 		@JsonSubTypes.Type(value = MagicSoul.class, name = "magic_soul"),
-		@JsonSubTypes.Type(value = Stats.class, name = "stats"),
+		@JsonSubTypes.Type(value = Skill.class, name = "skill"),
+		@JsonSubTypes.Type(value = Hp.class, name = "hp"),
         @JsonSubTypes.Type(value = Stat.class, name = "stat") })
 @Data
 public abstract class ObjectDnd implements Informator {

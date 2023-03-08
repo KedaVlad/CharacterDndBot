@@ -3,21 +3,16 @@ package app.dnd.service.logic.stuff.bag;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import app.bot.model.ActualHero;
-import app.bot.service.ActualHeroService;
+import app.dnd.dto.CharacterDnd;
 import app.dnd.dto.stuffs.items.Ammunition;
 import app.dnd.dto.stuffs.items.Items;
 
 @Component
 public class AmmunitionTopUp {
 
-	@Autowired
-	private ActualHeroService actualHeroService;
-	
-	public void topUp(Long id, Ammunition ammunition, String valueInString) {
+	public void topUp(CharacterDnd character, Ammunition ammunition, String valueInString) {
 		
 		int value = 0;
 		Pattern pat = Pattern.compile("[-]?[0-9]+(.[0-9]+)?");
@@ -28,12 +23,10 @@ public class AmmunitionTopUp {
 		if (valueInString.contains("-"))
 			value = value * -1;
 		
-		ActualHero actualHero = actualHeroService.getById(id);
-		for(Items item: actualHero.getCharacter().getStuff().getInsideBag()) {
+		for(Items item: character.getStuff().getInsideBag()) {
 			if((item instanceof Ammunition) && item.getName().equals(ammunition.getName())) {
 				Ammunition ammo = (Ammunition) item;
 				ammo.addValue(value);
-				actualHeroService.save(actualHero);
 				return;
 			}
 		}

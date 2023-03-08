@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import app.bot.model.ActualHero;
 import app.bot.model.act.Act;
 import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.stuffs.items.Ammunition;
 import app.dnd.dto.stuffs.items.Armor;
 import app.dnd.dto.stuffs.items.Items;
@@ -73,15 +71,10 @@ class ItemStartCreate implements Executor<Action> {
 
 @Component
 class ItemFinishCreate implements Executor<Action> {
-
-	@Autowired
-	private ActualHeroService actualHeroService;
 	
 	@Override
 	public Act executeFor(Action action, User user) {
-		ActualHero actualHero = actualHeroService.getById(user.getId());
-		actualHero.getCharacter().getStuff().getInsideBag().add((Items)action.getObjectDnd());
-		actualHeroService.save(actualHero);
+		user.getActualHero().getCharacter().getStuff().getInsideBag().add((Items)action.getObjectDnd());
 		return ReturnAct.builder().target(STUFF_B).call(BAG_B).build();
 	}
 }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import app.bot.model.act.actions.Action;
 import app.bot.model.act.actions.BaseAction;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.CharacterDnd;
 import app.dnd.dto.characteristics.SaveRoll;
 import app.dnd.service.Location;
@@ -17,14 +16,11 @@ public class SaveRollsButtonsBuilder {
 	@Autowired
 	private SkillSingleButtonBuilder skillSingleButtonBuilder;
 	@Autowired
-	private ActualHeroService actualHeroService;
-	@Autowired
 	private ArrayToColumns arrayToColumns;
 	
 	
-	public BaseAction[][] build(Long id) {
+	public BaseAction[][] build(CharacterDnd character) {
 		
-		CharacterDnd character = actualHeroService.getById(id).getCharacter();
 		SaveRoll[] saveRolls = character.getCharacteristics().getSaveRolls();
 		BaseAction[] buttons = new BaseAction[saveRolls.length];
 		

@@ -11,6 +11,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class UpComand extends InerComand {
 	private ObjectDnd object;
-	private int value;
-
+	public static UpComand create(ObjectDnd objects) {
+		UpComand answer = new UpComand();
+		answer.object = objects;
+		return answer;
+	}
 }

@@ -3,14 +3,11 @@ package app.dnd.service.logic.hp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.bot.model.ActualHero;
-import app.bot.service.ActualHeroService;
+import app.dnd.dto.CharacterDnd;
 
 @Service
 public class HpControler {
 
-	@Autowired
-	private ActualHeroService actualHeroService;
 	@Autowired
 	private HpBuilderFactory hpBuilderFactory;
 	@Autowired
@@ -22,29 +19,21 @@ public class HpControler {
 	@Autowired
 	private TimeHp timeHp;
 	
-	public void grow(Long id, int value) {
-		ActualHero actualHero = actualHeroService.getById(id);
-		hpGrow.grow(actualHero.getCharacter().getHp(), value);
-		actualHeroService.save(actualHero);
+	public void grow(CharacterDnd character, int value) {
+		hpGrow.grow(character.getHp(), value);
 	}
 	
-	public void damage(Long id, int value) {
-		ActualHero actualHero = actualHeroService.getById(id);
-		hpDamage.damaged(actualHero.getCharacter().getHp(), value);
-		actualHeroService.save(actualHero);
+	public void damage(CharacterDnd character, int value) {
+		hpDamage.damaged(character.getHp(), value);
 	}
 	
-	public void heal(Long id, int value) {
-		ActualHero actualHero = actualHeroService.getById(id);
-		hpHeal.heal(actualHero.getCharacter().getHp(), value);
-		actualHeroService.save(actualHero);
+	public void heal(CharacterDnd character, int value) {
+		hpHeal.heal(character.getHp(), value);
 	}
 	
 	
-	public void bonusHp(Long id, int value) {
-		ActualHero actualHero = actualHeroService.getById(id);
-		timeHp.add(actualHero.getCharacter().getHp(), value);
-		actualHeroService.save(actualHero);
+	public void bonusHp(CharacterDnd character, int value) {
+		timeHp.add(character.getHp(), value);
 	}
 	
 	public HpBuilderFactory buildHp() {

@@ -2,7 +2,6 @@ package app.dnd.service.wrapp;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +29,5 @@ public class ClassDndWrappService {
 	public ClassDndWrapp findByClassNameAndArchetype(String className, String archetype) {
 		return classDndWrappRepository.findByClassNameAndArchetype(className, archetype);
 	}
-
+	
 }

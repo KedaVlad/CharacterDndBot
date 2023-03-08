@@ -4,16 +4,11 @@ import java.util.Arrays;
 
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Component
 public class ArrayToColumns {
 
 	
 	public <T> T[][] rebuild(T[] arr, int columns, Class<T> clazz) {
-		
-		log.info("ArrayToColumns (rebuild): start " + arr);
 		
 		int rows = (int) Math.ceil((double) arr.length / columns);
 		
@@ -32,7 +27,6 @@ public class ArrayToColumns {
 			T[] resizedLastRow = Arrays.copyOf(lastRow, lastRowLength);
 			result[rows - 1] = resizedLastRow;
 		}
-		log.info("ArrayToColumns (rebuild): end " + result);
 		return result;
 	}
 }

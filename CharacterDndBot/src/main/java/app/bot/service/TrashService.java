@@ -13,7 +13,7 @@ import app.repository.TrashRepository;
 
 @Transactional
 @Service
-public class TrashService1 {
+public class TrashService {
 	
 	@Autowired
 	private TrashRepository trashRepository;

@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 public class CloudComand extends InerComand {
 	protected String name;
 	protected String text;
+	
 	public static CloudComand create(String name, String text) {
 		CloudComand answer = new CloudComand();
 		answer.name = name;

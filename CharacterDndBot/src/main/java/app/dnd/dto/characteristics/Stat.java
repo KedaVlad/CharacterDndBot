@@ -22,8 +22,6 @@ public class Stat extends ObjectDnd {
 		this.name = name;
 	}
 
-
-    @JsonTypeName("stats")
 	public enum Stats {
 		STRENGTH("Strength"), DEXTERITY("Dexterity"), CONSTITUTION("Constitution"), INTELLIGENSE("Intelligense"),
 		WISDOM("Wisdom"), CHARISMA("Charisma");

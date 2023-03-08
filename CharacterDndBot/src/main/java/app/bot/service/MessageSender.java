@@ -19,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import app.bot.model.ActualHero;
 import app.bot.model.act.ActiveAct;
 import app.bot.model.act.ArrayActs;
 import app.bot.model.act.SingleAct;
@@ -38,11 +39,13 @@ public class MessageSender {
 	@Autowired
 	private IdManager idManager;
 	@Autowired
-	private TrashService1 trashService;
+	private TrashService trashService;
 	@Autowired
-	private ScriptService1 scriptService;
+	private ScriptService scriptService;
 	@Autowired
-	private CloudsService1 cloudsService;
+	private CloudsService cloudsService;
+	@Autowired
+	private ActualHeroService1 actualHeroService;
 	@Autowired
 	private Bot bot;
 
@@ -84,8 +87,21 @@ public class MessageSender {
 		Trash trash = user.getTrash();
 		Script script = user.getScript();
 		Clouds clouds = user.getClouds();
+		ActualHero actualHero = user.getActualHero();
 
 		try {
+
+			if(actualHero.hasReadyHero()) {
+				clouds.getCloudsTarget().addAll(actualHero.getCharacter().getClouds());
+				actualHero.getCharacter().getClouds().clear();
+			}
+			
+			for(ActiveAct cloud: clouds.getCloudsTarget()) {
+				Message message = bot.execute(buildMessage((SingleAct) cloud, user.getId(), ButtonName.CLOUD_ACT_K));
+				cloud.toCircle(message.getMessageId());
+			}
+			clouds.getCloudsWorked().addAll(clouds.getCloudsTarget());
+			clouds.getCloudsTarget().clear();
 
 			if(user.getAct() != null) {
 				ActiveAct act = user.getAct();
@@ -103,14 +119,7 @@ public class MessageSender {
 					act.toCircle(message.getMessageId());
 				}
 			}
-
-
-			for(ActiveAct cloud: clouds.getCloudsTarget()) {
-				Message message = bot.execute(buildMessage((SingleAct) cloud, user.getId(), ButtonName.CLOUD_ACT_K));
-				cloud.toCircle(message.getMessageId());
-			}
-			clouds.getCloudsWorked().addAll(clouds.getCloudsTarget());
-			clouds.getCloudsTarget().clear();
+			
 			cleanTrash(trash);
 
 		} catch (TelegramApiException e) {
@@ -120,6 +129,7 @@ public class MessageSender {
 		cloudsService.save(clouds);
 		scriptService.save(script);
 		trashService.save(trash);
+		actualHeroService.save(actualHero);
 		idManager.getInSession().remove(user.getId());
 	}
 

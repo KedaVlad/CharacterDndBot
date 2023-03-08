@@ -16,21 +16,17 @@ public class CharactersPoolControler {
 	@Autowired
 	private CharactersPoolService charactersPoolService;
 	@Autowired
-	private ActualHeroService actualHeroService;
+	private ActualHeroService1 actualHeroService;
 	
-	public boolean hasReadyHeroById(Long id) {
-		ActualHero hero = actualHeroService.getById(id);
-		return hero.getCharacter() != null && hero.getCharacter().getHp().getMax() > 0;
-	}
-	
-	public void save(Long id) {
-		CharactersPool charactersPool = charactersPoolService.getById(id);
-		ActualHero actualHero = actualHeroService.getById(id);
+	public void save(ActualHero actualHero) {
+		
+		CharactersPool charactersPool = charactersPoolService.getById(actualHero.getId());
 		charactersPool.getSavedCharacters().put(actualHero.getCharacter().getName(), actualHero.getCharacter());
 		charactersPoolService.save(charactersPool);
 	}
 
 	public void delete(Long id, String name) {
+		
 		CharactersPool charactersPool = charactersPoolService.getById(id);
 		ActualHero actualHero = actualHeroService.getById(id);
 		if(actualHero.getCharacter() != null && actualHero.getCharacter().getName().equals(name)) {
@@ -46,25 +42,24 @@ public class CharactersPoolControler {
 	public void download(User user, String name) {
 
 		CharactersPool charactersPool = charactersPoolService.getById(user.getId());
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+		ActualHero actualHero = user.getActualHero();
+		Clouds clouds = user.getClouds();
+		Trash trash = user.getTrash();
 
-		if (actualHero != null) {
-			charactersPool.getSavedCharacters().put(actualHero.getCharacter().getName(), actualHero.getCharacter());
-		}
-		
-		if (charactersPool.getSavedCharacters().containsKey(name)) {
-			Clouds clouds = user.getClouds();
-			Trash trash = user.getTrash();
+		if (actualHero.getCharacter() != null) {		
 			for(ActiveAct act: clouds.getCloudsWorked()) {
 				trash.getCircle().addAll(act.getActCircle());
 				act.getActCircle().clear();
 			}
 			clouds.getCloudsTarget().addAll(clouds.getCloudsWorked());
 			clouds.getCloudsWorked().clear();
-			charactersPool.getSavedCharacters().get(name).setClouds(clouds.getCloudsTarget());
+			actualHero.getCharacter().setClouds(clouds.getCloudsTarget());
+			charactersPool.getSavedCharacters().put(actualHero.getCharacter().getName(), actualHero.getCharacter());
+		}
+		
+		if (charactersPool.getSavedCharacters().containsKey(name)) {
 			actualHero.setCharacter(charactersPool.getSavedCharacters().get(name));
 			clouds.setCloudsTarget(actualHero.getCharacter().getClouds());
-			actualHeroService.save(actualHero);
 			charactersPoolService.save(charactersPool);
 		} 
 	}

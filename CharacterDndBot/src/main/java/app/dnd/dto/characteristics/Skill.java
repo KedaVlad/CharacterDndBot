@@ -3,12 +3,16 @@ package app.dnd.dto.characteristics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import app.dnd.dto.ObjectDnd;
 import app.dnd.dto.ability.proficiency.Proficiencies.Proficiency;
 import app.dnd.dto.characteristics.Stat.Stats;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+
+@JsonTypeName("skill")
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class Skill extends ObjectDnd {

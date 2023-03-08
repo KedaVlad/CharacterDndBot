@@ -7,9 +7,7 @@ import app.dnd.dto.CharacterDnd;
 import app.dnd.dto.ClassDnd;
 import app.dnd.service.logic.characteristic.StatModificator;
 import app.dnd.util.Convertor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 public class HpStableBuilder implements HpBuilder {
 
@@ -21,14 +19,15 @@ public class HpStableBuilder implements HpBuilder {
 	public int buildBase(CharacterDnd character) {
 		int modificator = statModificator.modificate(character.getCharacteristics().getStats()[2]) + character.getHp().getHpBonus();
 		int hp = this.hp.convert(character.getDndClass().get(0).getFirstHp());
-		log.info("HpStableBuilder (buildBase first): " + character.getDndClass().get(0).getFirstHp());
 		int start = character.getDndClass().get(0).getFirstHp() + modificator;
 
-		log.info("HpStableBuilder (buildBase start): " + start);
 		for (int i = 1; i < character.getDndClass().get(0).getLvl(); i++) {
-			start += hp + modificator;
+			if((hp + modificator) > 0) {
+				start += hp + modificator;
+			} else {
+				start += 1;
+			}			
 		}
-		log.info("HpStableBuilder (buildBase end): " + start);
 		return start;
 	}
 	
@@ -36,7 +35,11 @@ public class HpStableBuilder implements HpBuilder {
 	public int buildForLvlUp(CharacterDnd character, ClassDnd clazz) {
 		int modificator = statModificator.modificate(character.getCharacteristics().getStats()[2]) + character.getHp().getHpBonus();
 		int hp = this.hp.convert(clazz.getFirstHp());
-		return hp + modificator;
+		if((hp + modificator) > 0) {
+			return hp + modificator;
+		} else {
+			return 1;
+		}
 	}
 
 }

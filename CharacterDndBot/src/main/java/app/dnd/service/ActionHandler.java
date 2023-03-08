@@ -12,28 +12,29 @@ import app.bot.model.act.actions.RollAction;
 import app.bot.model.wrapp.ActWrapp;
 import app.bot.model.wrapp.BaseActionWrapp;
 import app.bot.service.Handler;
-import app.dnd.service.attackmachine.AttackMachine;
-import app.dnd.service.attackmachine.AttackMachinePreRoll;
 import app.dnd.service.character.AbilityExecutor;
+import app.dnd.service.character.AttackMachine;
+import app.dnd.service.character.AttackMachinePreRoll;
+import app.dnd.service.character.CharacterCaseExecutor;
 import app.dnd.service.character.CharacterisricExecutor;
 import app.dnd.service.character.DebuffExecutor;
+import app.dnd.service.character.DownloadOrDeleteExecutor;
 import app.dnd.service.character.MemoirsExecutor;
+import app.dnd.service.character.Menu;
 import app.dnd.service.character.RestExecutor;
+import app.dnd.service.character.Start;
 import app.dnd.service.character.StuffExecutor;
+import app.dnd.service.character.TextComandExecutor;
+import app.dnd.service.character.TextComandHelper;
 import app.dnd.service.factory.CharacterFactory;
 import app.dnd.service.factory.ClassFactory;
 import app.dnd.service.factory.HpFactory;
 import app.dnd.service.factory.ItemFactory;
 import app.dnd.service.factory.RaceFactory;
 import app.dnd.service.factory.StatFactory;
-import app.dnd.service.gamer.CharacterCaseExecutor;
-import app.dnd.service.gamer.DownloadOrDeleteExecutor;
-import app.dnd.service.gamer.Menu;
-import app.dnd.service.gamer.RollsExecutor;
-import app.dnd.service.gamer.Start;
-import app.dnd.service.gamer.TextComandExecutor;
 import app.dnd.service.roll.DefaultPreRollExecuter;
 import app.dnd.service.roll.HeroRolleExecutor;
+import app.dnd.service.roll.RollsExecutor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -111,6 +112,8 @@ class ActionManager implements Manager<Action> {
 	private AttackMachine attackMachine;
 	@Autowired
 	private TextComandExecutor textComandExecutor;
+	@Autowired
+	private TextComandHelper textComandHelper;
 
 	@Override
 	public Executor<Action> find(Location location) {
@@ -154,6 +157,8 @@ class ActionManager implements Manager<Action> {
 			return textComandExecutor;
 		case ATTACK_MACHINE:
 			return attackMachine;
+		case TEXT_COMAND_HELPER:
+			return textComandHelper;
 		default:
 			return null;
 

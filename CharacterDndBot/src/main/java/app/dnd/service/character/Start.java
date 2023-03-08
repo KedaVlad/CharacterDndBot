@@ -1,4 +1,4 @@
-package app.dnd.service.gamer;
+package app.dnd.service.character;
 
 import org.springframework.stereotype.Component;
 
@@ -18,13 +18,8 @@ public class Start implements Executor<Action> {
 				.act(SingleAct.builder()
 						.name(START_B)
 						.text("/characters - This command leads to your character library,"
-								+ " where you can create and choose which character you play.\n\n"
-						+" Text commands that are available to your hero, unless I ask you to write something specific at that moment:\n"
-								+ "- To add experience, simply write \"+\" followed by the amount gained.\n"	
-								+ "- To get damage, write \"hp-\" followed by the amount gained.\n"
-								+ "- To get heal, write \"hp+\" followed by the amount gained.\n"
-								+ "- To get bonus HP, write \"hp++\" followed by the amount gained.\n"
-								+ "- To add a new memoir, just write it in the chat")
+								+ " where you can create and choose which character you play.\n"
+								+"/text_comands - List of text commands available to you.")
 						.build())
 				.build();
 	}

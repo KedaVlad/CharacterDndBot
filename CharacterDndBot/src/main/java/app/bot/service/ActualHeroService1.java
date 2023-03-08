@@ -11,7 +11,7 @@ import app.repository.ActualHeroRepository;
 
 @Transactional
 @Service
-public class ActualHeroService {
+public class ActualHeroService1 {
 
 	@Autowired
 	private ActualHeroRepository actualHeroRepository;

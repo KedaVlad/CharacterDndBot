@@ -1,5 +1,6 @@
 package app.dnd.dto.characteristics;
 
+
 import app.dnd.dto.characteristics.Stat.Stats;
 
 public class SaveRoll extends Skill {

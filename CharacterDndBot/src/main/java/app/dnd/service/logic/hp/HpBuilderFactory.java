@@ -10,9 +10,9 @@ import app.dnd.dto.ClassDnd;
 public class HpBuilderFactory {
 
 	@Autowired
-	HpStableBuilder hpStableBuilder;
+	private HpStableBuilder hpStableBuilder;
 	@Autowired
-	HpRandomBuilder hpRandomBuilder;
+	private HpRandomBuilder hpRandomBuilder;
 	
 	public HpStableBuilder stable() {
 		return hpStableBuilder;

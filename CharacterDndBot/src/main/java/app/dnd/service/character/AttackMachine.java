@@ -1,4 +1,4 @@
-package app.dnd.service.attackmachine;
+package app.dnd.service.character;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,6 @@ import app.bot.model.act.actions.PoolActions;
 import app.bot.model.act.actions.PreRoll;
 import app.bot.model.act.actions.RollAction;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.CharacterDnd;
 import app.dnd.dto.ability.attacks.AttackAbility;
 import app.dnd.dto.ability.attacks.AttackModification;
@@ -68,17 +67,14 @@ public class AttackMachine implements Executor<Action>{
 class StartAttack implements Executor<Action> {
 
 	@Autowired
-	private ActualHeroService actualHeroService;
-	@Autowired
 	private SubAttackBuilder subAttackBuilder;
 
 	@Override
 	public Act executeFor(Action action, User user) {
 
 		Weapon weapon = (Weapon) action.getObjectDnd();
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+		ActualHero actualHero = user.getActualHero();
 		actualHero.getCharacter().getAttackMachine().setTargetWeapon(weapon);
-		actualHeroService.save(actualHero);
 		List<AttackModification> attacks = buildAttack(actualHero.getCharacter().getAttackMachine());
 		BaseAction[][] pool = new BaseAction[attacks.size()][1];
 		for (int i = 0; i < attacks.size(); i++) {
@@ -170,17 +166,14 @@ class MakeAttack implements Executor<Action> {
 
 	@Autowired
 	private ProficienciesFinder proficienciesFinder;
-	@Autowired
-	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+		ActualHero actualHero = user.getActualHero();
 		CharacterDnd characterDnd = actualHero.getCharacter();
 		AttackAbility attackAbility = characterDnd.getAttackMachine();
 		AttackModification attack = (AttackModification) action.getObjectDnd();
 		attackAbility.setTargetAttack(attack);
-		actualHeroService.save(actualHero);
 		return SingleAct.builder()
 				.name(attack.getName())
 				.text(attack.toString()).action(
@@ -219,16 +212,14 @@ class PostAttack  implements Executor<Action> {
 
 	@Autowired
 	private SubAttackBuilder subAttackBuilder;
-	@Autowired
-	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
 
 		if (action.condition() == 1) {
-			return makeHit(actualHeroService.getById(user.getId()).getCharacter() ,action);
+			return makeHit(user.getActualHero().getCharacter(), action);
 		} else {
-			return makeCrit(actualHeroService.getById(user.getId()).getCharacter() ,action);
+			return makeCrit(user.getActualHero().getCharacter(), action);
 		}
 	}
 

@@ -1,4 +1,4 @@
-package app.dnd.service.gamer;
+package app.dnd.service.character;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,6 @@ import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.act.actions.PoolActions;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
 import app.dnd.service.factory.InformatorHandler;
@@ -19,8 +18,6 @@ public class Menu implements Executor<Action>{
 
 	@Autowired
 	private InformatorHandler informatorHandler;
-	@Autowired 
-	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
@@ -44,7 +41,7 @@ public class Menu implements Executor<Action>{
 					.target(START_B)
 					.act(SingleAct.builder()
 							.name(MENU_B)
-							.text(informatorHandler.handle(actualHeroService.getById(user.getId()).getCharacter()))
+							.text(informatorHandler.handle(user.getActualHero().getCharacter()))
 							.action(PoolActions.builder()
 									.actionsPool(pool)
 									.replyButtons()

@@ -30,5 +30,5 @@ public class RaceDndWrappService {
 	public RaceDndWrapp findByRaceNameAndSubRace(String raceName, String subRace) {
 		return raceDndWrappRepository.findByRaceNameAndSubRace(raceName, subRace);
 	}
-
+	
 }

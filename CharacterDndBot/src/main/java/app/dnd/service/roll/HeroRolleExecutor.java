@@ -41,8 +41,8 @@ class HeroRolleFormalizer {
 
 	public Formula buildFormula(RollAction action, User user) {
 		Formula answer = new Formula("ROLL",action.getBase());
-		if(action.getDepends() != null) answer.addDicesToEnd(statDiceBuilder.build(user.getId(), action.getDepends()));
-		if(action.isProficiency()) answer.addDicesToEnd(proficienciesDiceInitializer.init(user.getId(), action.getProficiency()));
+		if(action.getDepends() != null) answer.addDicesToEnd(statDiceBuilder.build(user.getActualHero().getCharacter(), action.getDepends()));
+		if(action.isProficiency()) answer.addDicesToEnd(proficienciesDiceInitializer.init(user.getActualHero().getCharacter(), action.getProficiency()));
 		return answer;
 	}
 

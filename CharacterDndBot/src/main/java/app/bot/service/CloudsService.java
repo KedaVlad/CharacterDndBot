@@ -11,7 +11,7 @@ import app.repository.CloudsRepository;
 
 @Transactional
 @Service
-public class CloudsService1 {
+public class CloudsService {
 
 	@Autowired
 	private CloudsRepository cloudsRepository;

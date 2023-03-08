@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import app.bot.model.act.actions.Action;
 import app.bot.model.act.actions.BaseAction;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.CharacterDnd;
 import app.dnd.dto.characteristics.Skill;
 import app.dnd.service.Location;
@@ -17,13 +16,9 @@ public class SkillButtonsBuilder {
 	@Autowired
 	private SkillSingleButtonBuilder skillSingleButtonBuilder;
 	@Autowired
-	private ActualHeroService actualHeroService;
-	@Autowired
 	private ArrayToColumns arrayToColumns;
 	
-	public BaseAction[][] build(Long id) {
-
-		CharacterDnd character = actualHeroService.getById(id).getCharacter();
+	public BaseAction[][] build(CharacterDnd character) {
 		
 		Skill[] skills = character.getCharacteristics().getSkills();
 		String[] buttons = new String[skills.length];

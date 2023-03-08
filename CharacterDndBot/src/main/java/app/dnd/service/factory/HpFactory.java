@@ -13,11 +13,10 @@ import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.CharacterDnd;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
-import app.dnd.service.gamer.Menu;
+import app.dnd.service.character.Menu;
 import app.dnd.service.logic.hp.HpControler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,12 +51,10 @@ class StartBuildHp implements Executor<Action> {
 
 	@Autowired
 	private HpControler hpControler;
-	@Autowired
-	private ActualHeroService actualHeroService;
 	
 	@Override
 	public Act executeFor(Action action, User user) {	
-		int stableHp = hpControler.buildHp().stable().buildBase(actualHeroService.getById(user.getId()).getCharacter());
+		int stableHp = hpControler.buildHp().stable().buildBase(user.getActualHero().getCharacter());
 		String[][] nextStep = { { "Stable " + stableHp, "Random ***" } };
 		String text = "How much HP does your character have?\r\n" + "\r\n" + "You can choose stable or random HP count \r\n"
 				+ "\r\n"
@@ -84,12 +81,10 @@ class ApruveHp implements Executor<Action> {
 
 	@Autowired
 	private HpControler hpControler;
-	@Autowired
-	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {	
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+		ActualHero actualHero = user.getActualHero();
 		String answer = action.getAnswers()[0];
 		CharacterDnd character = actualHero.getCharacter();
 		String text = "Congratulations, you are ready for adventure.";
@@ -114,7 +109,6 @@ class ApruveHp implements Executor<Action> {
 			}
 		}
 		action.setButtons(new String[][] { { "Let's go" } });
-		actualHeroService.save(actualHero);
 		return SingleAct.builder()
 				.name("apruveHp")
 				.text(text)
@@ -128,15 +122,12 @@ class FinishHp implements Executor<Action> {
 
 	@Autowired
 	private Menu menu;
-	@Autowired
-	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {	
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+		ActualHero actualHero = user.getActualHero();
 		actualHero.getCharacter().getHp().setMax((Integer) Integer.parseInt(action.getAnswers()[1]));
 		actualHero.getCharacter().getHp().setNow(actualHero.getCharacter().getHp().getMax());
-		actualHeroService.save(actualHero);
 		return  menu.executeFor(Action.builder().build(), user);
 	}
 }

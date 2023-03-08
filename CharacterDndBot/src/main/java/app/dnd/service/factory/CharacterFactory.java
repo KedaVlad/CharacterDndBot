@@ -11,7 +11,6 @@ import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.CharactersPool;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.bot.service.CharactersPoolService;
 import app.dnd.dto.CharacterDnd;
 import app.dnd.service.Executor;
@@ -80,18 +79,15 @@ class CharacterFinishCreate implements Executor<Action> {
 	@Autowired
 	private RaceFactory raceFactory;
 	@Autowired
-	private ActualHeroService actualHeroService;
-	@Autowired
 	private CharactersPoolService characterPoolService;
 	
 	@Override
 	public Act executeFor(Action action, User user) {
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+		ActualHero actualHero = user.getActualHero();
 		CharactersPool charactersPool = characterPoolService.getById(user.getId());
 		actualHero.setCharacter(new CharacterDnd(action.getAnswers()[1]));
 		charactersPool.getSavedCharacters().put(actualHero.getCharacter().getName(), actualHero.getCharacter());
 		characterPoolService.save(charactersPool);
-		actualHeroService.save(actualHero);
 		return raceFactory.executeFor(Action.builder().build(), user);
 	}
 }

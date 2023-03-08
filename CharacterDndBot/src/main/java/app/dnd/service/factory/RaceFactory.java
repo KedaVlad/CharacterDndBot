@@ -4,19 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import app.bot.model.ActualHero;
 import app.bot.model.act.Act;
 import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.CharacterDnd;
 import app.dnd.dto.RaceDnd;
 import app.dnd.dto.comands.InerComand;
 import app.dnd.dto.wrap.RaceDndWrapp;
 import app.dnd.service.Executor;
 import app.dnd.service.Location;
+import app.dnd.service.factory.comandreader.RaceComandReader;
 import app.dnd.service.wrapp.RaceDndWrappService;
 import app.dnd.util.ArrayToColumns;
 import lombok.extern.slf4j.Slf4j;
@@ -127,18 +126,14 @@ class RaceFinishCreate implements Executor<Action> {
 	private RaceDndWrappService raceDndWrappService;
 	@Autowired
 	private RaceIntegrator raceIntegrator;
-	@Autowired
-	private ActualHeroService actualHeroService;
 
 	@Override
 	public Act executeFor(Action action, User user) {
-
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+		
 		String raceName = action.getAnswers()[0];
 		String subRace = action.getAnswers()[1];
 		RaceDndWrapp raceWrapp = raceDndWrappService.findByRaceNameAndSubRace(raceName, subRace);
-		raceIntegrator.integrate(actualHero.getCharacter(), raceWrapp);
-		actualHeroService.save(actualHero);
+		raceIntegrator.integrate(user.getActualHero().getCharacter(), raceWrapp);
 		return classFactory.executeFor(Action.builder().build(), user);
 	}
 }
@@ -147,7 +142,7 @@ class RaceFinishCreate implements Executor<Action> {
 class RaceIntegrator {
 
 	@Autowired
-	private ScriptReader scriptReader;
+	private RaceComandReader raceComandReader;
 
 	public void integrate(CharacterDnd character, RaceDndWrapp raceWrapp) {
 		RaceDnd race = new RaceDnd();
@@ -155,9 +150,8 @@ class RaceIntegrator {
 		race.setSpeed(raceWrapp.getSpeed());
 		race.setSubRace(raceWrapp.getSubRace());
 		character.setRace(race);
-		character.getMyMemoirs().add(raceWrapp.getInformation());
 		for (InerComand comand : raceWrapp.getSpecials()) {
-			scriptReader.execute(character, comand);
+			raceComandReader.execute(character, comand);
 		}
 	}
 }

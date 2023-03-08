@@ -12,7 +12,7 @@ import app.repository.ScriptRepository;
 
 @Transactional
 @Service
-public class ScriptService1 {
+public class ScriptService {
 
 	@Autowired
 	private ScriptRepository scriptRepository;

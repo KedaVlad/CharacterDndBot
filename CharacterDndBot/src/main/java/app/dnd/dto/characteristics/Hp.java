@@ -1,15 +1,18 @@
 package app.dnd.dto.characteristics;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import app.dnd.dto.Informator;
+import app.dnd.dto.ObjectDnd;
 import app.dnd.dto.Refreshable;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class Hp implements Refreshable, Informator, Serializable {
+@EqualsAndHashCode(callSuper=false)
+@JsonTypeName("hp")
+public class Hp extends ObjectDnd implements Refreshable, Informator {
 
-	private static final long serialVersionUID = 1L;
 	private int max = 0;
 	private int now = 0;
 	private int timeHp = 0;

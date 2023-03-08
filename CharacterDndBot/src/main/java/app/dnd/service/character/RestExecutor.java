@@ -10,7 +10,6 @@ import app.bot.model.act.ReturnAct;
 import app.bot.model.act.SingleAct;
 import app.bot.model.act.actions.Action;
 import app.bot.model.user.User;
-import app.bot.service.ActualHeroService;
 import app.dnd.dto.Refreshable.Time;
 import app.dnd.service.Executor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,29 +60,26 @@ class StartRest implements Executor<Action> {
 @Component
 class EndRest implements Executor<Action> {
 
-	@Autowired
-	private ActualHeroService actualHeroService;
-	
+
 	@Override
 	public Act executeFor(Action action, User user) {
-		
-		ActualHero actualHero = actualHeroService.getById(user.getId());
+
+		ActualHero actualHero = user.getActualHero();
 		String timeInString = action.getAnswers()[0];
 		String text = null;
 		if(timeInString.equals(Time.SHORT.toString())) {
 			actualHero.getCharacter().refresh(Time.SHORT);
-					text ="Everything that depended on a short rest is reset.\n"
-							+ "You have "+ actualHero.getCharacter().getLvl().getLvl() +" Hit Dice available to restore your health.";
+			text ="Everything that depended on a short rest is reset.\n"
+					+ "You have "+ actualHero.getCharacter().getLvl().getLvl() +" Hit Dice available to restore your health.";
 		} else { 
 			actualHero.getCharacter().refresh(Time.LONG);
 			text = "You are fully rested and recovered!";
 		}
-		actualHeroService.save(actualHero);
-			return SingleAct.builder()
-					.name("EndRest")
-					.text(text)
-					.build();
-		
-			
+		return SingleAct.builder()
+				.name("EndRest")
+				.text(text)
+				.build();
+
+
 	}
 }

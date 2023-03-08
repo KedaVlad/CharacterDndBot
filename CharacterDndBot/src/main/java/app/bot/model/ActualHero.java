@@ -12,4 +12,8 @@ public class ActualHero {
 	@Id
 	private Long id;
 	private CharacterDnd character;
+	
+	public boolean hasReadyHero() {
+		return character != null && character.getHp().getMax() > 0;
+	}
 }
