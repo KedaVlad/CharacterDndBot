@@ -3,9 +3,9 @@ package app.dnd.service.logic.stuff.bag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import app.dnd.dto.stuffs.Stuff;
-import app.dnd.dto.stuffs.items.Armor;
-import app.dnd.dto.stuffs.items.Armor.ClassArmor;
+import app.dnd.model.stuffs.Stuff;
+import app.dnd.model.stuffs.items.Armor;
+import app.dnd.model.stuffs.items.Armor.ClassArmor;
 
 @Component
 public class ArmorWear {

@@ -2,7 +2,7 @@ package app.dnd.service.logic.stuff.wallet;
 
 import org.springframework.stereotype.Component;
 
-import app.dnd.dto.stuffs.Wallet;
+import app.dnd.model.stuffs.Wallet;
 
 @Component
 public class WalletLostCoin {

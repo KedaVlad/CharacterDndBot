@@ -5,9 +5,9 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
-import app.dnd.dto.CharacterDnd;
-import app.dnd.dto.stuffs.items.Ammunition;
-import app.dnd.dto.stuffs.items.Items;
+import app.dnd.model.hero.CharacterDnd;
+import app.dnd.model.stuffs.items.Ammunition;
+import app.dnd.model.stuffs.items.Items;
 
 @Component
 public class AmmunitionTopUp {

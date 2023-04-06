@@ -2,12 +2,12 @@ package app.dnd.service.logic.stuff.wallet;
 
 import org.springframework.stereotype.Component;
 
-import app.dnd.dto.CharacterDnd;
-import app.dnd.dto.ClassDnd;
-import app.dnd.dto.characteristics.Stat;
-import app.dnd.dto.stuffs.Stuff;
-import app.dnd.dto.stuffs.items.Armor.Armors;
-import app.dnd.service.logic.characteristic.StatModificator;
+import app.dnd.model.characteristics.Stat;
+import app.dnd.model.hero.CharacterDnd;
+import app.dnd.model.hero.ClassDnd;
+import app.dnd.model.stuffs.Stuff;
+import app.dnd.model.stuffs.items.Armor.Armors;
+import app.dnd.service.logic.characteristic.stat.StatModificator;
 
 @Component
 public class ArmorClassСalculator {

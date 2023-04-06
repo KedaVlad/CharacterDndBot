@@ -3,7 +3,7 @@ package app.dnd.service.logic.hp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.dnd.dto.CharacterDnd;
+import app.dnd.model.hero.CharacterDnd;
 
 @Service
 public class HpControler {

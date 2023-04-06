@@ -3,10 +3,10 @@ package app.dnd.service.logic.stuff.bag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import app.dnd.dto.CharacterDnd;
-import app.dnd.dto.stuffs.Stuff;
-import app.dnd.dto.stuffs.items.Armor;
-import app.dnd.dto.stuffs.items.Items;
+import app.dnd.model.hero.CharacterDnd;
+import app.dnd.model.stuffs.Stuff;
+import app.dnd.model.stuffs.items.Armor;
+import app.dnd.model.stuffs.items.Items;
 
 @Component
 public class CarringRemove {

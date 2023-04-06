@@ -1,22 +1,8 @@
 package app.bot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import app.bot.model.user.User;
-import app.dnd.service.ActionHandler;
+import app.bot.model.UserCore;
 
-@Service
-public class Player { 
-	
-	@Autowired
-	private UpdateHandler updateHandler;
-	@Autowired
-	private ActionHandler actionHandler;
-	@Autowired
-	private ActHandler actHandler;
-	
-	public User playFor(User user) {
-		return actHandler.handle(actionHandler.handle(updateHandler.handle(user)));
-	}
+public interface Player<T extends UserCore> {
+
+	public T playFor(T user);
 }
-

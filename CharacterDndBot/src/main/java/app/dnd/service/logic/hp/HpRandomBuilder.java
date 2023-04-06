@@ -3,9 +3,9 @@ package app.dnd.service.logic.hp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import app.dnd.dto.CharacterDnd;
-import app.dnd.dto.ClassDnd;
-import app.dnd.service.logic.characteristic.StatModificator;
+import app.dnd.model.hero.CharacterDnd;
+import app.dnd.model.hero.ClassDnd;
+import app.dnd.service.logic.characteristic.stat.StatModificator;
 import app.dnd.util.math.Formalizer;
 
 @Component
