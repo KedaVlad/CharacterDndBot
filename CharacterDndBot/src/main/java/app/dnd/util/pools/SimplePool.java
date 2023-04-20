@@ -10,6 +10,10 @@ public class SimplePool<T> extends Pool<T> {
 		}
 	}
 
+	public void giveBack(T object) {
+		this.active.remove(object);
+	}
+	
 	public void giveBack(int target) {
 		this.active.remove(target);
 	}

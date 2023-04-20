@@ -1,22 +1,12 @@
 package app.bot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import app.bot.model.user.User;
-import app.dnd.service.ActionHandler;
 
-@Service
-public class Player { 
-	
-	@Autowired
-	private UpdateHandler updateHandler;
-	@Autowired
-	private ActionHandler actionHandler;
-	@Autowired
-	private ActHandler actHandler;
-	
-	public User playFor(User user) {
-		return actHandler.handle(actionHandler.handle(updateHandler.handle(user)));
-	}
+import app.bot.event.EndGame;
+import app.bot.event.StartGame;
+import app.bot.model.UserCore;
+
+public interface Player<T extends UserCore> {
+
+	public void start(StartGame<T> startSession);
+	public void end(EndGame endSession);
 }
-

@@ -1,0 +1,6 @@
+package app.dnd.model.enums;
+
+public enum WeaponProperties {
+	UNIVERSAL, LUNG, THROWING, FENCING, TWO_HANDED, AMMUNITION, RELOAD, AVAILABILITY, MILITARY, LONG_RANGE, MELEE,
+	SIMPLE, HEAVY
+}
