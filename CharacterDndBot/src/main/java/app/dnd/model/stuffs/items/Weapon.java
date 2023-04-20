@@ -3,8 +3,8 @@ package app.dnd.model.stuffs.items;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import app.dnd.model.ability.attacks.AttackModification;
 import app.dnd.model.enums.Weapons;
+import app.dnd.model.telents.attacks.AttackModification;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

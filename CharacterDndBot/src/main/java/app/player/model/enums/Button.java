@@ -10,10 +10,10 @@ public enum Button {
 	CREATE("CREATE"),
 	DOWNLOAD("DOWNLOAD"),
 	DELETE("DELETE"),
+	RETURN_TO_CREATING("RETURN TO CREATING"),
 	
 	MENU("Menu"),
 	RETURN_TO_MENU("RETURN TO " + MENU.NAME),
-	
 	
 	ROLLS("ROLLS"),
 	
@@ -61,8 +61,8 @@ public enum Button {
 	CRITICAL_MISS("MISS"),
 	ADVANTAGE("ADVANTAGE"),
 	BASIC("BASIC"),
-	DISADVANTAGE("DISADVANTAGE");
-
+	DISADVANTAGE("DISADVANTAGE"), 
+;
 	Button(String name) {
 		NAME = name;
 	}

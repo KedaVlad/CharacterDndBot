@@ -1,13 +1,18 @@
 package app.dnd.model.actions;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
+@JsonTypeName("pool_action")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public class PoolActions extends BaseAction {
 
-	private BaseAction[][] pool;
+	private SingleAction[][] pool;
 
 	PoolActions() {
 	}
@@ -16,23 +21,12 @@ public class PoolActions extends BaseAction {
 		return new PoolActionBuilder();
 	}
 
-	@Override
-	public String[][] buildButtons() {
-		String[][] answer = new String[pool.length][];
-		for (int i = 0; i < pool.length; i++) {
-			answer[i] = new String[pool[i].length];
-			for (int j = 0; j < pool[i].length; j++) {
-				answer[i][j] = pool[i][j].getName();
-			}
-		}
-		return answer;
-	}
 
 	@Override
-	public BaseAction continueAction(String answer) {
-		for (BaseAction[] line : pool) {
-			for (BaseAction target : line) {
-				if (target.getName().equals(answer)) {
+	public BaseAction continueStage(String name) {
+		for (SingleAction[] line : pool) {
+			for (SingleAction target : line) {
+				if (target.getName().equals(name)) {
 					return target;
 				}
 			}
@@ -46,9 +40,9 @@ public class PoolActions extends BaseAction {
 	}
 
 	@Override
-	public boolean replyContain(String string) {
-		for (BaseAction[] line : pool) {
-			for (BaseAction target : line) {
+	public boolean containButton(String string) {
+		for (SingleAction[] line : pool) {
+			for (SingleAction target : line) {
 				if (target.getName().equals(string)) {
 					return true;
 				}
@@ -56,5 +50,20 @@ public class PoolActions extends BaseAction {
 		}
 		return false;
 	}
+
+	@Override
+	public String[][] buildButton() {
+		String[][] answer = new String[pool.length][];
+		for (int i = 0; i < pool.length; i++) {
+			answer[i] = new String[pool[i].length];
+			for (int j = 0; j < pool[i].length; j++) {
+				answer[i][j] = pool[i][j].getName();
+			}
+		}
+		return answer;
+	}
+
+
+
 
 }

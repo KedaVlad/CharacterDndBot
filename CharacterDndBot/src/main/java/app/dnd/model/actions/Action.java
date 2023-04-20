@@ -1,6 +1,7 @@
 package app.dnd.model.actions;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import app.dnd.model.ObjectDnd;
 import lombok.Data;
@@ -8,10 +9,10 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
+@JsonTypeName("action")
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME, property = "type")
-public class Action extends BaseAction implements Cloneable {
+public class Action extends SingleAction implements Cloneable {
 
-	private String[][] buttons;
 	private String[] answers;
 	private ObjectDnd objectDnd;
 
@@ -22,12 +23,12 @@ public class Action extends BaseAction implements Cloneable {
 	}
 
 	@Override
-	public String[][] buildButtons() {
-		return buttons;
+	public String[][] buildButton() {
+		return getButtons();
 	}
 
 	@Override
-	public Action continueAction(String key) {
+	public Action continueStage(String key) {
 		Action answer = this.clone();
 		if (answer.answers != null && answer.answers.length > 0) {
 			String[] newAnswers = new String[answer.answers.length + 1];
@@ -44,22 +45,9 @@ public class Action extends BaseAction implements Cloneable {
 
 	@Override
 	public boolean hasButtons() {
-		return buttons != null && buttons.length > 0 && buttons[0].length > 0;
+		return getButtons() != null && getButtons().length > 0 && getButtons()[0].length > 0;
 	}
 
-	@Override
-	public boolean replyContain(String string) {
-		if(hasButtons()) {
-			for (String[] line : buttons) {
-				for (String button : line) {
-					if (button.equals(string)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
 
 	@Override
 	protected Action clone() {
@@ -71,8 +59,21 @@ public class Action extends BaseAction implements Cloneable {
 		return answer;
 	}
 
-	public int condition()
-	{
+	@Override
+	public boolean containButton(String string) {
+		if(hasButtons()) {
+			for (String[] line : getButtons()) {
+				for (String button : line) {
+					if (button.equals(string)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public int condition() {
 		int condition = 0;
 		if (answers != null) condition = answers.length;
 		return condition;

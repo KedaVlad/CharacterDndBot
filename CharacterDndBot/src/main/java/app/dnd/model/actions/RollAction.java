@@ -1,5 +1,7 @@
 package app.dnd.model.actions;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import app.dnd.model.enums.Proficiency;
 import app.dnd.model.enums.Stats;
 import app.dnd.util.math.Dice;
@@ -8,7 +10,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RollAction extends BaseAction {
+@JsonTypeName("roll")
+public class RollAction extends SingleAction {
 
 	private Stats depends;
 	private Proficiency proficiency;
@@ -75,13 +78,9 @@ public class RollAction extends BaseAction {
 		this.proficiency = proficiency;
 	}
 
-	@Override
-	public String[][] buildButtons() {
-		return null;
-	}
 
 	@Override
-	public BaseAction continueAction(String key) {
+	public BaseAction continueStage(String key) {
 		return this;
 	}
 
@@ -91,7 +90,12 @@ public class RollAction extends BaseAction {
 	}
 
 	@Override
-	public boolean replyContain(String string) {
+	public boolean containButton(String string) {
 		return false;
+	}
+
+	@Override
+	public String[][] buildButton() {
+		return null;
 	}
 }

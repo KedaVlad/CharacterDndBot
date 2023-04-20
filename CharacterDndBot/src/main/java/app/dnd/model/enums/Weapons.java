@@ -1,6 +1,6 @@
 package app.dnd.model.enums;
 
-import app.dnd.model.ability.attacks.AttackModification;
+import app.dnd.model.telents.attacks.AttackModification;
 import app.dnd.util.math.DamageDice;
 import app.dnd.util.math.DamageDice.TypeDamage;
 import app.dnd.util.math.Formalizer.Roll;

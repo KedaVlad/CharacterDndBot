@@ -1,46 +1,44 @@
 package app.dnd.model.actions;
 
-import app.dnd.util.ButtonName;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import app.player.model.enums.Button;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PreRoll extends BaseAction { 
+@JsonTypeName("pre_roll")
+public class PreRoll extends SingleAction { 
 
-	String[][] nextStep;
 	RollAction roll;
 	private String status;
 	private boolean criticalMiss;
 	private boolean criticalHit;
-
-	PreRoll() {
-		nextStep = new String[][] { {ButtonName.ADVANTAGE, ButtonName.BASIC, ButtonName.DISADVANTAGE } };
-	}
 
 	public static PreRollBuilder builder() {
 		return new PreRollBuilder();
 	}
 
 	@Override
-	public PreRoll continueAction(String answer) {
+	public PreRoll continueStage(String answer) {
 		this.status = answer;
 		return this;
 	}
 
 	@Override
-	public String[][] buildButtons() {
-		return nextStep;
-	}
-
-	@Override
 	public boolean hasButtons() {
-		return nextStep != null && nextStep.length != 0;
+		return true;
 	}
 
 	@Override
-	public boolean replyContain(String string) {
-		return string.equals(ButtonName.ADVANTAGE) || string.equals(ButtonName.BASIC) || string.equals(ButtonName.DISADVANTAGE);
+	public boolean containButton(String string) {
+		return string.equals(Button.BASIC.NAME) || string.equals(Button.BASIC.NAME) || string.equals(Button.ADVANTAGE.NAME);
+	}
+
+	@Override
+	public String[][] buildButton() {
+		return getButtons();
 	}
 
 }

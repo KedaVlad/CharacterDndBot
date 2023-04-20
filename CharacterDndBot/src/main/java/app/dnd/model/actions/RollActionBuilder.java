@@ -4,7 +4,7 @@ import app.dnd.model.enums.Proficiency;
 import app.dnd.model.enums.Stats;
 import app.dnd.util.math.Dice;
 
-public class RollActionBuilder extends BaseActionBuilder<RollActionBuilder> {
+public class RollActionBuilder extends SingleActionBuilder<RollActionBuilder> {
 	
 	private Stats depends;
 	private Proficiency proficiency;

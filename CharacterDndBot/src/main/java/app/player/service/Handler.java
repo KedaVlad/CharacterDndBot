@@ -1,8 +1,8 @@
 package app.player.service;
 
-import app.bot.model.UserCore;
+import app.player.event.UserEvent;
 
-public interface Handler<T extends UserCore> {
+public interface Handler<W> {
 
-	public T handle(T user);
+	public void handle(UserEvent<W> event);
 }

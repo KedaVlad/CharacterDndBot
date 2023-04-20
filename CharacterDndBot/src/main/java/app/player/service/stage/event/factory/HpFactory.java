@@ -1,136 +1,84 @@
 package app.player.service.stage.event.factory;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import app.dnd.model.actions.Action;
-import app.dnd.model.hero.CharacterDnd;
-import app.dnd.service.logic.hp.HpControler;
+import app.dnd.service.DndFacade;
+import app.player.event.UserEvent;
+import app.player.model.EventExecutor;
+import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
+import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
-import app.player.service.stage.event.character.Menu;
+import app.player.service.stage.event.hero.Menu;
 import app.user.model.ActualHero;
 import app.user.model.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
-public class HpFactory implements Executor<Action> {
+@EventExecutor(Location.HP_FACTORY)
+public class HpFactory implements Executor {
 
 	@Autowired
-	private StartBuildHp startBuildHp;
-	@Autowired
-	private ApruveHp apruveHp;
-	@Autowired
-	private FinishHp finishHp;
+	private HpFactoryExecutor hpFactoryExecutor;
 
 	@Override
-	public Act executeFor(Action action, User user) {
+	public Act execute(UserEvent<Stage> event) {
+		Action action = (Action) event.getTask();
 		switch (action.condition()) {
 		case 0:
-			return startBuildHp.executeFor(action, user);
+			return hpFactoryExecutor.startBuildHp(event.getUser().getActualHero());
 		case 1:
-			return apruveHp.executeFor(action, user);
+			return hpFactoryExecutor.apruveHp(event.getUser().getActualHero(), action);
 		case 3:
-			return finishHp.executeFor(action, user);
+			return hpFactoryExecutor.finishHp(event.getUser(), action);
 		}
 		log.error("HpFactory: out of bounds condition");
 		return null;
 	}
+
 }
 
 @Component
-class StartBuildHp implements Executor<Action> {
+class HpFactoryExecutor {
 
 	@Autowired
-	private HpControler hpControler;
+	private DndFacade dndFacade;
+	@Autowired
+	private Menu menu;
 	
-	@Override
-	public Act executeFor(Action action, User user) {	
-		int stableHp = hpControler.buildHp().stable().buildBase(user.getActualHero().getCharacter());
-		String[][] nextStep = { { "Stable " + stableHp, "Random ***" } };
-		String text = "How much HP does your character have?\r\n" + "\r\n" + "You can choose stable or random HP count \r\n"
-				+ "\r\n"
-				+ "If you agreed with the game master on a different amount of HP, send its value. (Write the amount of HP)";
-
+	public Act startBuildHp(ActualHero hero) {	
+	
 		return ReturnAct.builder()
-				.target(START_B)
+				.target(Button.START.NAME)
 				.act(SingleAct.builder()
 						.name("startBuildHp")
-						.text(text)
-						.action(Action.builder()
-								.mediator()
-								.buttons(nextStep)
-								.location(Location.HP_FACTORY)
-								.replyButtons()
-								.build())
+						.mediator(true)
+						.reply(true)
+						.stage(dndFacade.action().hp().startBuildHp(hero))
 						.build())
 				.build();
 	}
-}
 
-@Component
-class ApruveHp implements Executor<Action> {
-
-	@Autowired
-	private HpControler hpControler;
-
-	@Override
-	public Act executeFor(Action action, User user) {	
+	public Act finishHp(User user, Action action) {
 		ActualHero actualHero = user.getActualHero();
-		String answer = action.getAnswers()[0];
-		CharacterDnd character = actualHero.getCharacter();
-		String text = "Congratulations, you are ready for adventure.";
+		dndFacade.hero().hp().grow(actualHero, (Integer) Integer.parseInt(action.getAnswers()[1]));
+		return  menu.execute(new UserEvent<Stage> (user, Action.builder().build()));
+	}
 
-		if (answer.contains("Stable")) {
-			action = action.continueAction(hpControler.buildHp().stable().buildBase(character) + "");
-		} else if(answer.contains("Random")) {
-			action = action.continueAction(hpControler.buildHp().random().buildBase(character) + "");
-		} else {
-			Pattern pat = Pattern.compile("([0-9]{1,4})+?");
-			Matcher matcher = pat.matcher(answer);
-			int hp = 0;
-			while (matcher.find()) {
-				hp = ((Integer) Integer.parseInt(matcher.group()));
-			}
-			if (hp <= 0) {
-				action = action.continueAction(hpControler.buildHp().stable().buildBase(character) + "");
-				text = "Nice try... I see U very smart, but you will get stable " + hp
-						+ " HP. You are ready for adventure.";
-			} else {
-				action = action.continueAction(hp + "");
-			}
-		}
-		action.setButtons(new String[][] { { "Let's go" } });
+	public Act apruveHp(ActualHero actualHero, Action action) {
+		actualHero.setReadyToGame(true);
 		return SingleAct.builder()
 				.name("apruveHp")
-				.text(text)
-				.action(action)
+				.stage(dndFacade.action().hp().apruveHp(actualHero, action))
 				.build();
 	}
 }
 
-@Component
-class FinishHp implements Executor<Action> {
-
-	@Autowired
-	private Menu menu;
-
-	@Override
-	public Act executeFor(Action action, User user) {	
-		ActualHero actualHero = user.getActualHero();
-		actualHero.getCharacter().getHp().setMax((Integer) Integer.parseInt(action.getAnswers()[1]));
-		actualHero.getCharacter().getHp().setNow(actualHero.getCharacter().getHp().getMax());
-		return  menu.executeFor(Action.builder().build(), user);
-	}
-}
 
 
 

@@ -8,47 +8,34 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 
 import app.dnd.model.actions.Action;
-import app.dnd.model.actions.BaseAction;
+import app.player.model.Stage;
 import app.player.model.act.ActiveAct;
-import app.player.model.act.ArrayActs;
-import app.player.model.act.SingleAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.user.model.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-class MessageHandler {
+public class MessageHandler {
 
 	@Autowired
 	private MessageComandEntity messageComandEntity;
 	@Autowired
 	private MessageScript messageScript;
  
-	public void handle(User user) {
+	public Stage handle(Message message, User user) {
 
-		Message message = user.getUpdate().getMessage();
 		if (message.hasEntities()) {
+
 			user.getTrash().getCircle().add(message.getMessageId());
-			user.setStage(messageComandEntity.handle(message));
+			return messageComandEntity.handle(message);
 		} else if (message.getText().equals(Button.RETURN_TO_MENU.NAME)
-				&& user.getActualHero().hasReadyHero()) {
+				&& user.getActualHero().isReadyToGame()) {
 			user.getTrash().getCircle().add(message.getMessageId());
-			user.setStage( Action.builder().location(Location.MENU).build());
+			return Action.builder().location(Location.MENU).build();
 		} else {
-			user.setStage(messageScript.handle(user, message));
+			return messageScript.handle(user, message);
 		}
-	}
-}
-
-
-@Component
-class MessageTextComand {
-
-	public BaseAction handle(Message message) {
-		Action action = Action.builder().location(Location.TEXT_COMAND).build();
-		action.setAnswers(new String[] { message.getText() });
-		return action;
 	}
 }
 
@@ -59,7 +46,7 @@ class MessageComandEntity {
 	@Autowired
 	private MessageTextComand messageTextComand;
 
-	public BaseAction handle(Message message) {
+	public Stage handle(Message message) {
 		
 		Optional<MessageEntity> commandEntity = message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
 
@@ -79,7 +66,6 @@ class MessageComandEntity {
 			}
 		}
 		log.error("MessageHandler: Comand not exist");
-		
 		return messageTextComand.handle(message);
 	}
 }
@@ -90,20 +76,25 @@ class MessageScript {
 	@Autowired
 	private MessageTextComand messageTextComand;
 
-	public BaseAction handle(User user, Message message) {
+	public Stage handle(User user, Message message) {
 
-		ActiveAct act = user.getScript().getActByMassageTargeting(user.getUpdate().getMessage(), user.getTrash());
+		ActiveAct act = user.getScript().getActByMassageTargeting(message, user.getTrash());
 
 		if (act == null) {
 			user.getTrash().getCircle().add(message.getMessageId());
 			return messageTextComand.handle(message);
-		} else if (act instanceof ArrayActs) {
-			ArrayActs pool = (ArrayActs) act;
-			return pool.getPool()[0].getAction().continueAction(message.getText());
-		} else if (act instanceof SingleAct) {
-			return act.getAction().continueAction(message.getText());
 		} else {
-			return null;
+			return act.continueAct(message.getText());
 		}
+	}
+}
+
+@Component
+class MessageTextComand {
+
+	public Stage handle(Message message) {
+		Action action = Action.builder().location(Location.TEXT_COMAND).build();
+		action.setAnswers(new String[] { message.getText() });
+		return action;
 	}
 }

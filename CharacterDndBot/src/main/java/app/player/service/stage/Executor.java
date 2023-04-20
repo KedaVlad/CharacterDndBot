@@ -1,8 +1,10 @@
 package app.player.service.stage;
 
-import app.bot.model.UserCore;
+import app.player.event.UserEvent;
+import app.player.model.Stage;
+import app.player.model.act.Act;
 
-public interface Executor<T extends UserCore> {
+public interface Executor {
 
-	public abstract void executeFor(T user);
+	public abstract Act execute(UserEvent<Stage> event);
 }

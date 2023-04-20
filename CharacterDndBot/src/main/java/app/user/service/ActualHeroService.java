@@ -1,5 +1,6 @@
 package app.user.service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ActualHeroService {
 		} else {
 			ActualHero actualHero = new ActualHero();
 			actualHero.setId(id);
+			actualHero.setCloudsWorked(new ArrayList<>());
+			actualHero.setReadyToGame(false);
+			actualHeroRepository.save(actualHero);
 			return actualHero;
 		}
 	}

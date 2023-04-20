@@ -1,10 +1,11 @@
 package app.player.model.act;
 
 import java.util.ArrayList;
+import app.player.model.Stage;
 
-public class ArrayActsBuilder extends ActiveActBuilder<ArrayActsBuilder> {
+public class ArrayActsBuilder extends TreeActBuilder<ArrayActsBuilder> {
 	
-	private SingleAct[] pool;
+	private Stage[] pool;
 
 	ArrayActsBuilder() {}
 
@@ -12,26 +13,17 @@ public class ArrayActsBuilder extends ActiveActBuilder<ArrayActsBuilder> {
 		return new ArrayActsBuilder();
 	}
 
-	public ArrayActsBuilder pool(SingleAct... actions) {
-		this.pool = actions;
+	public ArrayActsBuilder pool(Stage... pool) {
+		this.pool = pool;
 		return this;
 	}
 
 	public ArrayActs build() {
 		ArrayActs answer = new ArrayActs();
 		answer.setName(this.name);
-		answer.setPool(this.pool);
-		long[] keys = new long[this.pool.length];
-		long baseKey = 500000000;
-		for (SingleAct act : this.pool) {
-			act.setName(name);
-		}
-		for (int i = 0; i < this.pool.length; i++) {
-			keys[i] = baseKey;
-			baseKey++;
-		}
-		answer.setKeys(keys);
 		answer.setActCircle(new ArrayList<>());
+		answer.setReply(this.reply);
+		answer.setStages(this.pool);
 		return answer;
 	}
 

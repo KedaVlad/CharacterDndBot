@@ -8,10 +8,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import app.bot.controller.SpamDistributor;
 import app.bot.view.Bot;
-import app.user.model.User;
-import app.bot.controller.EndSessionController;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,10 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 public class BotInitializer {
 	@Autowired
 	private Bot myLongPollingBot;
-	@Autowired
-	private SpamDistributor<User> spamController;
-	@Autowired
-	private EndSessionController<User> endSessionController;
 
 	@EventListener({ ContextRefreshedEvent.class })
 	public void init() throws TelegramApiException {
@@ -32,8 +25,6 @@ public class BotInitializer {
 		} catch (TelegramApiException e) {
 			log.error("Error occured: " + e.getMessage());
 		}
-		endSessionController.run();
-		spamController.run();
 	}
 
 }

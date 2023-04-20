@@ -5,33 +5,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import app.bot.model.UserCore;
+import app.player.model.EventExecutor;
 import app.player.model.enums.Location;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-public class StageManager<T extends UserCore> {
+@Slf4j
+public class StageManager {
 
-	private Map<Location, Executor<T>> stages;
+	private Map<Location, Executor> stages;
 	
 	@Autowired
-	public StageManager(ListableBeanFactory beanFactory, Class<Executor<T>> type) {
+	public StageManager(ListableBeanFactory beanFactory) {
 		
-		Map<String, Executor<T>> beansOfType = beanFactory.getBeansOfType(type);
+		Map<String, Executor> beansOfType = beanFactory.getBeansOfType(Executor.class);
 		
 		stages = beansOfType.entrySet().stream()
         .filter(entry -> entry.getValue().getClass().isAnnotationPresent(EventExecutor.class))
         .collect(Collectors.toMap(
                 entry -> entry.getValue().getClass().getAnnotation(EventExecutor.class).value(),
-                entry -> (Executor<T>) entry.getValue(),
+                entry -> (Executor) entry.getValue(),
                 (v1, v2) -> v1, 
                 HashMap::new ));
 		}
 	
-	public Executor<T> find(Location location) {
+	public Executor find(Location location) {
+
+		log.info("StageManager" + stages.keySet().size());
 		return stages.get(location);
 	}
 	

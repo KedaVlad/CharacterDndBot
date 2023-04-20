@@ -12,10 +12,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME, property = "type")
 public class UpComand extends InerComand {
-	private ObjectDnd object;
-	public static UpComand create(ObjectDnd objects) {
+	private ObjectDnd objectDnd;
+	public static UpComand create(ObjectDnd objectDnd) {
 		UpComand answer = new UpComand();
-		answer.object = objects;
+		answer.objectDnd = objectDnd;
 		return answer;
 	}
 }

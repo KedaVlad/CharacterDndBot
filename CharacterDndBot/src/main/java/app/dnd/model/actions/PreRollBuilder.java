@@ -2,6 +2,7 @@ package app.dnd.model.actions;
 
 import app.dnd.util.math.Dice;
 import app.dnd.util.math.Formalizer.Roll;
+import app.player.model.enums.Button;
 
 public class PreRollBuilder extends BaseActionBuilder<PreRollBuilder> {
 
@@ -17,11 +18,10 @@ public class PreRollBuilder extends BaseActionBuilder<PreRollBuilder> {
 
 	public PreRoll build() {
 		PreRoll action = new PreRoll();
-		action.setReplyButtons(replyButtons);
-		action.setAction(roll);
+		action.setRoll(roll);
 		action.setLocation(location);
-		action.setName(name);
 		action.setText(text);
+		action.setButtons(new String[][] { {Button.ADVANTAGE.NAME, Button.BASIC.NAME, Button.DISADVANTAGE.NAME } });
 		return action;
 	}
 

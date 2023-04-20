@@ -4,11 +4,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import app.dnd.model.comands.InerComand;
 import lombok.Data;
 
 @Data
-@Document(collection = "races")
+@Document(collection = "races_test")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME, property = "type")
 public class RaceDndWrapp {
 	
 	@Id

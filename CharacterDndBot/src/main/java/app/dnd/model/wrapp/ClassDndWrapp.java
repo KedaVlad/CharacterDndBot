@@ -5,12 +5,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import app.dnd.model.comands.InerComand;
 import app.dnd.util.math.Formalizer.Roll;
 import lombok.Data;
 
 @Data
-@Document(collection = "classes")
+@Document(collection = "classes_test")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME, property = "type")
 public class ClassDndWrapp {
 	
 	@Id
