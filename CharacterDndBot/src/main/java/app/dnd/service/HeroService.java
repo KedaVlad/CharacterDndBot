@@ -111,7 +111,7 @@ public class HeroService {
 	
 	public String mainMenu(ActualHero actualHero) {
 		
-		RaceDnd race = raceDndService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
+		RaceDnd race = raceDndService.findByUserIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		ClassesDnd classes = classesDndService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		Proficiencies proficiencies = proficienciesService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		Lvl lvl = lvlService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());

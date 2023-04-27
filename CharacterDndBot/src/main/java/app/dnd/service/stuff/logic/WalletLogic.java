@@ -23,7 +23,7 @@ class WalletFacade implements WalletLogic {
 	@Override
 	public void addCoin(ActualHero actualHero, String currency, int value) {
 		
-		Wallet wallet = walletService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
+		Wallet wallet = walletService.findByUserIdAndOwnerName(actualHero.getId(), actualHero.getName());
 	
 		if (currency.contains("CP")) {
 			wallet.setBronze(wallet.getBronze() + value);
@@ -41,7 +41,7 @@ class WalletFacade implements WalletLogic {
 	@Override
 	public boolean lostCoin(ActualHero actualHero, String currency, int value) {
 		
-		Wallet wallet = walletService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
+		Wallet wallet = walletService.findByUserIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		if (currency.contains("CP")) {
 			if (wallet.getBronze() >= value) {
 				wallet.setBronze(wallet.getBronze() - value);
@@ -77,7 +77,7 @@ class WalletFacade implements WalletLogic {
 
 	@Override
 	public String menuInfo(ActualHero actualHero) {
-		return walletService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName()).longInformation();
+		return walletService.findByUserIdAndOwnerName(actualHero.getId(), actualHero.getName()).longInformation();
 	} 
 	
 }

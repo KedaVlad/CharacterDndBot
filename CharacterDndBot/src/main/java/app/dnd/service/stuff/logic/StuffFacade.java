@@ -27,7 +27,7 @@ public class StuffFacade implements StuffLogic {
 		Stuff stuff = stuffService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		return "Here, you'll be able to access the hero`s "+ Button.WALLET.NAME +", "+Button.BAG.NAME+", and any items they have in their possession("+Button.CARRYING_STUFF.NAME+")."
 				+"\n"
-				+"\n" + Button.WALLET.NAME  + " " + walletService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName()).shortInformation()
+				+"\n" + Button.WALLET.NAME  + " " + walletService.findByUserIdAndOwnerName(actualHero.getId(), actualHero.getName()).shortInformation()
 				+"\n" + Button.BAG.NAME + " ("+ stuff.getInsideBag().size()+")"
 				+"\n" + Button.CARRYING_STUFF.NAME +" (" + stuff.getItemsInHand().size()+")";
 	}

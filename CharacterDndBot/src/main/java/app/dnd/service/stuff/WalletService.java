@@ -16,8 +16,8 @@ public class WalletService {
 	@Autowired
 	private WalletRepository walletRepository;
 
-	public Wallet findByIdAndOwnerName(Long id, String ownerName) {
-		Optional<Wallet> userOptional = walletRepository.findById(id);
+	public Wallet findByUserIdAndOwnerName(Long id, String ownerName) {
+		Optional<Wallet> userOptional = walletRepository.findByUserIdAndOwnerName(id,ownerName);
 		return userOptional.orElseGet(() -> Wallet.build(id, ownerName));
 	}
 

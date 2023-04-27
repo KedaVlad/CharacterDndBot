@@ -16,8 +16,8 @@ public class RaceDndService {
 	@Autowired
 	private RaceDndRepository raceDndRepository;
 
-	public RaceDnd findByIdAndOwnerName(Long id, String ownerName) {
-		Optional< RaceDnd> userOptional = raceDndRepository.findById(id);
+	public RaceDnd findByUserIdAndOwnerName(Long id, String ownerName) {
+		Optional< RaceDnd> userOptional = raceDndRepository.findByUserIdAndOwnerName(id, ownerName);
 		return userOptional.orElseGet(() -> RaceDnd.build(id, ownerName));
 	}
 

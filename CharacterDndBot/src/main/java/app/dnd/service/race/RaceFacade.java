@@ -19,7 +19,7 @@ public class RaceFacade implements RaceLogic {
 
 	@Override
 	public boolean isReadyToGame(ActualHero actualHero) {
-		return raceDndService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName()).getRaceName() != null;
+		return raceDndService.findByUserIdAndOwnerName(actualHero.getId(), actualHero.getName()).getRaceName() != null;
 	}
 
 	@Override

@@ -88,8 +88,8 @@ class HpBuilder {
 	private ClassesDndService classesDndService;
 	
 	public int buildStableBase(Hp hp) {
-		int modificator = abilityService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName()).modification(Stats.CONSTITUTION) + hp.getHpBonus();
-		ClassesDnd classes = classesDndService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName());
+		int modificator = abilityService.findByIdAndOwnerName(hp.getUserId(), hp.getOwnerName()).modification(Stats.CONSTITUTION) + hp.getHpBonus();
+		ClassesDnd classes = classesDndService.findByIdAndOwnerName(hp.getUserId(), hp.getOwnerName());
 		int classHp = classes.getDndClass().get(0).getFirstHp();
 		int hpValue = this.hp.convert(classHp);
 		int start =  classHp + modificator;
@@ -106,8 +106,8 @@ class HpBuilder {
 	
 	public int buildRandomBase(Hp hp) {
 
-		int modificator = abilityService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName()).modification(Stats.CONSTITUTION) + hp.getHpBonus();
-		ClassesDnd classes = classesDndService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName());
+		int modificator = abilityService.findByIdAndOwnerName(hp.getUserId(), hp.getOwnerName()).modification(Stats.CONSTITUTION) + hp.getHpBonus();
+		ClassesDnd classes = classesDndService.findByIdAndOwnerName(hp.getUserId(), hp.getOwnerName());
 		int hpValue = 0;
 		int start = classes.getDndClass().get(0).getFirstHp() + modificator;
 		for (int i = 1; i < classes.getDndClass().get(0).getLvl(); i++) {
