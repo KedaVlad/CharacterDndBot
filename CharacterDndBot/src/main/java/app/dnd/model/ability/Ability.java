@@ -15,7 +15,8 @@ import lombok.Data;
 public class Ability {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private Stat initiative;
 	private Map<Stats, Stat> stats;
@@ -23,16 +24,16 @@ public class Ability {
 	private Map<Skills, Skill> skills;
 
 
-	public int modificator(Stats stat) {
+	public int modification(Stats stat) {
 		return (stats.get(stat).getValue() - 10) / 2;
 	}
 
-	public static Ability build(Long id, String ownerName){
+	public static Ability build(Long userId, String ownerName){
 
 		Ability target = new Ability();
-		target.setId(id);
-		target.setOwnerName(ownerName);
-		target.setInitiative(Stat.create(Stats.DEXTERITY));
+		target.userId = userId;
+		target.ownerName = ownerName;
+		target.initiative = Stat.create(Stats.DEXTERITY);
 		Map<Stats, Stat> stats = new LinkedHashMap<>();
 		Map<Skills, Skill> skills = new LinkedHashMap<>();
 		Map<SaveRolls, SaveRoll> saveRolls = new LinkedHashMap<>();

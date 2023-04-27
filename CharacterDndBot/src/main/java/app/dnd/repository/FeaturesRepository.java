@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.telents.features.Features;
 
 @Repository
-public interface FeaturesRepository extends MongoRepository<Features, Long> {
+public interface FeaturesRepository extends MongoRepository<Features, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Features> findByIdAndOwnerName(Long id, String ownerName);
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Features> findByUserIdAndOwnerName(Long userId, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 }
 

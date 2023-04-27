@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.telents.proficiency.Proficiencies;
 
 @Repository
-public interface ProficienciesRepository extends MongoRepository<Proficiencies, Long> {
+public interface ProficienciesRepository extends MongoRepository<Proficiencies, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Proficiencies> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Proficiencies> findByUserIdAndOwnerName(Long userId, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 	
 }

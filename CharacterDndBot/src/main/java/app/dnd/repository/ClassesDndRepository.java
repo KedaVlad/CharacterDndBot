@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.hero.ClassesDnd;
 
 @Repository
-public interface ClassesDndRepository extends MongoRepository<ClassesDnd, Long> {
+public interface ClassesDndRepository extends MongoRepository<ClassesDnd, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<ClassesDnd> findByIdAndOwnerName(Long id, String ownerName);
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<ClassesDnd> findByUserIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long id, String ownerName);
 
 }

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.ability.Memoirs;
 
 @Repository
-public interface MemoirsRepository extends MongoRepository<Memoirs, Long> {
+public interface MemoirsRepository extends MongoRepository<Memoirs, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Memoirs> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Memoirs> findByUserIdAndOwnerName(Long userId, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 }
 

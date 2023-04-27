@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.hero.RaceDnd;
 
 @Repository
-public interface RaceDndRepository extends MongoRepository<RaceDnd, Long> {
+public interface RaceDndRepository extends MongoRepository<RaceDnd, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<RaceDnd> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<RaceDnd> findByUserIdAndOwnerName(Long userId, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 }

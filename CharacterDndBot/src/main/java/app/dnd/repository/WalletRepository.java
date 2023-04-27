@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.stuffs.Wallet;
 
 @Repository
-public interface WalletRepository extends MongoRepository<Wallet, Long> {
+public interface WalletRepository extends MongoRepository<Wallet, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Wallet> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Wallet> findByUserIdAndOwnerName(Long userId, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 }

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.ability.Ability;
 
 @Repository
-public interface AbilityRepository extends MongoRepository<Ability, Long> {
+public interface AbilityRepository extends MongoRepository<Ability, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Ability> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Ability> findByUserIdAndOwnerName(Long userId, String ownerName);
 
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 
 }

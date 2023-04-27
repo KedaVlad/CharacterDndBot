@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.telents.spells.MagicSoul;
 
 @Repository
-public interface MagicSoulRepository extends MongoRepository<MagicSoul, Long> {
+public interface MagicSoulRepository extends MongoRepository<MagicSoul, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<MagicSoul> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<MagicSoul> findByUserIdAndOwnerName(Long id, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long id, String ownerName);
 
 }
 
