@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.ability.Hp;
 
 @Repository
-public interface HpRepository extends MongoRepository<Hp, Long> {
+public interface HpRepository extends MongoRepository<Hp, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Hp> findByIdAndOwnerName(Long id, String ownerName);
-	void deleteByIdAndOwnerName(Long id, String name);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Hp> findByUserIdAndOwnerName(Long userId, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String name);
 }

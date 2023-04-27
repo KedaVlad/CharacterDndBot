@@ -13,13 +13,14 @@ import lombok.Data;
 public class Memoirs {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private List<String> myMemoirs;
 
 	public static Memoirs build(Long id, String ownerName) {
 		Memoirs memoirs = new Memoirs();
-		memoirs.id = id;
+		memoirs.userId = id;
 		memoirs.ownerName = ownerName;
 		memoirs.myMemoirs = new ArrayList<>();
 		return memoirs;

@@ -30,7 +30,7 @@ public class AbilityActor implements AbilityAction {
 		return Action.builder()
 				.location(Location.ABILITY)
 				.buttons(new String[][]{{Button.STAT.NAME, Button.SAVE_ROLL.NAME, Button.SKILL.NAME},{Button.RETURN_TO_MENU.NAME}})
-				.text("Here you can operate your abilities, rollig and changing value")
+				.text("Here you can operate your abilities, rolling and changing value")
 				.build(); 
 	}
 

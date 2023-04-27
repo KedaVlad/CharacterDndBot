@@ -10,29 +10,31 @@ import app.dnd.model.Refreshable;
 import lombok.Data;
 
 @Data
-@Document(collection = "ability")
+@Document(collection = "features")
 public class Features implements Refreshable {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private List<Feature> byClasses;
 	private List<Feature> byRace;
 	private List<Feature> feats;
 
-	public static Features build(Long id) {
-		Features ability = new Features();
-		ability.byRace = new ArrayList<>();
-		ability.feats =	new ArrayList<>();	
-		ability.byRace = new ArrayList<>();
-		return ability;
+	public static Features build(Long id, String ownerName) {
+		Features features = new Features();
+		features.setUserId(id);
+		features.setOwnerName(ownerName);
+		features.byClasses = new ArrayList<>();
+		features.feats = new ArrayList<>();
+		features.byRace = new ArrayList<>();
+		return features;
 	}
 
 	@Override
 	public void refresh(Time time) {
 		for (Feature feature : byClasses) {
-			if (feature instanceof ActiveFeature) {
-				ActiveFeature target = (ActiveFeature) feature;
+			if (feature instanceof ActiveFeature target) {
 				target.refresh(time);
 			}
 		}

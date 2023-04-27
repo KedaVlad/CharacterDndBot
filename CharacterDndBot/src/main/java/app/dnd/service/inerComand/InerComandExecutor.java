@@ -12,8 +12,8 @@ import app.dnd.model.ability.SaveRoll;
 import app.dnd.model.ability.Skill;
 import app.dnd.model.ability.Stat;
 import app.dnd.model.actions.Action;
-import app.dnd.model.comands.CloudComand;
-import app.dnd.model.comands.ComandConteiner;
+import app.dnd.model.commands.CloudCommand;
+import app.dnd.model.commands.CommandContainer;
 import app.dnd.model.stuffs.Stuff;
 import app.dnd.model.stuffs.items.Items;
 import app.dnd.model.telents.attacks.AttackAbility;
@@ -29,7 +29,7 @@ import app.dnd.service.stuff.StuffService;
 import app.dnd.service.talants.MagicSoulService;
 import app.dnd.service.talants.ProficienciesService;
 import app.player.model.act.CloudAct;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class InerComandExecutor {
@@ -47,11 +47,11 @@ public class InerComandExecutor {
 	@Autowired
 	private AttackAbilityService attackAbilityService;
 
-	public void execute(ActualHero actualHero, ComandConteiner comandConteiner) {
+	public void execute(ActualHero actualHero, CommandContainer commandContainer) {
 
-		compleatUp(actualHero, comandConteiner.getUp());
-		cloud(actualHero, comandConteiner.getCloud());
-		compleatAdd(actualHero, comandConteiner.getAdd());
+		compleatUp(actualHero, commandContainer.getUp());
+		cloud(actualHero, commandContainer.getCloud());
+		compleatAdd(actualHero, commandContainer.getAdd());
 	}
 
 
@@ -127,12 +127,12 @@ public class InerComandExecutor {
 	attackAbilityService.save(attackAbility);
 }
 
-public void cloud(ActualHero actualHero, List<CloudComand> cloudComands) {
-	for(CloudComand cloudComand: cloudComands) {
+public void cloud(ActualHero actualHero, List<CloudCommand> cloudCommands) {
+	for(CloudCommand cloudCommand : cloudCommands) {
 		actualHero.getHeroCloud().getClouds().add(CloudAct.builder()
-				.name(cloudComand.getName())
+				.name(cloudCommand.getName())
 				.stage(Action.builder()
-						.text(cloudComand.getText())
+						.text(cloudCommand.getText())
 						.build())
 				.build());
 	}

@@ -13,7 +13,7 @@ import app.dnd.model.telents.spells.Spell;
 import app.dnd.service.talants.logic.MagicSoulLogic;
 import app.dnd.util.ArrayToColumns;
 import app.player.model.Stage;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface MagicSoulAction {
 	

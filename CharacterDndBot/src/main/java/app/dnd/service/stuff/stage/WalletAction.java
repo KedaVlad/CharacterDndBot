@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import app.dnd.model.actions.Action;
 import app.dnd.service.stuff.logic.WalletLogic;
 import app.player.model.Stage;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface WalletAction {
 

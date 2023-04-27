@@ -15,7 +15,7 @@ import app.dnd.service.memoirs.MemoirsLogic;
 import app.dnd.service.race.RaceLogic;
 import app.dnd.service.stuff.logic.StuffLogic;
 import app.dnd.service.talants.logic.TalantsLogic;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface HeroLogic {
 

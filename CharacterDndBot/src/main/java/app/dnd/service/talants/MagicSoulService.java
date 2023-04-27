@@ -17,12 +17,8 @@ public class MagicSoulService {
 	private MagicSoulRepository magicSoulRepository;
 
 	public MagicSoul findByIdAndOwnerName(Long id, String ownerName) {
-		Optional<MagicSoul> userOptional = magicSoulRepository.findByIdAndOwnerName(id, ownerName);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return MagicSoul.build(id, ownerName);
-		}
+		Optional<MagicSoul> userOptional = magicSoulRepository.findByUserIdAndOwnerName(id, ownerName);
+		return userOptional.orElseGet(() -> MagicSoul.build(id, ownerName));
 	}
 
 	public void save(MagicSoul magicSoul) {
@@ -30,7 +26,7 @@ public class MagicSoulService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String name) {
-		magicSoulRepository.deleteByIdAndOwnerName(id, name);
+		magicSoulRepository.deleteByUserIdAndOwnerName(id, name);
 	}
 
 }

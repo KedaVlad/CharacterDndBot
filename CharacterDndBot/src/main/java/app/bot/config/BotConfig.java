@@ -5,9 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import app.bot.controller.SessionController;
-import app.user.model.User;
-
 @PropertySource("application.properties")
 @Configuration
 public class BotConfig {
@@ -26,10 +23,5 @@ public class BotConfig {
 	public String token() {
 		return token;
 	}
-	
-	@Bean
-	public SessionController<User> sessionController() {
-		return new SessionController<User>();
-	}
-	
+
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import app.dnd.model.telents.spells.Spell;
 import app.dnd.service.talants.MagicSoulService;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface MagicSoulLogic {
 

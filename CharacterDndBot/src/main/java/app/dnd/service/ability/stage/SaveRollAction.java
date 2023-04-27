@@ -21,7 +21,7 @@ import app.dnd.service.talants.ProficienciesService;
 import app.dnd.util.ArrayToColumns;
 import app.player.model.Stage;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface SaveRollAction {
 	
@@ -50,7 +50,7 @@ class SaveRollActor implements SaveRollAction {
 		
 		return PreRoll.builder()
 				.location(Location.ABILITY)
-				.text(saveRoll.getCore().toString())
+				.text(saveRoll.getCore().getName())
 				.roll(RollAction.buider()
 						.statDepend(saveRoll.getCore().getStat())
 						.proficiency(saveRoll.getProficiency())
@@ -78,7 +78,7 @@ class SaveRollsButtonBuilder {
 		int i = 0;
 		for(SaveRolls saveRoll: saveRolls.keySet()) {
 			pool[i] = Action.builder()
-					.name((characteristics.modificator(saveRolls.get(saveRoll).getCore().getStat()) + proficiencies.getProfBonus(saveRolls.get(saveRoll).getProficiency())) + " " + saveRoll.toString())
+					.name((characteristics.modification(saveRolls.get(saveRoll).getCore().getStat()) + proficiencies.getProfBonus(saveRolls.get(saveRoll).getProficiency())) + " " + saveRoll.getName())
 					.objectDnd(saveRolls.get(saveRoll))
 					.location(Location.ABILITY)
 					.build();

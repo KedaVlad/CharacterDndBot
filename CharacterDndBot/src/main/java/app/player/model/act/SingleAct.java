@@ -3,8 +3,8 @@ package app.player.model.act;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import app.bot.model.ButtonModel;
-import app.bot.model.MessageModel;
+import app.bot.model.button.ButtonModel;
+import app.bot.model.message.MessageModel;
 import app.player.model.Key;
 import app.player.model.Stage;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @JsonTypeName("single_act")
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public class SingleAct extends TreeAct {
 
 	private Stage stage;

@@ -10,7 +10,8 @@ import lombok.Data;
 public class Wallet {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	
 	private int bronze = 0;// CP
@@ -24,7 +25,7 @@ public class Wallet {
 
 	public static Wallet build(Long id, String ownerName) {
 		Wallet wallet = new Wallet();
-		wallet.id = id;
+		wallet.userId = id;
 		wallet.ownerName = ownerName;
 		return wallet;
 	}

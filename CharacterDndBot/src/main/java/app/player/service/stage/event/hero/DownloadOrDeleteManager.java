@@ -1,13 +1,12 @@
 package app.player.service.stage.event.hero;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.dnd.model.actions.Action;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
@@ -18,7 +17,7 @@ import app.player.service.stage.event.factory.ClassFactory;
 import app.player.service.stage.event.factory.HpFactory;
 import app.player.service.stage.event.factory.RaceFactory;
 import app.player.service.stage.event.factory.StatFactory;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @EventExecutor(Location.DOWNLOAD_OR_DELETE)
 public class DownloadOrDeleteManager implements Executor {
@@ -27,9 +26,9 @@ public class DownloadOrDeleteManager implements Executor {
 	private DownloadOrDeleteExecutor downloadOrDeleteExecutor;
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 
-		Action action = (Action) event.getTask();
+		Action action = (Action) event.getTusk();
 
 		if (action.condition() == 1) {
 			return downloadOrDeleteExecutor.menu(action);
@@ -75,25 +74,24 @@ class DownloadOrDeleteExecutor {
 					.build();
 		}
 	
-	public Act download(UserEvent<Stage> event, String heroName) {
+	public Act download(StageEvent event, String heroName) {
 	
 		
 		dndFacade.hero().download(event.getUser().getActualHero(), heroName);
 		if(event.getUser().getActualHero().isReadyToGame()) {
 			return menu.execute(event);
 			
-		} else if(dndFacade.hero().race().isReadyToGame(event.getUser().getActualHero())) {
-		
-			return raceFactory.execute(new UserEvent<Stage> (event.getUser(), Action.builder().build()));
+		} else if(!dndFacade.hero().race().isReadyToGame(event.getUser().getActualHero())) {
+			return raceFactory.execute(new StageEvent (this, event.getUser(), Action.builder().build()));
 			
-		} else if(dndFacade.hero().classes().isReadyToGame(event.getUser().getActualHero())) {
-			return classFactory.execute(new UserEvent<Stage> (event.getUser(), Action.builder().build()));
+		} else if(!dndFacade.hero().classes().isReadyToGame(event.getUser().getActualHero())) {
+			return classFactory.execute(new StageEvent (this, event.getUser(), Action.builder().build()));
 			
-		} else if(dndFacade.hero().ability().stat().isReadyToGame(event.getUser().getActualHero())) {
-			return statFactory.execute(new UserEvent<Stage> (event.getUser(), Action.builder().build()));
+		} else if(!dndFacade.hero().ability().stat().isReadyToGame(event.getUser().getActualHero())) {
+			return statFactory.execute(new StageEvent (this, event.getUser(), Action.builder().build()));
 			
 		} else {
-			return hpFactory.execute(new UserEvent<Stage> (event.getUser(), Action.builder().build()));
+			return hpFactory.execute(new StageEvent (this, event.getUser(), Action.builder().build()));
 		}
 	}
 	
@@ -112,7 +110,7 @@ class DownloadOrDeleteExecutor {
 			dndFacade.hero().delete(hero , action.getAnswers()[0]);
 			return ReturnAct.builder().target(Button.START.NAME).build();
 		} else {
-			return ReturnAct.builder().target("DownloadOrDeleteMenu").build();
+			return ReturnAct.builder().target(Button.CHARACTER_CASE.NAME).build();
 		}
 	}
 }

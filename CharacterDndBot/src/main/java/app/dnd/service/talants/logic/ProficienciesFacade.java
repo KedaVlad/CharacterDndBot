@@ -1,5 +1,6 @@
 package app.dnd.service.talants.logic;
 
+import app.dnd.model.enums.Roll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +9,7 @@ import app.dnd.model.telents.proficiency.Possession;
 import app.dnd.model.telents.proficiency.Proficiencies;
 import app.dnd.service.talants.ProficienciesService;
 import app.dnd.util.math.Dice;
-import app.dnd.util.math.Formalizer.Roll;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class ProficienciesFacade implements ProficienciesLogic {
@@ -31,8 +31,8 @@ public class ProficienciesFacade implements ProficienciesLogic {
 	}
 	
 	private Proficiency upOrStay(Proficiency first, Proficiency second) {
-		if (second.equals(Proficiency.COMPETENSE)) {
-			return Proficiency.COMPETENSE;
+		if (second.equals(Proficiency.COMPETENCE)) {
+			return Proficiency.COMPETENCE;
 		} else if (first.equals(Proficiency.BASE)) {
 			return Proficiency.BASE;
 		} else {
@@ -63,7 +63,7 @@ public class ProficienciesFacade implements ProficienciesLogic {
 		case BASE:
 			answer.setBuff(proficiencies.getProficiency());
 			break;
-		case COMPETENSE:
+		case COMPETENCE:
 			answer.setBuff(proficiencies.getProficiency() * 2);
 			break;
 		}

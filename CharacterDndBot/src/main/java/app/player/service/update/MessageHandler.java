@@ -12,7 +12,7 @@ import app.player.model.Stage;
 import app.player.model.act.ActiveAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
-import app.user.model.User;
+import app.bot.model.user.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -54,15 +54,15 @@ class MessageComandEntity {
 			String comand = message.getText().substring(commandEntity.get().getOffset(),
 					commandEntity.get().getLength());
 			switch (comand) {
-			case "/start":
-				return Action.builder().location(Location.START).build();
-
-			case "/characters":
-				return Action.builder().location(Location.CHARACTER_CASE).build();
-				
-			case "/text_commands":
-				return Action.builder().location(Location.TEXT_COMAND_HELPER).build();
-				
+				case "/start" -> {
+					return Action.builder().location(Location.START).build();
+				}
+				case "/characters" -> {
+					return Action.builder().location(Location.CHARACTER_CASE).build();
+				}
+				case "/text_commands" -> {
+					return Action.builder().location(Location.TEXT_COMMAND_HELPER).build();
+				}
 			}
 		}
 		log.error("MessageHandler: Comand not exist");
@@ -93,7 +93,7 @@ class MessageScript {
 class MessageTextComand {
 
 	public Stage handle(Message message) {
-		Action action = Action.builder().location(Location.TEXT_COMAND).build();
+		Action action = Action.builder().location(Location.TEXT_COMMAND).build();
 		action.setAnswers(new String[] { message.getText() });
 		return action;
 	}

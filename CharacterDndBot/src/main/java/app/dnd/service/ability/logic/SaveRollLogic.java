@@ -9,7 +9,7 @@ import app.dnd.model.enums.Proficiency;
 import app.dnd.model.telents.proficiency.Possession;
 import app.dnd.service.ability.AbilityService;
 import app.dnd.service.talants.logic.ProficienciesLogic;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface SaveRollLogic {
 
@@ -31,17 +31,13 @@ class SaveRollFacade implements SaveRollLogic {
 		Ability characteristics = abilityService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		SaveRoll target = characteristics.getSaveRolls().get(saveRoll.getCore());
 		target.setProficiency(saveRoll.getProficiency());
-		proficienciesLogic.addPossession(actualHero, new Possession(saveRoll.getCore().toString(), saveRoll.getProficiency()));
+		proficienciesLogic.addPossession(actualHero, new Possession(saveRoll.getCore().getName(), saveRoll.getProficiency()));
 		abilityService.save(characteristics);
 	}
 	
 	@Override
 	public boolean maximum(SaveRoll saveRoll) {
-		if(saveRoll.getProficiency() == Proficiency.BASE) {
-			return true;
-		} else {
-			return false;
-		}
+		return saveRoll.getProficiency() == Proficiency.BASE;
 	}
 }
 

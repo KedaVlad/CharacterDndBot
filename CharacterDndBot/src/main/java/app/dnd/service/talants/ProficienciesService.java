@@ -17,12 +17,8 @@ public class ProficienciesService {
 	private ProficienciesRepository proficienciesRepository;
 
 	public Proficiencies findByIdAndOwnerName(Long id, String ownerName) {
-		Optional<Proficiencies> userOptional = proficienciesRepository.findByIdAndOwnerName(id, ownerName);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return Proficiencies.build(id, ownerName);
-		}
+		Optional<Proficiencies> userOptional = proficienciesRepository.findByUserIdAndOwnerName(id, ownerName);
+		return userOptional.orElseGet(() -> Proficiencies.build(id, ownerName));
 	}
 
 	public void save(Proficiencies proficiencies) {
@@ -30,7 +26,7 @@ public class ProficienciesService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String name) {
-		proficienciesRepository.deleteByIdAndOwnerName(id, name);
+		proficienciesRepository.deleteByUserIdAndOwnerName(id, name);
 	}
 
 }

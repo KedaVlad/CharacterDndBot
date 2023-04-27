@@ -1,21 +1,20 @@
 package app.player.service.stage.event.hero;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.dnd.model.Refreshable.Time;
 import app.dnd.model.actions.Action;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,12 +25,14 @@ public class RestManager implements Executor {
 	private RestExecutor restExecutor;
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
-		switch (((Action)event.getTask()).condition()) {
-		case 0:
-			return restExecutor.startRest((Action)event.getTask());
-		case 1:
-			return restExecutor.endRest(event.getUser().getActualHero(), (Action)event.getTask());
+	public Act execute(StageEvent event) {
+		switch (((Action) event.getTusk()).condition()) {
+			case 0 -> {
+				return restExecutor.startRest((Action) event.getTusk());
+			}
+			case 1 -> {
+				return restExecutor.endRest(event.getUser().getActualHero(), (Action) event.getTusk());
+			}
 		}
 		log.error("RestMenu: out of bounds condition");
 		return null;
@@ -48,9 +49,10 @@ class RestExecutor {
 	public Act startRest(Action action) {
 
 		action.setButtons(new String[][] {{Time.LONG.toString(), Time.SHORT.toString()},{Button.RETURN_TO_MENU.NAME}});
-		action.setText("You are resting... How many hours did you have time to rest?\n"
-				+ "Long rest - if 8 or more.\n"
-				+ "Short rest - if more than 1.5 and less than 8.");
+		action.setText("""
+				You are resting... How many hours did you have time to rest?
+				Long rest - if 8 or more.
+				Short rest - if more than 1.5 and less than 8.""");
 		
 		return ReturnAct.builder()
 				.target(Button.MENU.NAME)

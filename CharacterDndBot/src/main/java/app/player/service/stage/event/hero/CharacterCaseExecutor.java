@@ -1,11 +1,10 @@
 package app.player.service.stage.event.hero;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ArrayActs;
 import app.player.model.act.ReturnAct;
@@ -21,7 +20,7 @@ public class CharacterCaseExecutor implements Executor {
 	private DndFacade dndFacade;
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 		
 		if(dndFacade.hero().isEmpty(event.getUser().getId())) {
 			return SingleAct.builder()

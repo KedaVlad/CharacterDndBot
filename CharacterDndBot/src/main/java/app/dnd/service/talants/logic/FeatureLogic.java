@@ -1,7 +1,7 @@
 package app.dnd.service.talants.logic;
 
 import app.dnd.model.telents.features.Feature;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface FeatureLogic {
 

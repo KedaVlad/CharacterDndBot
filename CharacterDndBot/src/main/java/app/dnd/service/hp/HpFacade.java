@@ -13,7 +13,7 @@ import app.dnd.service.ability.AbilityService;
 import app.dnd.service.classes.ClassesDndService;
 import app.dnd.util.Convertor;
 import app.dnd.util.math.Formalizer;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Service
 public class HpFacade implements HpLogic {
@@ -88,7 +88,7 @@ class HpBuilder {
 	private ClassesDndService classesDndService;
 	
 	public int buildStableBase(Hp hp) {
-		int modificator = abilityService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName()).modificator(Stats.CONSTITUTION) + hp.getHpBonus();
+		int modificator = abilityService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName()).modification(Stats.CONSTITUTION) + hp.getHpBonus();
 		ClassesDnd classes = classesDndService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName());
 		int classHp = classes.getDndClass().get(0).getFirstHp();
 		int hpValue = this.hp.convert(classHp);
@@ -106,7 +106,7 @@ class HpBuilder {
 	
 	public int buildRandomBase(Hp hp) {
 
-		int modificator = abilityService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName()).modificator(Stats.CONSTITUTION) + hp.getHpBonus();
+		int modificator = abilityService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName()).modification(Stats.CONSTITUTION) + hp.getHpBonus();
 		ClassesDnd classes = classesDndService.findByIdAndOwnerName(hp.getId(), hp.getOwnerName());
 		int hpValue = 0;
 		int start = classes.getDndClass().get(0).getFirstHp() + modificator;
@@ -122,7 +122,7 @@ class HpBuilder {
 	}
 	
 	public int buildStableForLvlUp(Ability ability, ClassDnd clazz,  Hp hp) {
-		int modificator = ability.modificator(Stats.CONSTITUTION) + hp.getHpBonus();
+		int modificator = ability.modification(Stats.CONSTITUTION) + hp.getHpBonus();
 		int hpValue = this.hp.convert(clazz.getFirstHp());
 		if((hpValue + modificator) > 0) {
 			return hpValue + modificator;
@@ -132,7 +132,7 @@ class HpBuilder {
 	}
 	
 	public int buildRandomForLvlUp(Ability ability, ClassDnd clazz,  Hp hp) {
-		int modificator = ability.modificator(Stats.CONSTITUTION) + hp.getHpBonus();
+		int modificator = ability.modification(Stats.CONSTITUTION) + hp.getHpBonus();
 		int hpValue = Formalizer.roll(clazz.getDiceHp());
 		if((hpValue + modificator) > 0) {
 			return hpValue + modificator;

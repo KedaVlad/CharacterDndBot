@@ -15,7 +15,8 @@ import lombok.Data;
 public class Stuff { 
 	
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private List<Items> insideBag;
 	private List<String> status;
@@ -24,7 +25,7 @@ public class Stuff {
 	
 	public static Stuff build(Long id, String ownerName) {
 		Stuff stuff = new Stuff();
-		stuff.id = id;
+		stuff.userId = id;
 		stuff.ownerName = ownerName;
 		stuff.insideBag = new ArrayList<>();
 		stuff.status = new ArrayList<>();

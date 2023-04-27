@@ -1,37 +1,36 @@
 package app.player.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import app.player.event.ActEvent;
+import app.player.event.EndGame;
+import app.player.event.StageEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 
-import app.player.event.UserEvent;
 import app.player.model.EventHandler;
-import app.player.model.Stage;
-import app.player.model.act.Act;
-import app.player.service.Handler;
 import app.player.service.stage.StageManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @EventHandler("stageHandler")
-public class StageHandler implements Handler<Stage> {
+public class StageHandler {
 
-	@Autowired
-	private StageManager stageManager;
-	@Autowired
-	private ApplicationEventPublisher eventPublisher;
+	private final StageManager stageManager;
+	private final ApplicationEventPublisher eventPublisher;
 
-	@Override
+	public StageHandler(StageManager stageManager, ApplicationEventPublisher eventPublisher) {
+		this.stageManager = stageManager;
+		this.eventPublisher = eventPublisher;
+	}
+
 	@EventListener
-	public void handle(UserEvent<Stage> event) {
-		log.info("StageHandler catch");
-		if(event.getTask() != null) {
-			eventPublisher.publishEvent(new UserEvent<Act>(event.getUser(),
-					stageManager.find(event.getTask().getLocation())
-					.execute(event)));
-			
+	public void handle(StageEvent event) {
+		if(event.getTusk() != null) {
+			eventPublisher.publishEvent(new ActEvent(this, event.getUser(),
+					stageManager.find(event.getTusk().getLocation())
+							.execute(event)));
+
 		} else {
-			log.error("StageHandler <handle> : task ");
+			eventPublisher.publishEvent(new EndGame(this, event.getUser()));
 		}
 	}
 }

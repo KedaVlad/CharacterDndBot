@@ -18,7 +18,7 @@ import app.dnd.util.math.Dice;
 import app.player.model.Stage;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class AttackActor implements AttackAction {

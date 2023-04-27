@@ -1,46 +1,48 @@
 package app.bot.controller;
 
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import app.bot.event.StartSession;
+import app.bot.service.UserCacheService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import app.bot.event.CleanSpum;
+import app.bot.event.CleanSpam;
 import app.bot.event.EndSession;
-import app.bot.event.StartGame;
-import app.bot.model.UserCore;
+import app.player.event.StartGame;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SessionController<T extends UserCore> {
+@Controller
+public class SessionController {
 
-	@Autowired
-	private ApplicationEventPublisher eventPublisher;
-	@Autowired
-	private UserController<T> userController;
-	private final Map<Long, T> inSession = new ConcurrentHashMap<>();
+	private final ApplicationEventPublisher eventPublisher;
+	private final UserCacheService userCacheService;
+	private final List<Long> idInSession = new CopyOnWriteArrayList<>();
+
+	public SessionController(ApplicationEventPublisher eventPublisher, UserCacheService userCacheService) {
+		this.eventPublisher = eventPublisher;
+		this.userCacheService = userCacheService;
+	}
 
 	@EventListener
-	public void start(Update update){
-		Long id = keyByUpdate(update);
-		if(inSession.containsKey(id)) {
-			eventPublisher.publishEvent(new CleanSpum(update));			
-			
+	public void start(StartSession startSession){
+		Long id = keyByUpdate(startSession.getUpdate());
+		if(idInSession.contains(id)) {
+			eventPublisher.publishEvent(new CleanSpam(this, startSession.getUpdate()));
 		} else {
-			T user = userController.getById(id);
-			inSession.put(id, user);
-			eventPublisher.publishEvent(new StartGame<T>(user, update));
+			idInSession.add(id);
+			eventPublisher.publishEvent(new StartGame(this, userCacheService.getById(id), startSession.getUpdate()));
 		}
 	}
 
 	@EventListener
 	public void end(EndSession endSession) {
-		userController.save(inSession.get(endSession.getId()));
-		inSession.remove(endSession.getId());
+		idInSession.remove(endSession.getId());
 	}
 
 	private Long keyByUpdate(Update update) {
@@ -50,7 +52,7 @@ public class SessionController<T extends UserCore> {
 		} else if(update.hasMessage()){
 			return update.getMessage().getChatId();
 		} else {
-			log.error("Controller <keyByUpdate> : update doesn`t include processed type.");
+			log.error("SessionController <keyByUpdate> : update does not include processed type.");
 			return 1L;
 		}
 	}

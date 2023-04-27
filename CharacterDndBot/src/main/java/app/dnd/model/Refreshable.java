@@ -2,10 +2,10 @@ package app.dnd.model;
 
 public interface Refreshable {
 
-	public enum Time {
+	enum Time {
 		LONG("LONG"), SHORT("SHORT");
 
-		String name;
+		final String name;
 
 		Time(String name) {
 			this.name = name;
@@ -17,5 +17,5 @@ public interface Refreshable {
 
 	}
 
-	abstract void refresh(Time time);
+	void refresh(Time time);
 }

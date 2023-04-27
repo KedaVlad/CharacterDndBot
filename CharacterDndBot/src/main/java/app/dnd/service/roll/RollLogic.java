@@ -1,5 +1,6 @@
 package app.dnd.service.roll;
 
+import app.dnd.util.math.Dice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,12 +11,12 @@ import app.dnd.service.ability.logic.StatLogic;
 import app.dnd.service.talants.logic.ProficienciesLogic;
 import app.dnd.util.math.Formula;
 import app.player.model.enums.Button;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface RollLogic {
-	public Formula buildFormula(ActualHero actualHero, RollAction action);
-	public Action compleatRoll(ActualHero actualHero, RollAction action);
-	public Action compleatPreRoll(ActualHero actualHero, PreRoll action);
+	Formula buildFormula(ActualHero actualHero, RollAction action);
+	Action compleatRoll(ActualHero actualHero, RollAction action);
+	Action compleatPreRoll(ActualHero actualHero, PreRoll action);
 }
 
 @Component
@@ -31,7 +32,7 @@ class HeroRolleFormalizer implements RollLogic {
 	@Override
 	public Formula buildFormula(ActualHero actualHero, RollAction action) {
 		
-		Formula formula = new Formula("ROLL",action.getBase());
+		Formula formula = new Formula("ROLL",action.getBase().toArray(Dice[]::new));
 		if(action.getDepends() != null) {
 			formula.addDicesToEnd(statLogic.buildDice(actualHero, action.getDepends()));
 		}

@@ -4,10 +4,9 @@ package app.bot.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jvnet.hk2.annotations.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -21,41 +20,43 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import app.bot.event.ChatUpdate;
 import app.bot.event.EndSession;
-import app.bot.model.ButtonModel;
-import app.bot.model.MessageCore;
-import app.bot.model.MessageModel;
-import app.bot.model.UserCore;
+import app.bot.model.button.ButtonModel;
+import app.bot.model.message.MessageCore;
+import app.bot.model.message.MessageModel;
+import app.bot.model.user.UserCore;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class ChatUpdater {
 
-	@Autowired
-	private Bot bot;
-	@Autowired
-	private ApplicationEventPublisher eventPublisher;
+	private final Bot bot;
+	private final ApplicationEventPublisher applicationEventPublisher;
+
+	public ChatUpdater(Bot bot, ApplicationEventPublisher applicationEventPublisher) {
+		this.bot = bot;
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 	
 	@EventListener
-	public void compleat(ChatUpdate chatUpdate) {
+	public void complete(ChatUpdate chatUpdate) {
 		UserCore user = chatUpdate.getUser();
 		sendMessage(user.toSend(), user.getId());
 		cleanTrash(user.toDelete(), user.getId());
-		eventPublisher.publishEvent(new EndSession(user.getId()));
+		applicationEventPublisher.publishEvent(new EndSession(this, user.getId()));
 	}
 
-	private void cleanTrash(List<Integer> trash, Long userId) {
+	 void cleanTrash(List<Integer> trash, Long userId) {
 		for (Integer id : trash) {
 			try {
 				bot.execute(DeleteMessage.builder().chatId(userId).messageId(id).build());
 			} catch (TelegramApiException e) {
-				log.error("MessageSendExecutor <cleanTrash> : " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void sendMessage(List<MessageCore> messageCore, Long userId) {
+	private void sendMessage(List<MessageCore> messageCore, Long userId) {
 		for(MessageCore core: messageCore) {
 			for(MessageModel target: core.getMessage()) {
 				try {
@@ -88,7 +89,7 @@ public class ChatUpdater {
 			for (String button : line) {
 				buttonLine.add(InlineKeyboardButton.builder()
 						.text(button)
-						.callbackData("" + name + buttonModel.getKey() + button)
+						.callbackData(name + buttonModel.getKey() + button)
 						.build());
 			}
 			buttons.add(buttonLine);

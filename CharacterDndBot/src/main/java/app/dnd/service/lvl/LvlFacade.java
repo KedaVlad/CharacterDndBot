@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.dnd.model.ability.Lvl;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 @Component
 public class LvlFacade implements LvlLogic {
 

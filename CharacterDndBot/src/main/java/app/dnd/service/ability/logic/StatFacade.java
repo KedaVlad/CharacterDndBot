@@ -1,5 +1,6 @@
 package app.dnd.service.ability.logic;
 
+import app.dnd.model.enums.Roll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +9,7 @@ import app.dnd.model.ability.Stat;
 import app.dnd.model.enums.Stats;
 import app.dnd.service.ability.AbilityService;
 import app.dnd.util.math.Dice;
-import app.dnd.util.math.Formalizer.Roll;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class StatFacade implements StatLogic {
@@ -22,7 +22,7 @@ public class StatFacade implements StatLogic {
 		
 		Ability characteristics = abilityService.findByIdAndOwnerName(hero.getId(), hero.getName());
 		Stat targetStat = characteristics.getStats().get(stat);
-		return new Dice(targetStat.getCore().toString(), characteristics.modificator(stat), Roll.NO_ROLL);
+		return new Dice(targetStat.getCore().getName(), characteristics.modification(stat), Roll.NO_ROLL);
 	}
 
 
@@ -32,7 +32,7 @@ public class StatFacade implements StatLogic {
 		ability.getStats().get(Stats.STRENGTH).up(str);
 		ability.getStats().get(Stats.DEXTERITY).up(dex);
 		ability.getStats().get(Stats.CONSTITUTION).up(con);
-		ability.getStats().get(Stats.INTELLIGENSE).up(intl);
+		ability.getStats().get(Stats.INTELLIGENCE).up(intl);
 		ability.getStats().get(Stats.WISDOM).up(wis);
 		ability.getStats().get(Stats.CHARISMA).up(cha);
 		abilityService.save(ability);

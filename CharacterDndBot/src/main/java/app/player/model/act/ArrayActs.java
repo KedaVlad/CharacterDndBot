@@ -3,8 +3,8 @@ package app.player.model.act;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import app.bot.model.ButtonModel;
-import app.bot.model.MessageModel;
+import app.bot.model.button.ButtonModel;
+import app.bot.model.message.MessageModel;
 import app.player.model.Key;
 import app.player.model.Stage;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @JsonTypeName("array_acts")
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public class ArrayActs extends TreeAct { 
 
 	private Stage[] stages;
@@ -53,7 +53,7 @@ public class ArrayActs extends TreeAct {
 		if(!string.contains("^\\d{4}.*") && this.isReply()) {
 			return stages[0].continueStage(string);
 		} else {
-		int key = Integer.parseInt(string.substring(0, 4)) - Key.ArrayAct.KEY;
+		int key = Integer.parseInt(string.substring(0, 5)) - Key.ArrayAct.KEY;
 		return stages[key].continueStage(string.substring(5));
 		}
 	}

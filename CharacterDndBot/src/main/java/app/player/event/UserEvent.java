@@ -1,27 +1,19 @@
 package app.player.event;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.ResolvableTypeProvider;
+import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
 
-import app.user.model.User;
-import lombok.Data;
+import app.bot.model.user.User;
 
-@Data
-public class UserEvent<T> implements ResolvableTypeProvider {
+@Getter
+public class UserEvent<T> extends ApplicationEvent {
 
 	private final User user;
-	private final T task;
-	
-	public UserEvent(User user, T tusk) {
+	private final T tusk;
+
+	public UserEvent(Object source, User user, T tusk) {
+		super(source);
 		this.user = user;
-		this.task = tusk;
+		this.tusk = tusk;
 	}
 
-	@Override
-	public ResolvableType getResolvableType() {
-		return ResolvableType.forClassWithGenerics(
-                getClass(),
-                ResolvableType.forInstance(this.task)
-        );
-	}
-	
 }

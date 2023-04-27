@@ -1,21 +1,20 @@
 package app.player.service.stage.event.factory;
 
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.dnd.model.actions.Action;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
-import app.user.model.User;
+import app.bot.model.user.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,20 +25,25 @@ public class ClassFactory implements Executor {
 	private ClassFactoryExecutor classFactoryExecutor;
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 
-		Action action = (Action) event.getTask();
+		Action action = (Action) event.getTusk();
 		switch (action.condition()) {
-		case 0:
-			return classFactoryExecutor.chooseClass(action);
-		case 1:
-			return classFactoryExecutor.chooseSubClass(action);
-		case 2:
-			return classFactoryExecutor.chooseLvl(action);
-		case 3:
-			return classFactoryExecutor.apruve(action);
-		case 4:
-			return classFactoryExecutor.end(event.getUser(), action);
+			case 0 -> {
+				return classFactoryExecutor.chooseClass();
+			}
+			case 1 -> {
+				return classFactoryExecutor.chooseSubClass(action);
+			}
+			case 2 -> {
+				return classFactoryExecutor.chooseLvl(action);
+			}
+			case 3 -> {
+				return classFactoryExecutor.apruve(action);
+			}
+			case 4 -> {
+				return classFactoryExecutor.end(event.getUser(), action);
+			}
 		}
 		log.error("ClassFactory: out of bounds condition");
 		return null;
@@ -54,7 +58,7 @@ class ClassFactoryExecutor  {
 	@Autowired
 	private StatFactory statFactory;
 
-	public Act chooseClass(Action action) {
+	public Act chooseClass() {
 		return ReturnAct.builder()
 				.target(Button.START.NAME)
 				.act(SingleAct.builder()
@@ -92,9 +96,9 @@ class ClassFactoryExecutor  {
 	public Act end(User user, Action action) {
 		String className = action.getAnswers()[0];
 		String archetype = action.getAnswers()[1];
-		int lvl = ((Integer) Integer.parseInt(action.getAnswers()[2]));
+		int lvl = Integer.parseInt(action.getAnswers()[2]);
 		dndFacade.hero().classes().setClassDnd(user.getActualHero(), className, archetype, lvl);
-		return statFactory.execute(new UserEvent<Stage> (user, Action.builder().build()));
+		return statFactory.execute(new StageEvent (this, user, Action.builder().build()));
 	}
 
 }

@@ -15,12 +15,13 @@ import lombok.EqualsAndHashCode;
 public class Hp implements Refreshable, ObjectDnd {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private int max = 0;
 	private int now = 0;
 	private int timeHp = 0;
-	private boolean cknoked = false;
+	private boolean knocked = false;
 	private boolean dead = false;
 	private int hpBonus  = 0;
 
@@ -38,8 +39,8 @@ public class Hp implements Refreshable, ObjectDnd {
 	
 	public void heal(int value) {
 		now += value;
-		if (now > 0 && cknoked)
-			cknoked = false;
+		if (now > 0 && knocked)
+			knocked = false;
 		if (now > max) {
 			now = max;
 		}
@@ -56,7 +57,7 @@ public class Hp implements Refreshable, ObjectDnd {
 		} else {
 			now -= value;
 		}
-		if (now < 0) cknoked = true;
+		if (now < 0) knocked = true;
 		if (now < max * -1) dead = true;
 	}
 	
@@ -72,15 +73,15 @@ public class Hp implements Refreshable, ObjectDnd {
 		answer += "|" + max;
 		if (dead) {
 			answer += " (DEAD)";
-		} else if (cknoked) {
-			answer += " (cknoked)";
+		} else if (knocked) {
+			answer += " (knocked)";
 		}
 		return answer;
 	}
 	
 	public static Hp build(Long id, String ownerName) {
 		Hp hp = new Hp();
-		hp.id = id;
+		hp.userId = id;
 		hp.ownerName = ownerName;
 		return hp;
 	}

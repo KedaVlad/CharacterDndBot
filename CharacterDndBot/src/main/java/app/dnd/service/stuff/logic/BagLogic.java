@@ -15,7 +15,7 @@ import app.dnd.model.stuffs.items.Armor;
 import app.dnd.model.stuffs.items.Items;
 import app.dnd.service.stuff.StuffService;
 import app.player.model.enums.Button;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface BagLogic {
 

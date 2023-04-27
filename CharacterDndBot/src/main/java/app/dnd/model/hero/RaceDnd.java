@@ -10,7 +10,8 @@ import lombok.Data;
 public class RaceDnd {
 	
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private String raceName;
 	private String subRace;
@@ -19,7 +20,7 @@ public class RaceDnd {
 	public static RaceDnd build(Long id, String ownerName) {
 		RaceDnd race = new RaceDnd();
 		race.ownerName = ownerName;
-		race.id = id;
+		race.userId = id;
 		return race;
 	}
 }

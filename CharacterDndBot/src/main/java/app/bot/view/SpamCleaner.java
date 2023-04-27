@@ -1,24 +1,26 @@
 package app.bot.view;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import app.bot.event.CleanSpum;
+import app.bot.event.CleanSpam;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
 class SpamCleaner {
 	
-	@Autowired
-	private Bot bot;
-	
+	private final Bot bot;
+
+	public SpamCleaner(Bot bot) {
+		this.bot = bot;
+	}
+
 	@EventListener
-	public void cleanSpam(CleanSpum cleanSpum) {
+	public void cleanSpam(CleanSpam cleanSpum) {
 		Update update = cleanSpum.getUpdate();
 		if(update.hasMessage()) {	
 			try {

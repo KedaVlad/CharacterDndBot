@@ -1,5 +1,6 @@
 package app.player.service.stage.event.hero;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,16 +10,14 @@ import app.dnd.model.stuffs.items.Ammunition;
 import app.dnd.model.stuffs.items.Armor;
 import app.dnd.model.stuffs.items.Items;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @EventExecutor(Location.STUFF)
 public class StuffManager implements Executor {
@@ -27,9 +26,9 @@ public class StuffManager implements Executor {
 	private StuffExecutor stuffExecutor;
 
 	@Override
-	public Act execute(UserEvent<Stage> event)  {
+	public Act execute(StageEvent event)  {
 
-		Action action = (Action) event.getTask();
+		Action action = (Action) event.getTusk();
 		if (action.getObjectDnd() == null && action.condition() == 0) {
 			return stuffExecutor.menu(event.getUser().getActualHero());
 
@@ -37,22 +36,18 @@ public class StuffManager implements Executor {
 
 			String targetMenu = action.getAnswers()[0];
 			if (targetMenu.equals(Button.CARRYING_STUFF.NAME)) {
-				return stuffExecutor.inHandMenu(event.getUser().getActualHero(), action);
+				return stuffExecutor.inHandMenu(event.getUser().getActualHero());
 
 			} else if (targetMenu.equals(Button.BAG.NAME)) {
-				return stuffExecutor.bagMenu(event.getUser().getActualHero(), action);
+				return stuffExecutor.bagMenu(event.getUser().getActualHero());
 
 			} else if (targetMenu.equals(Button.WALLET.NAME)) {
-				switch(action.condition()) {
-				case 1:
-					return stuffExecutor.walletMenu(event.getUser().getActualHero(), action);
-				case 2:
-					return stuffExecutor.carrencyMenu(action);
-				case 3:
-					return stuffExecutor.compleatCurrencyChange(event.getUser().getActualHero(), action);
-				default:
-					return ReturnAct.builder().target(Button.STUFF.NAME).build();
-				}
+				return switch (action.condition()) {
+					case 1 -> stuffExecutor.walletMenu(event.getUser().getActualHero(), action);
+					case 2 -> stuffExecutor.carrencyMenu(action);
+					case 3 -> stuffExecutor.compleatCurrencyChange(event.getUser().getActualHero(), action);
+					default -> ReturnAct.builder().target(Button.STUFF.NAME).build();
+				};
 
 			} else {
 				return ReturnAct.builder().target(Button.MENU.NAME).build();
@@ -93,7 +88,7 @@ class StuffExecutor {
 	}
 
 
-	public Act inHandMenu(ActualHero actualHero, Action action) {
+	public Act inHandMenu(ActualHero actualHero) {
 		return SingleAct.builder()
 				.name(Button.BAG.NAME)
 				.stage(dndFacade.action().stuff().bag().inHandMenu(actualHero))
@@ -121,7 +116,7 @@ class StuffExecutor {
 	}
 
 
-	public Act bagMenu(ActualHero actualHero, Action action) {
+	public Act bagMenu(ActualHero actualHero) {
 		return SingleAct.builder()
 				.name(Button.BAG.NAME)
 				.stage(dndFacade.action().stuff().bag().menu(actualHero))

@@ -15,7 +15,7 @@ import app.dnd.util.ArrayToColumns;
 import app.player.model.Stage;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface FeatureAction {
 
@@ -83,7 +83,7 @@ class FeaturesButtonBuilder {
 			all[i] = Action.builder()
 					.name(list.get(i).getName())
 					.objectDnd(list.get(i))
-					.location(Location.TELENT)
+					.location(Location.TALENT)
 					.build();
 		}
 		return arrayToColumns.rebuild(all, 1, SingleAction.class);

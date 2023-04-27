@@ -1,13 +1,14 @@
 package app.bot.event;
 
-import lombok.Data;
+import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
 
-@Data
-public class EndSession {
+@Getter
+public class EndSession extends ApplicationEvent {
 
 	private final Long id;
-	
-	public EndSession(Long id) {
+	public EndSession(Object source, Long id) {
+		super(source);
 		this.id = id;
 	}
 }

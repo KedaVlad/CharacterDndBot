@@ -17,12 +17,8 @@ public class StuffService {
 	private StuffRepository stuffRepository;
 
 	public Stuff findByIdAndOwnerName(Long id, String ownerName) {
-		Optional<Stuff> userOptional = stuffRepository.findByIdAndOwnerName(id, ownerName);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return Stuff.build(id, ownerName);
-		}
+		Optional<Stuff> userOptional = stuffRepository.findByUserIdAndOwnerName(id, ownerName);
+		return userOptional.orElseGet(() -> Stuff.build(id, ownerName));
 	}
 
 	public void save(Stuff stuff) {
@@ -30,7 +26,7 @@ public class StuffService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String name) {
-		stuffRepository.deleteByIdAndOwnerName(id, name);
+		stuffRepository.deleteByUserIdAndOwnerName(id, name);
 	}
 
 }

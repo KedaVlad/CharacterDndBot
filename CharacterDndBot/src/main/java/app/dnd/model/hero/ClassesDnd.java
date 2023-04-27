@@ -13,14 +13,15 @@ import lombok.Data;
 public class ClassesDnd {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private List<ClassDnd> dndClass;
 
 	public static ClassesDnd build(Long id, String ownerName) {
 		ClassesDnd classesDnd = new ClassesDnd();
 		classesDnd.ownerName = ownerName;
-		classesDnd.id = id;
+		classesDnd.userId = id;
 		classesDnd.dndClass = new ArrayList<>();
 		return classesDnd;
 	}

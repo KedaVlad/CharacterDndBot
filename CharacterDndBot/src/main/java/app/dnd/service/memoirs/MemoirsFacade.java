@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.dnd.model.ability.Memoirs;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class MemoirsFacade implements MemoirsLogic {
@@ -14,13 +14,13 @@ public class MemoirsFacade implements MemoirsLogic {
 
 	@Override
 	public String memoirsText(ActualHero actualHero) {
-		String text = "MY MEMOIRS\n";
+		StringBuilder text = new StringBuilder("MY MEMOIRS\n");
 		int i = 1;
 		for(String string: memoirsService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName()).getMyMemoirs()) {
-			text += i + ". " + string + "\n";
+			text.append(i).append(". ").append(string).append("\n");
 			i++;
 		}
-		return text;
+		return text.toString();
 	}
 
 	@Override

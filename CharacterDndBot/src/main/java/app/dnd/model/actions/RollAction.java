@@ -8,6 +8,9 @@ import app.dnd.util.math.Dice;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 @JsonTypeName("roll")
@@ -15,7 +18,7 @@ public class RollAction extends SingleAction {
 
 	private Stats depends;
 	private Proficiency proficiency;
-	private Dice[] base;
+	private List<Dice> base;
 
 	RollAction() {
 	}
@@ -24,38 +27,26 @@ public class RollAction extends SingleAction {
 		return new RollActionBuilder();
 	}
 
-	public void addDicesToStart(Dice... dices) {
-		if (base == null) {
-			base = dices;
-		} else {
-			Dice[] result = new Dice[base.length + dices.length];
-			for (int i = 0; i < dices.length; i++) {
-				result[i] = dices[i];
-			}
-			int treker = 0;
-			for (int i = dices.length; i < result.length; i++) {
-				result[i] = base[treker];
-				treker++;
-			}
-			base = result;
+	public void addDices(DicePosition position, Dice... dices) {
+		if (dices == null || dices.length == 0) {
+			return;
+		}
+
+		switch (position) {
+			case START:
+				base.addAll(0, Arrays.asList(dices));
+				break;
+			case END:
+				base.addAll(Arrays.asList(dices));
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid position: " + position);
 		}
 	}
 
-	public void addDicesToEnd(Dice... dices) {
-		if (base == null) {
-			base = dices;
-		} else {
-			Dice[] result = new Dice[base.length + dices.length];
-			for (int i = 0; i < base.length; i++) {
-				result[i] = base[i];
-			}
-			int treker = 0;
-			for (int i = base.length; i < result.length; i++) {
-				result[i] = dices[treker];
-				treker++;
-			}
-			base = result;
-		}
+	public enum DicePosition {
+		START,
+		END;
 	}
 
 	public Stats getDepends() {

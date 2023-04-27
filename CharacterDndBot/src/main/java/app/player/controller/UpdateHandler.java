@@ -1,45 +1,45 @@
 package app.player.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import app.player.event.StageEvent;
+import app.player.event.UpdateEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
-import app.player.event.UserEvent;
 import app.player.model.EventHandler;
-import app.player.model.Stage;
-import app.player.service.Handler;
 import app.player.service.update.CallbackHandler;
 import app.player.service.update.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @EventHandler("updateHandler")
-public class UpdateHandler implements Handler<Update> {
-	
-	@Autowired
-	private CallbackHandler callbackHandler;
-	@Autowired
-	private MessageHandler messageHandler;
-	@Autowired
-	private ApplicationEventPublisher eventPublisher;
-	
-	@Override
+public class UpdateHandler {
+
+	private final CallbackHandler callbackHandler;
+	private final MessageHandler messageHandler;
+	private final ApplicationEventPublisher eventPublisher;
+
+	public UpdateHandler(CallbackHandler callbackHandler, MessageHandler messageHandler, ApplicationEventPublisher eventPublisher) {
+		this.callbackHandler = callbackHandler;
+		this.messageHandler = messageHandler;
+		this.eventPublisher = eventPublisher;
+	}
+
+
 	@EventListener
-	public void handle(UserEvent<Update> event) {
-		
-		if (event.getTask().hasCallbackQuery()) {
-			eventPublisher.publishEvent(new UserEvent<Stage>(event.getUser(),
+	public void handle(UpdateEvent event) {
+
+		if (event.getTusk().hasCallbackQuery()) {
+			eventPublisher.publishEvent(new StageEvent(this, event.getUser(),
 					callbackHandler.handle(
-							event.getTask().getCallbackQuery(), 
+							event.getTusk().getCallbackQuery(),
 							event.getUser())));
-			
-		} else if (event.getTask().hasMessage()) {
-			eventPublisher.publishEvent(new UserEvent<Stage>(event.getUser(),
-					messageHandler.handle(
-							event.getTask().getMessage(), 
-							event.getUser())));
-			
+
+		} else if (event.getTusk().hasMessage()) {
+			eventPublisher.publishEvent(new StageEvent(this, event.getUser(),
+                    messageHandler.handle(
+                            event.getTusk().getMessage(),
+                            event.getUser())));
+
 		} else {
 			log.error("HandlerFactory: Unattended type update");
 		}

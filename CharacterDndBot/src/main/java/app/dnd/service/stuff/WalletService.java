@@ -18,11 +18,7 @@ public class WalletService {
 
 	public Wallet findByIdAndOwnerName(Long id, String ownerName) {
 		Optional<Wallet> userOptional = walletRepository.findById(id);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return Wallet.build(id, ownerName);
-		}
+		return userOptional.orElseGet(() -> Wallet.build(id, ownerName));
 	}
 
 	public void save(Wallet wallet) {
@@ -30,7 +26,7 @@ public class WalletService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String ownerName) {
-		walletRepository.deleteByIdAndOwnerName(id, ownerName);
+		walletRepository.deleteByUserIdAndOwnerName(id, ownerName);
 	}
 
 }

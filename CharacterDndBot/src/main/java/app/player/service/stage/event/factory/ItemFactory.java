@@ -1,5 +1,6 @@
 package app.player.service.stage.event.factory;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +18,14 @@ import app.dnd.model.stuffs.items.Tool;
 import app.dnd.model.stuffs.items.Weapon;
 import app.dnd.service.DndFacade;
 import app.dnd.util.ArrayToColumns;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 
 @EventExecutor(Location.ITEMS_FACTORY)
@@ -37,35 +36,26 @@ public class ItemFactory implements Executor {
 
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 		
-		Action action = (Action) event.getTask();
+		Action action = (Action) event.getTusk();
 		if (action.condition() == 0) {
 			return itemFactoryExecutor.menu();
 		} else if(action.getAnswers()[0].equals(Button.ELSE.NAME)) {
-			switch (action.condition()) {
-			case 1:
-				return	itemFactoryExecutor.elseItemsName(action);
-			case 2:
-				return  itemFactoryExecutor.elseItemsDescription(action);
-			case 3:
-				return  itemFactoryExecutor.elseItemsCheckCondition(action);
-			case 4:
-				return itemFactoryExecutor.endCreate(event.getUser().getActualHero(), action);
-			default:
-				return null;
-			}
+			return switch (action.condition()) {
+				case 1 -> itemFactoryExecutor.elseItemsName(action);
+				case 2 -> itemFactoryExecutor.elseItemsDescription(action);
+				case 3 -> itemFactoryExecutor.elseItemsCheckCondition(action);
+				case 4 -> itemFactoryExecutor.endCreate(event.getUser().getActualHero(), action);
+				default -> null;
+			};
 		} else {
-			switch (action.condition()) {
-			case 1:
-				return itemFactoryExecutor.validItemChooseType(action);
-			case 2:
-				return itemFactoryExecutor.validItemCondition(action);
-			case 3:
-				return itemFactoryExecutor.endCreate(event.getUser().getActualHero(), action);
-			default:
-				return null;
-			}
+			return switch (action.condition()) {
+				case 1 -> itemFactoryExecutor.validItemChooseType(action);
+				case 2 -> itemFactoryExecutor.validItemCondition(action);
+				case 3 -> itemFactoryExecutor.endCreate(event.getUser().getActualHero(), action);
+				default -> null;
+			};
 		}
 	}
 

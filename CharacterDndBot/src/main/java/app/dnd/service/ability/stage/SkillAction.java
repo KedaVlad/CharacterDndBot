@@ -21,7 +21,7 @@ import app.dnd.service.talants.ProficienciesService;
 import app.dnd.util.ArrayToColumns;
 import app.player.model.Stage;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface SkillAction {
 	
@@ -51,7 +51,7 @@ class SkillActor implements SkillAction {
 		
 		return PreRoll.builder()
 				.location(Location.ABILITY)
-				.text(skill.getCore().toString())
+				.text(skill.getCore().getName())
 				.roll(RollAction.buider()
 						.statDepend(skill.getCore().getStat())
 						.proficiency(skill.getProficiency())
@@ -79,7 +79,7 @@ class SkillButtonBuilder {
 		int i = 0;
 		for(Skills skill: skills.keySet()) {
 			pool[i] = Action.builder()
-					.name((characteristics.modificator(skills.get(skill).getCore().getStat()) + proficiencies.getProfBonus(skills.get(skill).getProficiency())) + " " + skill.toString())
+					.name((characteristics.modification(skills.get(skill).getCore().getStat()) + proficiencies.getProfBonus(skills.get(skill).getProficiency())) + " " + skill.getName())
 					.objectDnd(skills.get(skill))
 					.location(Location.ABILITY)
 					.build();
@@ -92,7 +92,7 @@ class SkillButtonBuilder {
 		if(skill.getProficiency() != null) {
 			if(skill.getProficiency().equals(Proficiency.BASE)) {
 				return new String[][] {{"Up to COMPETENSE"}};
-			} else if(skill.getProficiency().equals(Proficiency.COMPETENSE)) {
+			} else if(skill.getProficiency().equals(Proficiency.COMPETENCE)) {
 				return null;
 			} else {
 				return new String[][] {{"Up to PROFICIENCY"}};

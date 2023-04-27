@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import app.dnd.model.stuffs.Wallet;
 import app.dnd.service.stuff.WalletService;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface WalletLogic {
 

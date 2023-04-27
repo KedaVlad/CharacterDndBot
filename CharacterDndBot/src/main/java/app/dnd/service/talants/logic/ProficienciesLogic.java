@@ -3,7 +3,7 @@ package app.dnd.service.talants.logic;
 import app.dnd.model.enums.Proficiency;
 import app.dnd.model.telents.proficiency.Possession;
 import app.dnd.util.math.Dice;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface ProficienciesLogic {
 

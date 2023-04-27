@@ -1,6 +1,7 @@
 package app.player.service.stage.event.hero;
 
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,6 @@ import app.dnd.model.telents.features.Feature;
 import app.dnd.model.telents.proficiency.Possession;
 import app.dnd.model.telents.spells.Spell;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
 import app.player.model.Stage;
 import app.player.model.act.Act;
@@ -18,27 +18,27 @@ import app.player.model.act.SingleAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
-@EventExecutor(Location.TELENT)
+@EventExecutor(Location.TALENT)
 public class TalentManager implements Executor {
 
 	@Autowired
 	private TalentExecutor talentManager;
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 
-		Action action = (Action) event.getTask();
+		Action action = (Action) event.getTusk();
 		if (action.condition() == 0 && action.getObjectDnd() == null) {
 			return talentManager.menu(event.getUser().getActualHero());
 
 		} else if (action.getObjectDnd() == null) {
 			if(action.condition() == 1) {
-				return talentManager.profMenu(event.getUser().getActualHero(), event.getTask());
+				return talentManager.profMenu(event.getUser().getActualHero(), event.getTusk());
 
 			} else if (action.condition() == 2) {
-				return talentManager.startAddProff(event.getTask());
+				return talentManager.startAddProff(event.getTusk());
 
 			} else if (action.condition() == 3) {
 				if(action.getAnswers()[2].equals(Button.RETURN_TO_TALANT.NAME)) {
@@ -48,25 +48,25 @@ public class TalentManager implements Executor {
 					return talentManager.hintList();
 
 				} else {
-					return talentManager.endAddProff(event.getUser().getActualHero(), event.getTask());
+					return talentManager.endAddProff(event.getUser().getActualHero(), event.getTusk());
 				}
 			} else {
 				return ReturnAct.builder().target(Button.MENU.NAME).build();
 			}
 
 		} else if (action.getAnswers()[0].equals(Button.SPELL.NAME)) {
-			return talentManager.spellMenu(event.getUser().getActualHero(), event.getTask());
+			return talentManager.spellMenu(event.getUser().getActualHero(), event.getTusk());
 
 		} else if (action.getAnswers()[0].equals(Button.FEATURE.NAME)
 				|| action.getAnswers()[0].equals(Button.TRAIT.NAME) 
 				|| action.getAnswers()[0].equals(Button.FEAT.NAME)) {
-			return talentManager.featureMenu(event.getUser().getActualHero(), event.getTask());
+			return talentManager.featureMenu(event.getUser().getActualHero(), event.getTusk());
 
 		} else if (action.getObjectDnd() instanceof Feature) {
-			return talentManager.featureTarget(event.getUser().getActualHero(), event.getTask());
+			return talentManager.featureTarget(event.getTusk());
 			
 		} else if (action.getObjectDnd() instanceof Spell) {
-			return talentManager.spellTarget(event.getUser().getActualHero(), event.getTask());
+			return talentManager.spellTarget(event.getTusk());
 			
 		} else {
 			return ReturnAct.builder().target(Button.MENU.NAME).build();
@@ -86,7 +86,7 @@ class TalentExecutor {
 				.act(SingleAct.builder()
 						.name(Button.TALENTS.NAME)
 						.reply(true)
-						.stage(dndFacade.action().talants().menu(hero))
+						.stage(dndFacade.action().talents().menu(hero))
 						.build())
 				.build();
 	}
@@ -97,7 +97,7 @@ class TalentExecutor {
 				.act(SingleAct.builder()
 						.reply(true)
 						.name(Button.POSSESSION.NAME)
-						.stage(dndFacade.action().talants().prof().menu(hero, stage))
+						.stage(dndFacade.action().talents().prof().menu(hero, stage))
 						.build())
 				.build();
 	}
@@ -107,7 +107,7 @@ class TalentExecutor {
 				.name("addPossession")
 				.reply(true)
 				.mediator(true)
-				.stage(dndFacade.action().talants().prof().create(stage))
+				.stage(dndFacade.action().talents().prof().create(stage))
 				.build();
 	}
 
@@ -130,7 +130,7 @@ class TalentExecutor {
 	Act hintList() {
 		return SingleAct.builder()
 				.name(Button.HINT_LIST.NAME)
-				.stage(dndFacade.action().talants().prof().hintList())
+				.stage(dndFacade.action().talents().prof().hintList())
 				.build();
 	}
 
@@ -139,7 +139,7 @@ class TalentExecutor {
 				.target(Button.TALENTS.NAME)
 				.act(SingleAct.builder()
 						.name(Button.SPELL.NAME)
-						.stage(dndFacade.action().talants().magic().menu(hero, stage))
+						.stage(dndFacade.action().talents().magic().menu(hero, stage))
 						.build())
 				.build();
 	}
@@ -149,22 +149,22 @@ class TalentExecutor {
 				.target(Button.TALENTS.NAME)
 				.act(SingleAct.builder()
 						.name(Button.FEATURE.NAME)
-						.stage(dndFacade.action().talants().feature().menu(hero, stage))
+						.stage(dndFacade.action().talents().feature().menu(hero, stage))
 						.build())
 				.build();
 	}
 
-	Act featureTarget(ActualHero hero, Stage stage) {
+	Act featureTarget(Stage stage) {
 		return SingleAct.builder()
 				.name("FeatureTarget")
-				.stage(dndFacade.action().talants().feature().targetFeature(stage))
+				.stage(dndFacade.action().talents().feature().targetFeature(stage))
 				.build();
 	}
 
-	Act spellTarget(ActualHero hero, Stage stage) {
+	Act spellTarget(Stage stage) {
 		return SingleAct.builder()
 				.name("SpellTarget")
-				.stage(dndFacade.action().talants().magic().targetSpell(stage))
+				.stage(dndFacade.action().talents().magic().targetSpell(stage))
 				.build();
 	}
 }

@@ -2,7 +2,7 @@ package app.dnd.service.hp;
 
 import app.dnd.model.actions.Action;
 import app.player.model.Stage;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface HpAction {
 

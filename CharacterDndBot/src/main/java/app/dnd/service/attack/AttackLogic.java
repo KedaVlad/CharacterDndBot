@@ -5,7 +5,7 @@ import java.util.List;
 import app.dnd.model.enums.Proficiency;
 import app.dnd.model.stuffs.items.Weapon;
 import app.dnd.model.telents.attacks.AttackModification;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface AttackLogic {
 

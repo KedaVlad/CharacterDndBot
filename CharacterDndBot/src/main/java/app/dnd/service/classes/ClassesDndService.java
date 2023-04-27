@@ -17,12 +17,8 @@ public class ClassesDndService {
 	private ClassesDndRepository classesDndRepository;
 
 	public ClassesDnd findByIdAndOwnerName(Long id, String ownerName) {
-		Optional<ClassesDnd> userOptional = classesDndRepository.findById(id);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return ClassesDnd.build(id, ownerName);
-		}
+		Optional<ClassesDnd> userOptional = classesDndRepository.findByUserIdAndOwnerName(id,ownerName);
+		return userOptional.orElseGet(() -> ClassesDnd.build(id, ownerName));
 	}
 
 	public void save(ClassesDnd classesDnd) {
@@ -30,7 +26,7 @@ public class ClassesDndService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String ownerName) {
-		classesDndRepository.deleteByIdAndOwnerName(id, ownerName);
+		classesDndRepository.deleteByUserIdAndOwnerName(id, ownerName);
 	}
 
 }

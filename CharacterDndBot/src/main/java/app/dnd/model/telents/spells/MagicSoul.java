@@ -20,7 +20,8 @@ import lombok.EqualsAndHashCode;
 public class MagicSoul implements ObjectDnd, Refreshable {
 	
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private Matrix cells;
 	private SimplePool<Spell> poolCantrips;
@@ -38,10 +39,10 @@ public class MagicSoul implements ObjectDnd, Refreshable {
 
 	public static MagicSoul build(Long id, String ownerName) {
 		MagicSoul magicSoul = new MagicSoul();
-		magicSoul.id = id;
+		magicSoul.userId = id;
 		magicSoul.ownerName = ownerName;
-		magicSoul.poolCantrips = new SimplePool<Spell>();
-		magicSoul.poolSpells = new SimplePool<Spell>();
+		magicSoul.poolCantrips = new SimplePool<>();
+		magicSoul.poolSpells = new SimplePool<>();
 		return magicSoul;
 	}
 

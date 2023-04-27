@@ -4,6 +4,8 @@ import app.dnd.model.enums.Proficiency;
 import app.dnd.model.enums.Stats;
 import app.dnd.util.math.Dice;
 
+import java.util.Arrays;
+
 public class RollActionBuilder extends SingleActionBuilder<RollActionBuilder> {
 	
 	private Stats depends;
@@ -35,7 +37,7 @@ public class RollActionBuilder extends SingleActionBuilder<RollActionBuilder> {
 		answer.setLocation(location);
 		answer.setDepends(depends);
 		answer.setProficiency(proficiency);
-		answer.setBase(this.base);
+		answer.setBase(Arrays.asList(this.base));
 		return answer;
 	}
 

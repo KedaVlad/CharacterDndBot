@@ -4,17 +4,17 @@ public enum Stats {
 	STRENGTH("Strength"),
 	DEXTERITY("Dexterity"), 
 	CONSTITUTION("Constitution"), 
-	INTELLIGENSE("Intelligense"),
+	INTELLIGENCE("Intelligence"),
 	WISDOM("Wisdom"), 
 	CHARISMA("Charisma");
 
-	private String name;
+	private final String name;
 
 	Stats(String name) {
 		this.name = name;
 	}
 
-	public String toString() {
+	public String getName() {
 		return name;
 	}
 }

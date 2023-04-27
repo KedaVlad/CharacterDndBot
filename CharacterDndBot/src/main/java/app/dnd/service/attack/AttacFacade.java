@@ -3,6 +3,7 @@ package app.dnd.service.attack;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.dnd.model.enums.Roll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +15,7 @@ import app.dnd.model.telents.attacks.AttackModification;
 import app.dnd.model.telents.proficiency.Proficiencies;
 import app.dnd.service.talants.ProficienciesService;
 import app.dnd.util.math.Dice;
-import app.dnd.util.math.Formalizer.Roll;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class AttacFacade implements AttackLogic {
@@ -64,7 +64,7 @@ public class AttacFacade implements AttackLogic {
 			base.getAttack().add(new Dice("Weapon buff", weapon.getDamage(), Roll.NO_ROLL));
 		}
 		for (AttackModification type : weapon.getType().getAttackTypes()) {
-			AttackModification target = type.marger(base);
+			AttackModification target = type.merger(base);
 			target = permanentBuff(attackAbility, target);
 			answer.addAll(subAttackBuild(target, attackAbility.getPreAttacks()));
 
@@ -96,7 +96,7 @@ public class AttacFacade implements AttackLogic {
 				}
 			}
 			if (condition == 0) {
-				AttackModification compleat = attack.marger(type);
+				AttackModification compleat = attack.merger(type);
 				compleat.setName(type.getName() + typeAttak);
 				answer.add(compleat);
 			}
@@ -121,7 +121,7 @@ public class AttacFacade implements AttackLogic {
 			int condition = type.getRequirement().length;
 			for (WeaponProperties properties : type.getRequirement()) {
 				if (condition == 0) {
-					attack = attack.marger(type);
+					attack = attack.merger(type);
 					break;
 				} else {
 					for (WeaponProperties need : attack.getRequirement()) {

@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StageManager {
 
-	private Map<Location, Executor> stages;
+	private final Map<Location, Executor> stages;
 	
 	@Autowired
 	public StageManager(ListableBeanFactory beanFactory) {
@@ -28,14 +28,13 @@ public class StageManager {
         .filter(entry -> entry.getValue().getClass().isAnnotationPresent(EventExecutor.class))
         .collect(Collectors.toMap(
                 entry -> entry.getValue().getClass().getAnnotation(EventExecutor.class).value(),
-                entry -> (Executor) entry.getValue(),
+				Map.Entry::getValue,
                 (v1, v2) -> v1, 
                 HashMap::new ));
 		}
 	
 	public Executor find(Location location) {
 
-		log.info("StageManager" + stages.keySet().size());
 		return stages.get(location);
 	}
 	

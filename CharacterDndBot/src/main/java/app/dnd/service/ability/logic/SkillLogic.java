@@ -9,11 +9,11 @@ import app.dnd.model.enums.Proficiency;
 import app.dnd.model.telents.proficiency.Possession;
 import app.dnd.service.ability.AbilityService;
 import app.dnd.service.talants.logic.ProficienciesLogic;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface SkillLogic {
 
-	public void up(ActualHero hero, Skill skill);
+	void up(ActualHero hero, Skill skill);
 	boolean maximum(Skill skill);
 }
 
@@ -31,18 +31,13 @@ class SkillFacade implements SkillLogic {
 		Ability characteristics = characteristicsService.findByIdAndOwnerName(hero.getId(), hero.getName());
 		Skill target = characteristics.getSkills().get(skill.getCore());
 		target.setProficiency(skill.getProficiency());
-		proficienciesLogic.addPossession(hero, new Possession(skill.getCore().toString(), skill.getProficiency()));
+		proficienciesLogic.addPossession(hero, new Possession(skill.getCore().getName(), skill.getProficiency()));
 		characteristicsService.save(characteristics);
 	}
 
 	@Override
 	public boolean maximum(Skill skill) {
-		if(skill.getProficiency() == Proficiency.COMPETENSE) {
-			return true;
-		} else {
-			return false;
-		}
-	
+		return skill.getProficiency() == Proficiency.COMPETENCE;
 	}
 	
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import app.dnd.model.hero.RaceDnd;
 import app.dnd.model.wrapp.RaceDndWrapp;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class RaceFacade implements RaceLogic {
@@ -26,7 +26,7 @@ public class RaceFacade implements RaceLogic {
 	public void setRace(ActualHero actualHero, String raceName, String subRace) {
 		RaceDndWrapp raceWrapp = raceDndWrappService.findByRaceNameAndSubRace(raceName, subRace);
 		RaceDnd race = new RaceDnd();
-		race.setId(actualHero.getId());
+		race.setUserId(actualHero.getId());
 		race.setOwnerName(actualHero.getName());
 		race.setRaceName(raceWrapp.getRaceName());
 		race.setSpeed(raceWrapp.getSpeed());

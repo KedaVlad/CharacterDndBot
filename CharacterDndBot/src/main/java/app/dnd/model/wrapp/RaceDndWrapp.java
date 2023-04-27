@@ -2,11 +2,10 @@ package app.dnd.model.wrapp;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import app.dnd.model.comands.InerComand;
+import app.dnd.model.commands.InnerCommand;
 import lombok.Data;
 
 @Data
@@ -20,6 +19,5 @@ public class RaceDndWrapp {
 	private String raceName;
 	private String subRace;
 	private int speed;
-	@Field("iner_comand")
-	private InerComand[] specials;
+	private InnerCommand[] specials;
 }

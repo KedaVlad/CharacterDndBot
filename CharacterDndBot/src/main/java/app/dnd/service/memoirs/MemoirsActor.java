@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import app.dnd.model.actions.Action;
 import app.player.model.Stage;
 import app.player.model.enums.Button;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class MemoirsActor implements MemoirsAction {

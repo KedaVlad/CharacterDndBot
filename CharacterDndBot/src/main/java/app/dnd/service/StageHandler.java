@@ -18,21 +18,21 @@ import app.dnd.util.ArrayToColumns;
 import app.player.model.Stage;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface StageHandler {
 
-	public AbilityAction ability();
-	public TalantsAction talants();
-	public AttackAction attack();
-	public Stage create(Long id);
-	public Stage heroList(Long id);
-	public MemoirsAction memoirs();
-	public StuffAction stuff();
-	public Stage menu(ActualHero actualHero);
-	public RaceAction race();
-	public ClassAction classes();
-	public HpAction hp();
+	AbilityAction ability();
+	TalantsAction talents();
+	AttackAction attack();
+	Stage create(Long id);
+	Stage heroList(Long id);
+	MemoirsAction memoirs();
+	StuffAction stuff();
+	Stage menu(ActualHero actualHero);
+	RaceAction race();
+	ClassAction classes();
+	HpAction hp();
 
 
 }
@@ -64,7 +64,7 @@ class StageController implements StageHandler {
 
 
 	@Override
-	public TalantsAction talants() {
+	public TalantsAction talents() {
 		return talantsAction;
 	}
 
@@ -125,7 +125,7 @@ class StageController implements StageHandler {
 	public Stage menu(ActualHero actualHero) {
 		Action[][] pool = new Action[][] {
 			{ 
-				Action.builder().name(Button.TALENTS.NAME).location(Location.TELENT).build(),
+				Action.builder().name(Button.TALENTS.NAME).location(Location.TALENT).build(),
 				Action.builder().name(Button.ABILITY.NAME).location(Location.ABILITY).build(),
 				Action.builder().name(Button.STUFF.NAME).location(Location.STUFF).build()
 			},

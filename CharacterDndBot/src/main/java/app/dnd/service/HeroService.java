@@ -30,7 +30,7 @@ import app.dnd.service.stuff.WalletService;
 import app.dnd.service.talants.FeaturesService;
 import app.dnd.service.talants.MagicSoulService;
 import app.dnd.service.talants.ProficienciesService;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Service
 public class HeroService {
@@ -118,18 +118,14 @@ public class HeroService {
 		Hp hp = hpService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		Stuff stuff = stuffService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		Ability ability = abilityService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
-		
-		String answer = actualHero.getName() + "\n\n"		
-				+ "Race: " + race.getRaceName() + " (" + race.getSubRace() + ")\r\n"
-				+ "Class: " + classes.getDndClass().get(0).getClassName() + " (" + classes.getDndClass().get(0).getArchetype() + ")\r\n"
-				+ "PROFICIENCY BONUS : "+ proficiencies.getProficiency() 
-				+ "\r\n"+ lvl.getShortInfo()
-				+ "\r\n" + hp.shortInfo()
-				+ "\r\n" + acBuilder.getAC(stuff, ability, classes)
-				+ "\r\n" + "SPEED: "+ race.getSpeed();
 
+		return new StringBuilder().append(actualHero.getName())
+				.append("\n\n")
+				.append("Race: ").append(race.getRaceName()).append(" (").append(race.getSubRace()).append(")\r\n")
+				.append("Class: ").append(classes.getDndClass().get(0).getClassName()).append(" (").append(classes.getDndClass().get(0).getArchetype()).append(")\r\n")
+				.append("PROFICIENCY BONUS : ").append(proficiencies.getProficiency()).append("\r\n").append(lvl.getShortInfo()).append("\r\n").append(hp.shortInfo()).append("\r\n").append(acBuilder.getAC(stuff, ability, classes)).append("\r\n")
+				.append("SPEED: ").append(race.getSpeed()).toString();
 
-		return answer;
 	}
 }
 
@@ -138,40 +134,29 @@ class AcBuilder {
 
 	public String getAC(Stuff stuff, Ability ability, ClassesDnd classes) {
 		
-		String answer = "";
+		StringBuilder answer = new StringBuilder();
 		if (stuff.getWeared()[0] == null) {
 			if (barbarianCheck(classes)) {
-				answer += (10 + ability.modificator(Stats.DEXTERITY) + ability.modificator(Stats.CONSTITUTION));
+				answer.append(10 + ability.modification(Stats.DEXTERITY) + ability.modification(Stats.CONSTITUTION));
 			} else {
-				answer += (10 + ability.modificator(Stats.DEXTERITY));
+				answer.append(10 + ability.modification(Stats.DEXTERITY));
 			}
 		} else {
 			int armor;
 			Armors type = stuff.getWeared()[0].getType();
-			
-			if (stuff.getWeared()[0].getType().getStatDependBuff() > stuff.getWeared()[0].getType().getBaseArmor()) {
-				armor = type.getBaseArmor() + ability.modificator(Stats.DEXTERITY);
-				if (armor > type.getStatDependBuff()) {
-					answer += type.getStatDependBuff();
-				} else {
-					answer += armor;
-				}
-			} else {
-				armor = type.getBaseArmor();
-			}
+			armor = type.getBaseArmor() + ability.modification(Stats.DEXTERITY);
+			answer.append(Math.min(armor, type.getStatDependBuff()));
 
-			if (stuff.getWeared()[1] == null) {
-				return answer;
-			} else {
-				answer += "(+" + stuff.getWeared()[1].getType().getBaseArmor() + ")";
+			if (stuff.getWeared()[1] != null) {
+				answer.append("(+").append(stuff.getWeared()[1].getType().getBaseArmor()).append(")");
 			}
 		}
-		return answer;
+		return answer.toString();
 	}
 
 	private boolean barbarianCheck(ClassesDnd classes) {
 		for (ClassDnd clazz : classes.getDndClass()) {
-			if (clazz.getClassName().toLowerCase().equals("barbarian")) {
+			if (clazz.getClassName().equalsIgnoreCase("barbarian")) {
 				return true;
 			}
 		}

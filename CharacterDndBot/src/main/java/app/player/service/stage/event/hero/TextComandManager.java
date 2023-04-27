@@ -1,18 +1,17 @@
 package app.player.service.stage.event.hero;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import app.dnd.model.actions.Action;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.SingleAct;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
 
-@EventExecutor(Location.TEXT_COMAND)
+@EventExecutor(Location.TEXT_COMMAND)
 public class TextComandManager implements Executor {
 
 	@Autowired
@@ -22,9 +21,9 @@ public class TextComandManager implements Executor {
 	
 	
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 
-		Action action = (Action) event.getTask();
+		Action action = (Action) event.getTusk();
 		String text = action.getAnswers()[0];
 		if(event.getUser().getActualHero().isReadyToGame()) {
 

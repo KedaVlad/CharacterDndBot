@@ -3,7 +3,7 @@ package app.dnd.model.enums;
 import lombok.Getter;
 
 public enum Ammunitions {
-	SLING_BULLETS("Sling bullets"), ARROWS("Arrows"), BLOWWGUN_NEEDLES("Blowwgun needles"),
+	SLING_BULLETS("Sling bullets"), ARROWS("Arrows"), BLOWGUN_NEEDLES("Blowgun needles"),
 	CROSSBOW_BOLTS("Crossbow bolts");
 
 	Ammunitions(String name) {

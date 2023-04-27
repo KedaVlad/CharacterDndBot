@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.ability.Lvl;
 
 @Repository
-public interface LvlRepository extends MongoRepository<Lvl, Long> {
+public interface LvlRepository extends MongoRepository<Lvl, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Lvl> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Lvl> findByUserIdAndOwnerName(Long userId, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String name);
+	void deleteByUserIdAndOwnerName(Long userId, String name);
 }
 

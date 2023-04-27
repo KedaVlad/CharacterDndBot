@@ -1,15 +1,14 @@
 package app.dnd.util.math;
 
+import app.dnd.model.enums.Roll;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class Formalizer {
-	
-	public enum Roll {
-		D4, D6, D8, D10, D12, D20, D100, NO_ROLL
-	}
 
 	public static String formalize(String string) {
 		String firstFix = string.replaceAll("\\s", "").toLowerCase();
@@ -34,24 +33,16 @@ public abstract class Formalizer {
 	}
 
 	private static Roll buildRoll(String str) {
-		switch (str) {
-		case "d4":
-			return Roll.D4;
-		case "d6":
-			return Roll.D6;
-		case "d8":
-			return Roll.D8;
-		case "d10":
-			return Roll.D10;
-		case "d12":
-			return Roll.D12;
-		case "d20":
-			return Roll.D20;
-		case "d100":
-			return Roll.D100;
-		default:
-			return Roll.NO_ROLL;
-		}
+		return switch (str) {
+			case "d4" -> Roll.D4;
+			case "d6" -> Roll.D6;
+			case "d8" -> Roll.D8;
+			case "d10" -> Roll.D10;
+			case "d12" -> Roll.D12;
+			case "d20" -> Roll.D20;
+			case "d100" -> Roll.D100;
+			default -> Roll.NO_ROLL;
+		};
 	}
 
 	private static Dice buildDice(String str) {
@@ -61,10 +52,7 @@ public abstract class Formalizer {
 			Roll roll = buildRoll(str.replaceAll("(\\+|-)(\\d*)(d4|d6|d8|d10|d12|d20|d100)", "$3"));
 
 			Roll[] combo = new Roll[times];
-			for (int i = 0; i < times; i++) {
-				combo[i] = roll;
-			}
-
+			Arrays.fill(combo, roll);
 			answer = new Dice(str, 0, combo);
 
 			if (str.contains("-")) {
@@ -98,22 +86,29 @@ public abstract class Formalizer {
 
 	public static int roll(Roll roll) {
 		switch (roll) {
-		case D4:
-			return d4();
-		case D6:
-			return d6();
-		case D8:
-			return d8();
-		case D10:
-			return d10();
-		case D12:
-			return d12();
-		case D20:
-			return d20();
-		case D100:
-			return d100();
-		default:
-			break;
+			case D4 -> {
+				return d4();
+			}
+			case D6 -> {
+				return d6();
+			}
+			case D8 -> {
+				return d8();
+			}
+			case D10 -> {
+				return d10();
+			}
+			case D12 -> {
+				return d12();
+			}
+			case D20 -> {
+				return d20();
+			}
+			case D100 -> {
+				return d100();
+			}
+			default -> {
+			}
 		}
 
 		return 0;

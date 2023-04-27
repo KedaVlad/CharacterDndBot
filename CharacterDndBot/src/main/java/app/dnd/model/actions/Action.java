@@ -32,9 +32,7 @@ public class Action extends SingleAction implements Cloneable {
 		Action answer = this.clone();
 		if (answer.answers != null && answer.answers.length > 0) {
 			String[] newAnswers = new String[answer.answers.length + 1];
-			for (int i = 0; i < answer.answers.length; i++) {
-				newAnswers[i] = answer.answers[i];
-			}
+			System.arraycopy(answer.answers, 0, newAnswers, 0, answer.answers.length);
 			newAnswers[newAnswers.length - 1] = key;
 			answer.answers = newAnswers;
 		} else {

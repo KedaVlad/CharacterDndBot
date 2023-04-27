@@ -18,12 +18,8 @@ public class HpService {
 	private HpRepository hpRepository;
 
 	public Hp findByIdAndOwnerName(Long id, String ownerName) {
-		Optional<Hp> userOptional = hpRepository.findByIdAndOwnerName(id, ownerName);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return Hp.build(id, ownerName);
-		}
+		Optional<Hp> userOptional = hpRepository.findByUserIdAndOwnerName(id, ownerName);
+		return userOptional.orElseGet(() -> Hp.build(id, ownerName));
 	}
 
 	public void save(Hp hp) {
@@ -31,7 +27,7 @@ public class HpService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String name) {
-		hpRepository.deleteByIdAndOwnerName(id, name);
+		hpRepository.deleteByUserIdAndOwnerName(id, name);
 	}
 
 	public void refresh(Long id, String name, Time time) {

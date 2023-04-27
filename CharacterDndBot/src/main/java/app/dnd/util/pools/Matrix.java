@@ -6,7 +6,7 @@ public class Matrix {
 
 	public void use(int key) {
 		for (int i = matrix[key].length; i >= 0; i--) {
-			if (matrix[key][i] == true) {
+			if (matrix[key][i]) {
 				matrix[key][i] = false;
 				break;
 			}
@@ -16,7 +16,7 @@ public class Matrix {
 	public int value(int key) {
 		int value = 0;
 		for (boolean block : matrix[key]) {
-			if (block == true) {
+			if (block) {
 				value++;
 			} else {
 				break;
@@ -28,7 +28,7 @@ public class Matrix {
 	public void refresh() {
 		for (boolean[] arr : matrix) {
 			for (boolean block : arr) {
-				if (block == false) {
+				if (!block) {
 					block = true;
 				}
 			}
@@ -37,7 +37,7 @@ public class Matrix {
 
 	public void refresh(int key, int value) {
 		for (boolean block : matrix[key]) {
-			if (block == false && value > 0) {
+			if (!block && value > 0) {
 				block = true;
 				value--;
 			}

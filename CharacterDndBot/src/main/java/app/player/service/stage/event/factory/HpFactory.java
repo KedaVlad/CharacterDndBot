@@ -1,13 +1,12 @@
 package app.player.service.stage.event.factory;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.dnd.model.actions.Action;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
@@ -15,8 +14,8 @@ import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
 import app.player.service.stage.event.hero.Menu;
-import app.user.model.ActualHero;
-import app.user.model.User;
+import app.bot.model.user.ActualHero;
+import app.bot.model.user.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,15 +26,18 @@ public class HpFactory implements Executor {
 	private HpFactoryExecutor hpFactoryExecutor;
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
-		Action action = (Action) event.getTask();
+	public Act execute(StageEvent event) {
+		Action action = (Action) event.getTusk();
 		switch (action.condition()) {
-		case 0:
-			return hpFactoryExecutor.startBuildHp(event.getUser().getActualHero());
-		case 1:
-			return hpFactoryExecutor.apruveHp(event.getUser().getActualHero(), action);
-		case 3:
-			return hpFactoryExecutor.finishHp(event.getUser(), action);
+			case 0 -> {
+				return hpFactoryExecutor.startBuildHp(event.getUser().getActualHero());
+			}
+			case 1 -> {
+				return hpFactoryExecutor.approveHp(event.getUser().getActualHero(), action);
+			}
+			case 3 -> {
+				return hpFactoryExecutor.finishHp(event.getUser(), action);
+			}
 		}
 		log.error("HpFactory: out of bounds condition");
 		return null;
@@ -51,8 +53,7 @@ class HpFactoryExecutor {
 	@Autowired
 	private Menu menu;
 	
-	public Act startBuildHp(ActualHero hero) {	
-	
+	public Act startBuildHp(ActualHero hero) {
 		return ReturnAct.builder()
 				.target(Button.START.NAME)
 				.act(SingleAct.builder()
@@ -64,19 +65,20 @@ class HpFactoryExecutor {
 				.build();
 	}
 
-	public Act finishHp(User user, Action action) {
-		ActualHero actualHero = user.getActualHero();
-		dndFacade.hero().hp().grow(actualHero, (Integer) Integer.parseInt(action.getAnswers()[1]));
-		return  menu.execute(new UserEvent<Stage> (user, Action.builder().build()));
-	}
-
-	public Act apruveHp(ActualHero actualHero, Action action) {
-		actualHero.setReadyToGame(true);
+	public Act approveHp(ActualHero actualHero, Action action) {
 		return SingleAct.builder()
-				.name("apruveHp")
+				.name("approveHp")
 				.stage(dndFacade.action().hp().apruveHp(actualHero, action))
 				.build();
 	}
+
+	public Act finishHp(User user, Action action) {
+		ActualHero actualHero = user.getActualHero();
+		actualHero.setReadyToGame(true);
+		dndFacade.hero().hp().grow(actualHero, Integer.parseInt(action.getAnswers()[1]));
+		return  menu.execute(new StageEvent (this, user, Action.builder().build()));
+	}
+
 }
 
 

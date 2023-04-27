@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import app.dnd.model.actions.Action;
 import app.player.model.Stage;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class HpActor implements HpAction {

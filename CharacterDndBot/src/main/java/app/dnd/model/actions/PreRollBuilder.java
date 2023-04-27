@@ -1,7 +1,7 @@
 package app.dnd.model.actions;
 
+import app.dnd.model.enums.Roll;
 import app.dnd.util.math.Dice;
-import app.dnd.util.math.Formalizer.Roll;
 import app.player.model.enums.Button;
 
 public class PreRollBuilder extends BaseActionBuilder<PreRollBuilder> {
@@ -12,7 +12,7 @@ public class PreRollBuilder extends BaseActionBuilder<PreRollBuilder> {
 
 	public PreRollBuilder roll(RollAction roll) {
 		this.roll = roll;
-		this.roll.addDicesToStart(new Dice("D20", 0, Roll.D20));
+		this.roll.addDices(RollAction.DicePosition.START, new Dice("D20", 0, Roll.D20));
 		return this;
 	}
 

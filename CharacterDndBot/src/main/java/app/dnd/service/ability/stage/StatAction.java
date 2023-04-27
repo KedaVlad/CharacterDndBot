@@ -21,7 +21,7 @@ import app.dnd.util.ArrayToColumns;
 import app.dnd.util.math.Formalizer;
 import app.player.model.Stage;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface StatAction {
 	
@@ -54,7 +54,7 @@ class StatActor implements StatAction {
 		Action action = (Action) stage;
 		Stat stat = (Stat) action.getObjectDnd();
 		action.setButtons(statButtonsBuilder.targetChangeButtons(stat));
-		action.setText(stat.getCore().toString() + " " + stat.getValue() + ". If u have reason to change value...");
+		action.setText(stat.getCore().getName() + " " + stat.getValue() + ". If u have reason to change value...");
 		return action;
 	}
 
@@ -92,10 +92,10 @@ class StatActor implements StatAction {
 					+ "Examples:\r\n" + " 11, 12, 13, 14, 15, 16 \r\n" + " str 11 dex 12 con 13 int 14 wis 15 cha 16 ";
 			return Action.builder().text(text).build();
 		} else {
-			action.setText(Stats.STRENGTH.toString() + " " + stats.get(0) + "\n" + Stats.CONSTITUTION.toString() + " "
-					+ stats.get(1) + "\n" + Stats.DEXTERITY.toString() + " " + stats.get(2) + "\n"
-					+ Stats.INTELLIGENSE.toString() + " " + stats.get(3) + "\n" + Stats.WISDOM.toString() + " "
-					+ stats.get(4) + "\n" + Stats.CHARISMA.toString() + " " + stats.get(5) + "\n"
+			action.setText(Stats.STRENGTH.getName() + " " + stats.get(0) + "\n" + Stats.CONSTITUTION.getName() + " "
+					+ stats.get(1) + "\n" + Stats.DEXTERITY.getName() + " " + stats.get(2) + "\n"
+					+ Stats.INTELLIGENCE.getName() + " " + stats.get(3) + "\n" + Stats.WISDOM.getName() + " "
+					+ stats.get(4) + "\n" + Stats.CHARISMA.getName() + " " + stats.get(5) + "\n"
 					+ "If you planned differently, write again");
 			action.setButtons(new String[][] { { "Yeah right" } });
 			return action;
@@ -121,7 +121,7 @@ class StatButtonsBuilder {
 		int i = 0;
 		for(Stats stat: stats.keySet()) {
 			arr[i] = Action.builder()
-					.name(stats.get(stat).getValue() + "["+ characteristics.modificator(stat) + "] " + stats.get(stat).getCore())
+					.name(stats.get(stat).getValue() + "["+ characteristics.modification(stat) + "] " + stats.get(stat).getCore())
 					.objectDnd(stats.get(stat))
 					.location(Location.ABILITY)
 					.build();

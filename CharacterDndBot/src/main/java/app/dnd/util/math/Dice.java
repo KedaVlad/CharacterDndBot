@@ -1,26 +1,24 @@
 package app.dnd.util.math;
- 
-import java.io.Serializable;
 
-import app.dnd.util.math.Formalizer.Roll;
+
+import app.dnd.model.enums.Roll;
 import lombok.Data;
 
 @Data
-public class Dice implements Serializable{
-	 
-	private static final long serialVersionUID = 1L;
+public class Dice {
+
 	private String name;
 	private int buff;
 	private Roll[] combo;
 	private int[] results;
 
 	public String toString() {
-		String answer = "";
+		StringBuilder answer = new StringBuilder();
 		for (Roll roll : combo) {
-			answer += roll + " ";
+			answer.append(roll).append(" ");
 		}
-		answer += "(+" + buff + ")";
-		return answer;
+		answer.append("(+").append(buff).append(")");
+		return answer.toString();
 	}
 
 	public Dice() {};
@@ -33,29 +31,25 @@ public class Dice implements Serializable{
 	}
 
 	public String execute() {
-		String answer = this.name + ": " + roll();
+		StringBuilder answer = new StringBuilder(this.name).append(": ").append(roll());
 
 		if (results.length > 2 || results.length > 1 && results[0] != 0 && results[1] != 0) {
-			answer += "(";
+			answer.append("(");
 			boolean start = true;
-			for (int i = 0; i < results.length; i++) {
-				int target = results[i];
+			for (int target : results) {
 				if (start && (target != 0)) {
-					answer += "" + target;
+					answer.append(target);
 					start = false;
 				} else if (target < 0) {
-					answer += " - " + target * -1;
+					answer.append(" - ").append(target * -1);
 				} else if (target > 0) {
-					answer += " + " + target;
-				} else {
-					continue;
+					answer.append(" + ").append(target);
 				}
-
 			}
 
-			return answer + ")";
+			answer.append(")");
 		}
-		return answer;
+		return answer.toString();
 	}
 
 	public int roll() {
@@ -76,9 +70,7 @@ public class Dice implements Serializable{
 
 	public void addRollToStart(Roll... rolls) {
 		Roll[] result = new Roll[combo.length + rolls.length];
-		for (int i = 0; i < rolls.length; i++) {
-			result[i] = rolls[i];
-		}
+		System.arraycopy(rolls, 0, result, 0, rolls.length);
 		int treker = 0;
 		for (int i = rolls.length; i < result.length; i++) {
 			result[i] = combo[treker];
@@ -89,9 +81,7 @@ public class Dice implements Serializable{
 
 	public void addRollToEnd(Roll... rolls) {
 		Roll[] result = new Roll[combo.length + rolls.length];
-		for (int i = 0; i < combo.length; i++) {
-			result[i] = combo[i];
-		}
+		System.arraycopy(combo, 0, result, 0, combo.length);
 		int treker = 0;
 		for (int i = combo.length; i < result.length; i++) {
 			result[i] = rolls[treker];

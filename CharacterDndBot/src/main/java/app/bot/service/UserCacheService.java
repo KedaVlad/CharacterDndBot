@@ -9,83 +9,73 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import app.bot.model.user.User;
+import lombok.Data;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import app.bot.event.ChatUpdate;
-import app.bot.model.UserCore;
 
 @Service
-public class UserCacheService<T extends UserCore> {
+public class UserCacheService {
 
-	@Autowired
-	private UserCoreService<T> userCoreService;
-	private final Map<Long, UserCach<T>> cache = new ConcurrentHashMap<>();
+	private final UserService userService;
+	private final Map<Long, ActiveUserCache> cache = new ConcurrentHashMap<>();
 	private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-	@Autowired
-	private ApplicationEventPublisher eventPublisher;
-	private final int CACHE_TIMER = 60;
+	private final ApplicationEventPublisher eventPublisher;
+	private final static int CACHE_TIMER = 60;
 
-	public void put(T user) {
-		Long userId = user.getId();
-		UserCach<T> entry = new UserCach<>(user);
-		cache.put(userId, entry);
+	public UserCacheService(UserService userService, ApplicationEventPublisher eventPublisher) {
+		this.userService = userService;
+		this.eventPublisher = eventPublisher;
+	}
+
+	public User getById(Long id) {
+		if(cache.containsKey(id)) {
+			ActiveUserCache entry = cache.get(id);
+				scheduleTimer(entry);
+				return entry.getUser();
+		} else {
+			User user = userService.getById(id);
+			put(user);
+			return user;
+		}
+	}
+
+	private void put(User user) {
+		ActiveUserCache entry = new ActiveUserCache(user);
+		cache.put(user.getId(), entry);
 		scheduleTimer(entry);
 	}
 
-	public boolean isCached(Long userId) {
-		return cache.containsKey(userId);
-	}
-
-	public T get(Long userId) {
-		UserCach<T> entry = cache.get(userId);
-		if (entry != null) {	
-			scheduleTimer(entry);
-			return entry.getUser();
-		} else {
-			return null;
-		}
-	}
-
-	private void scheduleTimer(UserCach<T> entry) {
+	private void scheduleTimer(ActiveUserCache entry) {
 		if (entry.getFuture() != null) {
 			entry.getFuture().cancel(false);
 		}
-
 		entry.setFuture(executorService.schedule(() -> {
-			T user = entry.getUser();
+			User user = entry.getUser();
+			eventPublisher.publishEvent(new ChatUpdate(this, user.clear()));
+			userService.save(user);
 			cache.remove(user.getId(), entry);
-			if (user != null) {
-				eventPublisher.publishEvent(new ChatUpdate(user.clear()));
-				userCoreService.save(user);
-			}
 		}, CACHE_TIMER, TimeUnit.MINUTES));
 	}
 
 	@PreDestroy
 	private void closeExecutorService() {
+		for(Long id: cache.keySet()) {
+			userService.save(cache.get(id).getUser());
+		}
 		executorService.shutdown();
 	}
 
-	private static class UserCach<T extends UserCore> {
-		private final T user;
+	@Data
+	private static class ActiveUserCache {
+		private final User user;
 		private ScheduledFuture<?> future;
 
-		public UserCach(T user) {
+		public ActiveUserCache(User user) {
 			this.user = user;
 		}
 
-		public T getUser() {
-			return user;
-		}
-
-		public ScheduledFuture<?> getFuture() {
-			return future;
-		}
-
-		public void setFuture(ScheduledFuture<?> future) {
-			this.future = future;
-		}
 	}
 }

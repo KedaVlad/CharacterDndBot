@@ -4,12 +4,12 @@ public enum SaveRolls {
 	SR_STRENGTH("SR Strength", Stats.STRENGTH),
 	SR_DEXTERITY("SR Dexterity", Stats.DEXTERITY),
 	SR_CONSTITUTION("SR Constitution", Stats.CONSTITUTION),
-	SR_INTELLIGENSE("SR Intelligense", Stats.INTELLIGENSE), 
+	SR_INTELLIGENCE("SR Intelligence", Stats.INTELLIGENCE),
 	SR_WISDOM("SR Wisdom", Stats.WISDOM), 
 	SR_CHARISMA("SR Charisma", Stats.CHARISMA);
 
-	private String name;
-	private Stats stat;
+	private final String name;
+	private final Stats stat;
 
 	SaveRolls(String name, Stats stat) {
 		this.name = name;
@@ -17,10 +17,10 @@ public enum SaveRolls {
 	}
 	
 	public Stats getStat() {
-		return this.stat;
+		return stat;
 	}
 
-	public String toString() {
+	public String getName() {
 		return name;
 	}
 }

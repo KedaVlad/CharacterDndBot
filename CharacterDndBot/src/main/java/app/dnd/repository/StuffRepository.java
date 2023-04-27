@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.stuffs.Stuff;
 
 @Repository
-public interface StuffRepository extends MongoRepository<Stuff, Long> {
+public interface StuffRepository extends MongoRepository<Stuff, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<Stuff> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<Stuff> findByUserIdAndOwnerName(Long userId, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 }

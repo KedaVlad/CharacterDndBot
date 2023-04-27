@@ -11,7 +11,7 @@ import app.dnd.model.enums.Weapons;
 import app.dnd.service.talants.logic.ProficienciesLogic;
 import app.player.model.Stage;
 import app.player.model.enums.Button;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface ProfAction {
 	

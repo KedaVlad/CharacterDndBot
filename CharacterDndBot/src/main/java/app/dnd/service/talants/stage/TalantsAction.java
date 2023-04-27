@@ -1,7 +1,7 @@
 package app.dnd.service.talants.stage;
 
 import app.dnd.model.actions.BaseAction;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface TalantsAction {
 	

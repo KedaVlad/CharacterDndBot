@@ -1,7 +1,7 @@
 package app.dnd.util.math;
 
- 
-import app.dnd.util.math.Formalizer.Roll;
+
+import app.dnd.model.enums.Roll;
 import lombok.Data;
 
 @Data
@@ -18,14 +18,14 @@ public class Formula {
 	}
 
 	public String toString() {
-		String answer = "";
+		StringBuilder answer = new StringBuilder();
 		for (Dice dice : formula) {
 			for (Roll roll : dice.getCombo()) {
-				answer += roll.toString();
+				answer.append(roll.toString());
 			}
-			answer += dice.getBuff() + " " + dice.getName() + " |||";
+			answer.append(dice.getBuff()).append(" ").append(dice.getName()).append(" |||");
 		}
-		return answer;
+		return answer.toString();
 	}
 
 	public Formula(Dice... formula) {
@@ -95,22 +95,22 @@ public class Formula {
 	}
 
 	public String execute() {
-		String answer = name;
+		StringBuilder answer = new StringBuilder(name);
 
 		for (Dice dice : getFormula()) {
-			answer += dice.execute() + "\n";
+			answer.append(dice.execute()).append("\n");
 		}
-		answer += "Result: " + summ();
+		answer.append("Result: ").append(summ());
 		if (formula[0].getCombo() != null && formula[0].getCombo()[0].equals(Roll.D20)) {
 			if (critCheck(formula[0]).equals(CritCheck.CRIT20)) {
 				this.natural20 = true;
-				answer += " !NATURAL 20!";
+				answer.append(" !NATURAL 20!");
 			} else if (critCheck(formula[0]).equals(CritCheck.CRIT1)) {
 				this.natural1 = true;
-				answer += " !CRITICAL 1!";
+				answer.append(" !CRITICAL 1!");
 			}
 		}
-		return answer;
+		return answer.toString();
 	}
 
 	public int summ() {
@@ -123,9 +123,7 @@ public class Formula {
 
 	public void addDicesToStart(Dice... dices) {
 		Dice[] result = new Dice[formula.length + dices.length];
-		for (int i = 0; i < dices.length; i++) {
-			result[i] = dices[i];
-		}
+		System.arraycopy(dices, 0, result, 0, dices.length);
 		int treker = 0;
 		for (int i = dices.length; i < result.length; i++) {
 			result[i] = formula[treker];
@@ -136,9 +134,7 @@ public class Formula {
 
 	public void addDicesToEnd(Dice... dices) {
 		Dice[] result = new Dice[formula.length + dices.length];
-		for (int i = 0; i < formula.length; i++) {
-			result[i] = formula[i];
-		}
+		System.arraycopy(formula, 0, result, 0, formula.length);
 		int treker = 0;
 		for (int i = formula.length; i < result.length; i++) {
 			result[i] = dices[treker];

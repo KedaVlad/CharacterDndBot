@@ -1,5 +1,6 @@
 package app.player.service.stage.event.hero;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,6 @@ import app.dnd.model.actions.Action;
 import app.dnd.model.actions.PreRoll;
 import app.dnd.model.enums.Proficiency;
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
 import app.player.model.Stage;
 import app.player.model.act.Act;
@@ -20,7 +20,7 @@ import app.player.model.act.SingleAct;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
 import app.player.service.stage.Executor;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @EventExecutor(Location.ABILITY)
 public class AbilityManager implements Executor {
@@ -29,18 +29,17 @@ public class AbilityManager implements Executor {
 	private AbilityExecutor abilityExecutor;
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 
-		if(event.getTask() instanceof Action) {
-			Action action = (Action) event.getTask();
+		if(event.getTusk() instanceof Action action) {
 
 			if(action.condition() == 0) {
 				if (action.getObjectDnd() instanceof Stat) {
-					return abilityExecutor.singleStatMenu(event.getTask());
+					return abilityExecutor.singleStatMenu(event.getTusk());
 				} else if (action.getObjectDnd() instanceof Skill) {
-					return abilityExecutor.singleSkillMenu(event.getTask());
+					return abilityExecutor.singleSkillMenu(event.getTusk());
 				} else if (action.getObjectDnd() instanceof SaveRoll) {
-					return abilityExecutor.singleSaveRollMenu(event.getTask());
+					return abilityExecutor.singleSaveRollMenu(event.getTusk());
 				} else { 
 					return abilityExecutor.abilityMenu();
 				}
@@ -55,14 +54,14 @@ public class AbilityManager implements Executor {
 				} else if(targetMenu.equals(Button.SKILL.NAME)) {
 					return abilityExecutor.skillMenu(event.getUser().getActualHero());
 				} else {
-					return abilityExecutor.changeStat(event.getUser().getActualHero(), event.getTask());
+					return abilityExecutor.changeStat(event.getUser().getActualHero(), event.getTusk());
 				}
 			} else {
 				return ReturnAct.builder().target(Button.MENU.NAME).build();
 			}		
 
-		} else if(event.getTask() instanceof PreRoll) {
-			return abilityExecutor.preRoll(event.getUser().getActualHero(), (PreRoll) event.getTask());
+		} else if(event.getTusk() instanceof PreRoll preRoll) {
+			return abilityExecutor.preRoll(event.getUser().getActualHero(), preRoll);
 		} else {
 			return ReturnAct.builder().target(Button.MENU.NAME).build();
 		}
@@ -157,7 +156,7 @@ class AbilityExecutor {
 		if(action.getAnswers()[0].equals("Up to PROFICIENCY")) {
 			saveRoll.setProficiency(Proficiency.BASE);
 			dndFacade.hero().ability().saveRoll().change(actualHero, saveRoll);
-		} 
+		}
 
 		return ReturnAct.builder().target(Button.ABILITY.NAME).call(Button.SAVE_ROLL.NAME).build();
 	}
@@ -204,7 +203,7 @@ class AbilityExecutor {
 		Skill skill = (Skill) action.getObjectDnd();
 		switch(action.getAnswers()[0]) {
 		case "Up to COMPETENSE":
-			skill.setProficiency(Proficiency.COMPETENSE);
+			skill.setProficiency(Proficiency.COMPETENCE);
 			dndFacade.hero().ability().skill().up(actualHero, skill);
 			break;
 		case "Up to PROFICIENCY":

@@ -10,7 +10,8 @@ import lombok.Data;
 public class Lvl {
 	
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private int lvl;
 	private int experience;
@@ -28,7 +29,7 @@ public class Lvl {
 	
 	public static Lvl create(Long id, String ownerName) {
 		Lvl lvl = new Lvl();
-		lvl.id = id;
+		lvl.userId = id;
 		lvl.ownerName = ownerName;
 		lvl.lvl = 1;
 		return lvl;

@@ -3,7 +3,6 @@ package app.dnd.model.enums;
 import app.dnd.model.telents.attacks.AttackModification;
 import app.dnd.util.math.DamageDice;
 import app.dnd.util.math.DamageDice.TypeDamage;
-import app.dnd.util.math.Formalizer.Roll;
 import lombok.Getter;
 
 public enum Weapons {
@@ -152,7 +151,7 @@ public enum Weapons {
 			.damage(new DamageDice("Weapon base", 1, TypeDamage.STICKING, Roll.NO_ROLL))
 			.mainStat(Stats.DEXTERITY)
 			.requirement(WeaponProperties.LONG_RANGE, WeaponProperties.AMMUNITION, WeaponProperties.MILITARY)
-			.ammunition(Ammunitions.BLOWWGUN_NEEDLES)
+			.ammunition(Ammunitions.BLOWGUN_NEEDLES)
 			.build()),
 	 
 	YKLWA("Yklwa", AttackModification.builder()
@@ -377,9 +376,9 @@ public enum Weapons {
 	}
 
 	@Getter
-	private String name;
+	private final String name;
 	@Getter
-	private AttackModification[] attackTypes;
+	private final AttackModification[] attackTypes;
 
 	public String toString() {
 		return name;

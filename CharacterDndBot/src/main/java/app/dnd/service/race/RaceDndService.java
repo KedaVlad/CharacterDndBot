@@ -18,11 +18,7 @@ public class RaceDndService {
 
 	public RaceDnd findByIdAndOwnerName(Long id, String ownerName) {
 		Optional< RaceDnd> userOptional = raceDndRepository.findById(id);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return RaceDnd.build(id,ownerName);
-		}
+		return userOptional.orElseGet(() -> RaceDnd.build(id, ownerName));
 	}
 
 	public void save(RaceDnd raceDnd) {
@@ -30,7 +26,7 @@ public class RaceDndService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String name) {
-		raceDndRepository.deleteByIdAndOwnerName(id, name);
+		raceDndRepository.deleteByUserIdAndOwnerName(id, name);
 	}
 
 }

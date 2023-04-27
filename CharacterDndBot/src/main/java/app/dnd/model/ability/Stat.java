@@ -27,9 +27,9 @@ public class Stat implements ObjectDnd {
 	public void up(int value) {
 		this.value += value;
 		if (this.value > maxValue) {
-			value = maxValue;
+			this.value = maxValue;
 		} else if(this.value < minValue) {
-			value = minValue;
+			this.value = minValue;
 		}
 	}
 

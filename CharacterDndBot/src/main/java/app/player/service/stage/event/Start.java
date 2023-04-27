@@ -1,9 +1,8 @@
 package app.player.service.stage.event;
 
 import app.dnd.model.actions.Action;
-import app.player.event.UserEvent;
+import app.player.event.StageEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
@@ -15,10 +14,10 @@ import app.player.service.stage.Executor;
 public class Start implements Executor {
 
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 		event.getUser().reset();
 		return ReturnAct.builder()
-				.target(event.getUser().getId() + "")
+				.target(String.valueOf(event.getUser().getId()))
 				.act(SingleAct.builder()
 						.name(Button.START.NAME)
 						.stage(Action.builder()

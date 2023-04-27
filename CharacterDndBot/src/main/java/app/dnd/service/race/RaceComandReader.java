@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import app.dnd.model.ObjectDnd;
-import app.dnd.model.comands.AddComand;
-import app.dnd.model.comands.CloudComand;
-import app.dnd.model.comands.ComandConteiner;
-import app.dnd.model.comands.InerComand;
-import app.dnd.model.comands.UpComand;
+import app.dnd.model.commands.AddCommand;
+import app.dnd.model.commands.CloudCommand;
+import app.dnd.model.commands.CommandContainer;
+import app.dnd.model.commands.InnerCommand;
+import app.dnd.model.commands.UpCommand;
 import app.dnd.model.telents.features.Feature;
 import app.dnd.model.telents.features.Features;
-import app.dnd.model.telents.features.InerFeature;
+import app.dnd.model.telents.features.InnerFeature;
 import app.dnd.model.telents.proficiency.Possession;
 import app.dnd.service.inerComand.InerComandExecutor;
 import app.dnd.service.talants.FeaturesService;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Service
 public class RaceComandReader {
@@ -28,47 +28,47 @@ public class RaceComandReader {
 	@Autowired
 	private InerComandExecutor inerComandExecutor;
 
-	public void execute(ActualHero actualHero, InerComand[] inerComands) {
+	public void execute(ActualHero actualHero, InnerCommand[] innerCommands) {
 
-		ComandConteiner comandConteiner = new ComandConteiner();
+		CommandContainer commandContainer = new CommandContainer();
 		List<Feature> trait = new ArrayList<>();
-		for(InerComand inerComand: inerComands) {
-			handle(comandConteiner, trait, inerComand);
+		for(InnerCommand innerCommand : innerCommands) {
+			handle(commandContainer, trait, innerCommand);
 		}
 		Features features = featuresService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName());
 		features.getByRace().addAll(trait);
 		featuresService.save(features);
-		inerComandExecutor.execute(actualHero, comandConteiner);
+		inerComandExecutor.execute(actualHero, commandContainer);
 	}
 
-	public void handle(ComandConteiner comandConteiner, List<Feature> trait, InerComand inerComands) {
+	public void handle(CommandContainer commandContainer, List<Feature> trait, InnerCommand inerComands) {
 		
-		if (inerComands instanceof AddComand) {
-			add(comandConteiner, trait, (AddComand) inerComands);
-		} else if (inerComands instanceof UpComand) {			
-			comandConteiner.getUp().add(((UpComand) inerComands).getObjectDnd());
-		} else if (inerComands instanceof CloudComand) {
-			comandConteiner.getCloud().add((CloudComand) inerComands);
+		if (inerComands instanceof AddCommand) {
+			add(commandContainer, trait, (AddCommand) inerComands);
+		} else if (inerComands instanceof UpCommand) {
+			commandContainer.getUp().add(((UpCommand) inerComands).getObjectDnd());
+		} else if (inerComands instanceof CloudCommand) {
+			commandContainer.getCloud().add((CloudCommand) inerComands);
 		}
 	}
 
 
-	private void add(ComandConteiner comandConteiner, List<Feature> trait, AddComand comand) {
+	private void add(CommandContainer commandContainer, List<Feature> trait, AddCommand comand) {
 		
 		ObjectDnd[] objects = comand.getTargets();
 		for (ObjectDnd object : objects) {
-			if(object instanceof InerComand) {
-				handle(comandConteiner, trait, (InerComand) object);
+			if(object instanceof InnerCommand) {
+				handle(commandContainer, trait, (InnerCommand) object);
 			} else if (object instanceof Feature) {
 				trait.add((Feature) object);
-				if (object instanceof InerFeature) {
-					InerFeature target = (InerFeature) object;
-					for (InerComand inerComand : target.getComand()) {
-						handle(comandConteiner, trait, inerComand);
+				if (object instanceof InnerFeature) {
+					InnerFeature target = (InnerFeature) object;
+					for (InnerCommand innerCommand : target.getCommand()) {
+						handle(commandContainer, trait, innerCommand);
 					}
 				}
 			} else if (object instanceof Possession) {
-				comandConteiner.getAdd().add((Possession) object);
+				commandContainer.getAdd().add((Possession) object);
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 package app.dnd.service.classes;
 
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface ClassesLogic {
 

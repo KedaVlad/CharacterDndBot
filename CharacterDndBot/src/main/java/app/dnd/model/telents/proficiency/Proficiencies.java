@@ -14,7 +14,8 @@ import lombok.Data;
 public class Proficiencies { 
 	
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private int proficiency;
 	private List<Possession> possessions;
@@ -22,23 +23,19 @@ public class Proficiencies {
 	public static Proficiencies build(Long id, String ownerName) {
 		Proficiencies proficiencies = new Proficiencies();
 		proficiencies.ownerName = ownerName;
-		proficiencies.id = id;
+		proficiencies.userId = id;
 		proficiencies.possessions = new ArrayList<>();
 		proficiencies.proficiency = 2;
 		return proficiencies;
 	}
 	
 	public int getProfBonus(Proficiency prof) {
-		switch (prof) {
-		case BASE:
-			return proficiency;
-		case COMPETENSE:
-			return proficiency * 2;
-		case HALF:
-			return proficiency / 2;
-		default:
-			return 0;
-		}
+		return switch (prof) {
+			case BASE -> proficiency;
+			case COMPETENCE -> proficiency * 2;
+			case HALF -> proficiency / 2;
+			default -> 0;
+		};
 	}
 	
 	public Proficiency findProficiency(String name) {

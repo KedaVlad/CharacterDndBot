@@ -10,7 +10,7 @@ import app.dnd.model.hero.ClassesDnd;
 import app.dnd.model.wrapp.ClassDndWrapp;
 import app.dnd.service.lvl.LvlLogic;
 import app.dnd.service.talants.logic.ProficienciesLogic;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class ClassFacade implements ClassesLogic {

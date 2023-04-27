@@ -14,7 +14,8 @@ import lombok.Data;
 public class AttackAbility {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private Integer critX;
 	private List<AttackModification> preAttacks;
@@ -25,6 +26,7 @@ public class AttackAbility {
 
 	public static AttackAbility build(Long id, String ownerName) {
 		AttackAbility attackAbility = new AttackAbility();
+		attackAbility.userId = id;
 		attackAbility.ownerName = ownerName;
 		attackAbility.critX = 1;
 		attackAbility.afterAttak = new ArrayList<>();

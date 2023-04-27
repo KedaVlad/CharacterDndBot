@@ -14,13 +14,14 @@ import lombok.Data;
 public class HeroCloud {
 
 	@Id
-	private Long id;
+	private String mongoId;
+	private Long userId;
 	private String ownerName;
 	private List<CloudAct> clouds;
 	
 	public static HeroCloud build(Long id, String ownerName) {
 		HeroCloud target = new HeroCloud();
-		target.setId(id);
+		target.setUserId(id);
 		target.setOwnerName(ownerName);
 		target.setClouds(new ArrayList<>());
 		return target;

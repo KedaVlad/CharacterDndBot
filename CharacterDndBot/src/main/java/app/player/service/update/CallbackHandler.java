@@ -7,7 +7,7 @@ import app.player.model.Key;
 import app.player.model.Stage;
 import app.player.model.act.CloudAct;
 import app.player.model.enums.Button;
-import app.user.model.User;
+import app.bot.model.user.User;
 
 @Component
 public class CallbackHandler {

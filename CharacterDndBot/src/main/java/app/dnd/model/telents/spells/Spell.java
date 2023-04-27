@@ -19,7 +19,7 @@ public class Spell implements ObjectDnd {
 	private String name;
 	private String description;
 	private String applicationTime;
-	private String distanse;
+	private String distance;
 	private String duration;
 	private SpellClass[] classFor;
 	private boolean concentration;

@@ -1,6 +1,6 @@
 package app.dnd.service.race;
 
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface RaceLogic {
 

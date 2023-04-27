@@ -2,7 +2,7 @@ package app.dnd.model.hero;
  
 import java.io.Serializable;
 
-import app.dnd.util.math.Formalizer.Roll;
+import app.dnd.model.enums.Roll;
 import lombok.Data;
 
 @Data

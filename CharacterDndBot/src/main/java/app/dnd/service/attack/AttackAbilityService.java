@@ -18,12 +18,8 @@ public class AttackAbilityService {
 	
 	public AttackAbility findByIdAndOwnerName(Long id, String ownerName) {
 		
-		Optional<AttackAbility> userOptional = attackAbilityRepository.findByIdAndOwnerName(id, ownerName);
-		if (userOptional.isPresent()) {
-			return userOptional.get();
-		} else {
-			return AttackAbility.build(id, ownerName);
-		}
+		Optional<AttackAbility> userOptional = attackAbilityRepository.findByUserIdAndOwnerName(id, ownerName);
+		return userOptional.orElseGet(() -> AttackAbility.build(id, ownerName));
 	}
 
 	public void save(AttackAbility attackAbility) {
@@ -31,7 +27,7 @@ public class AttackAbilityService {
 	}
 
 	public void deleteByIdAndOwnerName(Long id, String ownerName) {
-		attackAbilityRepository.deleteByIdAndOwnerName(id, ownerName);	
+		attackAbilityRepository.deleteByUserIdAndOwnerName(id, ownerName);
 	}
 
 }

@@ -34,18 +34,17 @@ public class AttackModification implements ObjectDnd {
 	}
 	
 	public String toString() {
-		String answer = name + " |";
+		StringBuilder answer = new StringBuilder(name + " |");
 		for(WeaponProperties prop: requirement) {
-			answer += prop.toString() + "|";
+			answer.append(prop.toString()).append("|");
 		}
-		return answer;
+		return answer.toString();
 	}
 	
 	@Override
 	public boolean equals(Object object) {
 		if(object == this) return true;
-		if(!(object instanceof AttackModification)) return false;
-		AttackModification other = (AttackModification) object;
+		if(!(object instanceof AttackModification other)) return false;
 		return Objects.equal(this.name, other.name) &&  Objects.equal(this.requirement, other.requirement);
 	}
 	
@@ -54,7 +53,7 @@ public class AttackModification implements ObjectDnd {
 		return Objects.hashCode(name, requirement);
 	}
 	
-	public AttackModification marger(AttackModification second) {
+	public AttackModification merger(AttackModification second) {
 		AttackModification answer = new AttackModification();
 		answer.postAttack = second.postAttack;
 		answer.name = this.name;

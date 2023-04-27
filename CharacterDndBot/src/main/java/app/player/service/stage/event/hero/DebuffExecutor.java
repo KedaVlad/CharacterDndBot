@@ -2,9 +2,8 @@ package app.player.service.stage.event.hero;
 
 import java.util.UUID;
 import app.dnd.model.actions.Action;
-import app.player.event.UserEvent;
+import app.player.event.StageEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.CloudAct;
 import app.player.model.act.ReturnAct;
@@ -19,9 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 public class DebuffExecutor implements Executor {
 	
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 		
-		Action action = (Action) event.getTask(); 
+		Action action = (Action) event.getTusk();
 		if(action.condition() == 0) {
 			return ReturnAct.builder()
 					.target(Button.MENU.NAME)

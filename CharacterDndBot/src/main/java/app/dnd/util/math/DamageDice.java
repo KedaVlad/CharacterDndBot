@@ -1,14 +1,14 @@
 package app.dnd.util.math;
 
-import app.dnd.util.math.Formalizer.Roll;
+import app.dnd.model.enums.Roll;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class DamageDice extends Dice {
 
-	private static final long serialVersionUID = 1L;
 	private TypeDamage typeDamage;
 
 	public enum TypeDamage {
@@ -29,22 +29,20 @@ public class DamageDice extends Dice {
 	}
 
 	public String execute() {
-		String answer = this.getName() + "[" + typeDamage.toString() + "]: " + roll();
+		StringBuilder answer = new StringBuilder(this.getName() + "[" + typeDamage.toString() + "]: " + roll());
 		boolean start = true;
 		for (int i = 0; i < getResults().length; i++) {
 			int target = getResults()[i];
 			if (start && (target != 0)) {
-				answer += "" + target;
+				answer.append(target);
 				start = false;
 			} else if (target < 0) {
-				answer += " - " + target * -1;
+				answer.append(" - ").append(target * -1);
 			} else if (target > 0) {
-				answer += " + " + target;
-			} else {
-				continue;
+				answer.append(" + ").append(target);
 			}
 		}
-		return answer + ")";
+		return answer.append(")").toString();
 	}
 
 }

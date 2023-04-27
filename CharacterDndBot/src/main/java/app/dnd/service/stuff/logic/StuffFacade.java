@@ -7,7 +7,7 @@ import app.dnd.model.stuffs.Stuff;
 import app.dnd.service.stuff.StuffService;
 import app.dnd.service.stuff.WalletService;
 import app.player.model.enums.Button;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class StuffFacade implements StuffLogic {

@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @JsonSubTypes({ 
 	@JsonSubTypes.Type(value = Feature.class, name = "feature"),
 	@JsonSubTypes.Type(value = ActiveFeature.class, name = "active_feature"),
-	@JsonSubTypes.Type(value = InerFeature.class, name = "iner_feature"),
+	@JsonSubTypes.Type(value = InnerFeature.class, name = "inner_feature"),
 	@JsonSubTypes.Type(value = PassiveFeature.class, name = "passive_feature") })
 @Data
 @EqualsAndHashCode(callSuper=false)

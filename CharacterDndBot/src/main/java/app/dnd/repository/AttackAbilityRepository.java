@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import app.dnd.model.telents.attacks.AttackAbility;
 
 @Repository
-public interface AttackAbilityRepository extends MongoRepository<AttackAbility, Long> {
+public interface AttackAbilityRepository extends MongoRepository<AttackAbility, String> {
 
-	@Aggregation(pipeline = { "{ $match: { id: { $eq: ?0 }, ownerName: { $eq: ?1 } } }", "{ $limit: 1 }" })
-	Optional<AttackAbility> findByIdAndOwnerName(Long id, String ownerName);
+	@Aggregation(pipeline = {"{ $match: { userId: { $eq: ?0 }, ownerName: { $eq: ?1 } } }","{ $limit: 1 }"})
+	Optional<AttackAbility> findByUserIdAndOwnerName(Long userId, String ownerName);
 	
-	void deleteByIdAndOwnerName(Long id, String ownerName);
+	void deleteByUserIdAndOwnerName(Long userId, String ownerName);
 }

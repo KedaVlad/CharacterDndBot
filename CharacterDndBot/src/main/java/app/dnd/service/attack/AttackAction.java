@@ -2,7 +2,7 @@ package app.dnd.service.attack;
 
 import app.dnd.model.actions.BaseAction;
 import app.player.model.Stage;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 public interface AttackAction {
 

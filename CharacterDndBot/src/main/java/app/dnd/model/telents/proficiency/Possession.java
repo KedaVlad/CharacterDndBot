@@ -29,7 +29,7 @@ public class Possession implements ObjectDnd {
 	
 	public String toString() {
 		String answer = name;
-		if(prof != null) answer += " (" + prof.toString() + ")";
+		if(prof != null) answer += " (" + prof + ")";
 		return answer;
 	}
 }

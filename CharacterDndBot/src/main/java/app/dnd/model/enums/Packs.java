@@ -5,45 +5,100 @@ import lombok.Getter;
 public enum Packs {
 	
 	ENTERTAINER("Entertainer`s Pack",
-			"Inside:\r\n" + "• backpack,\r\n" + "• sleeping bag,\r\n" + "• 2 suits,\r\n" + "• 5 candles,\r\n"
-					+ "• rations for 5 days,\r\n" + "• wineskin\r\n" + "• makeup kit."),
+			"""
+					Inside:\r
+					• backpack,\r
+					• sleeping bag,\r
+					• 2 suits,\r
+					• 5 candles,\r
+					• rations for 5 days,\r
+					• wineskin\r
+					• makeup kit."""),
 	BURGLAR("Burglar`s Pack",
-			"Inside:\r\n" + "• backpack,\r\n" + "• a bag with 1,000 metal balls,\r\n"
-					+ "• 10 feet of fishing line,\r\n" + "• bell,\r\n" + "• 5 candles,\r\n" + "• crowbar,\r\n"
-					+ "• hammer,\r\n" + "• 10 bolts,\r\n" + "• closed lantern,\r\n" + "• 2 flasks of oil,\r\n"
-					+ "• rations for 5 days,\r\n" + "• tinderbox\r\n" + "• wineskin.\r\n"
-					+ "The set also includes a 50-foot hemp rope attached to the side."),
+			"""
+					Inside:\r
+					• backpack,\r
+					• a bag with 1,000 metal balls,\r
+					• 10 feet of fishing line,\r
+					• bell,\r
+					• 5 candles,\r
+					• crowbar,\r
+					• hammer,\r
+					• 10 bolts,\r
+					• closed lantern,\r
+					• 2 flasks of oil,\r
+					• rations for 5 days,\r
+					• tinderbox\r
+					• wineskin.\r
+					The set also includes a 50-foot hemp rope attached to the side."""),
 	DIPLOMAT("Diplomat`s Pack",
-			"Inside:\r\n" + "• box,\r\n" + "• 2 containers for cards and scrolls,\r\n"
-					+ "• a set of excellent clothes,\r\n" + "• a bottle of ink,\r\n" + "• writing pen,\r\n"
-					+ "• lamp,\r\n" + "• 2 flasks of oil,\r\n" + "• 5 sheets of paper,\r\n"
-					+ "• bottle of perfume,\r\n" + "• wax,\r\n" + "• soap."),
-	DUNGEON("Dungeoneer`s Pack",
-			"Inside:\r\n" + "• backpack,\r\n" + "• crowbar,\r\n" + "• hammer,\r\n" + "• 10 bolts,\r\n"
-					+ "• 10 torches,\r\n" + "• tinderbox,\r\n" + "• rations for 10 days\r\n" + "• wineskin.\r\n"
-					+ "The set also includes a 50-foot hemp rope attached to the side."),
+			"""
+					Inside:\r
+					• box,\r
+					• 2 containers for cards and scrolls,\r
+					• a set of excellent clothes,\r
+					• a bottle of ink,\r
+					• writing pen,\r
+					• lamp,\r
+					• 2 flasks of oil,\r
+					• 5 sheets of paper,\r
+					• bottle of perfume,\r
+					• wax,\r
+					• soap."""),
+	DUNGEON("Dungeon`s Pack",
+			"""
+					Inside:\r
+					• backpack,\r
+					• crowbar,\r
+					• hammer,\r
+					• 10 bolts,\r
+					• 10 torches,\r
+					• tinderbox,\r
+					• rations for 10 days\r
+					• wineskin.\r
+					The set also includes a 50-foot hemp rope attached to the side."""),
 	EXPLORER("Explorer`s Pack",
-			"Inside:\r\n" + "• backpack,\r\n" + "• sleeping bag,\r\n" + "• tableware,\r\n" + "• tinderbox,\r\n"
-					+ "• 10 torches,\r\n" + "• rations for 10 days\r\n" + "• wineskin.\r\n"
-					+ "The set also includes a 50-foot hemp rope attached to the side."),
+			"""
+					Inside:\r
+					• backpack,\r
+					• sleeping bag,\r
+					• tableware,\r
+					• tinderbox,\r
+					• 10 torches,\r
+					• rations for 10 days\r
+					• wineskin.\r
+					The set also includes a 50-foot hemp rope attached to the side."""),
 	PRIEST("Priest`s Pack",
-			"Inside:\r\n" + "• backpack,\r\n" + "• a blanket,\r\n" + "• 10 candles,\r\n" + "• tinderbox,\r\n"
-					+ "• donation box,\r\n" + "• 2 packs of incense,\r\n" + "• censer,\r\n" + "• vestments,\r\n"
-					+ "• rations for 2 days,\r\n" + "• wineskin."),
-	SCHOLAR("Scholar`s Pack", "Inside:\r\n" + "• backpack\r\n" + "• scientific book\r\n" + "• bottle of ink\r\n"
-			+ "• writing pen\r\n" + "• 10 sheets of parchment\r\n" + "• small bag with sand\r\n" + "• small knife");
+			"""
+					Inside:\r
+					• backpack,\r
+					• a blanket,\r
+					• 10 candles,\r
+					• tinderbox,\r
+					• donation box,\r
+					• 2 packs of incense,\r
+					• censer,\r
+					• vestments,\r
+					• rations for 2 days,\r
+					• wineskin."""),
+	SCHOLAR("Scholar`s Pack", """
+			Inside:\r
+			• backpack\r
+			• scientific book\r
+			• bottle of ink\r
+			• writing pen\r
+			• 10 sheets of parchment\r
+			• small bag with sand\r
+			• small knife""");
 
 	@Getter
-	private String name;
+	private final String name;
 	@Getter
-	private String description;
+	private final String description;
 
 	Packs(String name, String description) {
 		this.name = name;
 		this.description = description;
 	}
 
-	public String toString() {
-		return name;
-	}
 }

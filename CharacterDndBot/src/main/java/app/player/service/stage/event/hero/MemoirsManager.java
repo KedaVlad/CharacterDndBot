@@ -1,11 +1,10 @@
 package app.player.service.stage.event.hero;
 
+import app.player.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import app.dnd.service.DndFacade;
-import app.player.event.UserEvent;
 import app.player.model.EventExecutor;
-import app.player.model.Stage;
 import app.player.model.act.Act;
 import app.player.model.act.ReturnAct;
 import app.player.model.act.SingleAct;
@@ -20,7 +19,7 @@ public class MemoirsManager implements Executor {
 	private DndFacade dndFacade;
 	
 	@Override
-	public Act execute(UserEvent<Stage> event) {
+	public Act execute(StageEvent event) {
 	
 		return ReturnAct.builder()
 				.target(Button.MENU.NAME)

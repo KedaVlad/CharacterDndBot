@@ -11,7 +11,7 @@ import app.dnd.service.talants.FeaturesService;
 import app.dnd.service.talants.MagicSoulService;
 import app.player.model.enums.Button;
 import app.player.model.enums.Location;
-import app.user.model.ActualHero;
+import app.bot.model.user.ActualHero;
 
 @Component
 public class TalantsActor implements TalantsAction {
@@ -33,7 +33,7 @@ public class TalantsActor implements TalantsAction {
 				.text("Here, you can access and manage your character's ta talents, including " 
 						+ Button.TRAIT.NAME + ", " + Button.FEATURE.NAME + ", " + Button.FEAT.NAME + ", " + Button.POSSESSION.NAME 
 						+ " and " + Button.SPELL.NAME)
-				.location(Location.TELENT)
+				.location(Location.TALENT)
 				.build();
 	}
 
