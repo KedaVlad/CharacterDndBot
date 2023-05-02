@@ -1,4 +1,4 @@
-package app.bot.event;
+package app.bot.model.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

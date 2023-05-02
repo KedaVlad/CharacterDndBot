@@ -14,7 +14,7 @@ import lombok.Data;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import app.bot.event.ChatUpdate;
+import app.bot.model.event.ChatUpdate;
 
 @Service
 public class UserCacheService {

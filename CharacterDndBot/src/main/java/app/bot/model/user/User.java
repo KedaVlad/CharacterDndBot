@@ -6,7 +6,7 @@ import app.bot.model.message.MessageCore;
 import lombok.Data;
 
 @Data
-public class User implements UserCore, UserCach {
+public class User implements UserCore, UserCache {
 	
 	private Long id;
 	private ActualHero actualHero;

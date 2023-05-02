@@ -1,8 +1,8 @@
 package app.player.controller;
 
-import app.player.event.ActEvent;
-import app.player.event.EndGame;
-import app.player.event.StageEvent;
+import app.player.model.event.ActEvent;
+import app.player.model.event.EndGame;
+import app.player.model.event.StageEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 

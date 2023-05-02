@@ -1,6 +1,6 @@
 package app.player.service.stage.event.hero;
 
-import app.player.event.StageEvent;
+import app.player.model.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -57,6 +57,7 @@ class RestExecutor {
 		return ReturnAct.builder()
 				.target(Button.MENU.NAME)
 				.act(SingleAct.builder()
+						.reply(true)
 						.name("startRest")
 						.stage(action)
 						.build())

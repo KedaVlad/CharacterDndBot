@@ -2,7 +2,7 @@ package app.player.service.stage.event.hero;
 
 import java.util.UUID;
 import app.dnd.model.actions.Action;
-import app.player.event.StageEvent;
+import app.player.model.event.StageEvent;
 import app.player.model.EventExecutor;
 import app.player.model.act.Act;
 import app.player.model.act.CloudAct;
