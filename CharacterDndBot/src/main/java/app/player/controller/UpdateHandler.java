@@ -1,7 +1,7 @@
 package app.player.controller;
 
-import app.player.event.StageEvent;
-import app.player.event.UpdateEvent;
+import app.player.model.event.StageEvent;
+import app.player.model.event.UpdateEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 

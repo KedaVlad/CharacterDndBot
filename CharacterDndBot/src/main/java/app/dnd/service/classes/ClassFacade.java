@@ -37,8 +37,8 @@ public class ClassFacade implements ClassesLogic {
 		lvlLogic.setLvl(actualHero, lvl);
 		proficiencyLogic.upProf(actualHero, lvl);
 		ClassDnd classDnd = new ClassDnd();
-		classDnd.setClassName(classDndWrapp.className);
-		classDnd.setArchetype(classDndWrapp.archetype);
+		classDnd.setClassName(classDndWrapp.getClassName());
+		classDnd.setArchetype(classDndWrapp.getArchetype());
 		classDnd.setDiceHp(classDndWrapp.getDiceHp());
 		classDnd.setFirstHp(classDndWrapp.getFirstHp());
 		classDnd.setLvl(lvl);

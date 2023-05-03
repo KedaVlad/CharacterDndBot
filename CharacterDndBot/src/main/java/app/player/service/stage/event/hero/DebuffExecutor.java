@@ -2,7 +2,7 @@ package app.player.service.stage.event.hero;
 
 import java.util.UUID;
 import app.dnd.model.actions.Action;
-import app.player.event.StageEvent;
+import app.player.model.event.StageEvent;
 import app.player.model.EventExecutor;
 import app.player.model.act.Act;
 import app.player.model.act.CloudAct;
@@ -37,7 +37,7 @@ public class DebuffExecutor implements Executor {
 					.build();
 		} else if (action.condition() == 1) {
 
-			String name = UUID.randomUUID().toString().substring(0, 5);
+			String name = UUID.randomUUID().toString().replaceAll("[0-9]", "").substring(0, 5);
 			return CloudAct.builder()
 					.name(name)
 					.stage(Action.builder()

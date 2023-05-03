@@ -1,7 +1,7 @@
 package app.player.service.stage.event.hero;
 
 
-import app.player.event.StageEvent;
+import app.player.model.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,25 +33,34 @@ public class TalentManager implements Executor {
 		if (action.condition() == 0 && action.getObjectDnd() == null) {
 			return talentManager.menu(event.getUser().getActualHero());
 
-		} else if (action.getObjectDnd() == null) {
-			if(action.condition() == 1) {
-				return talentManager.profMenu(event.getUser().getActualHero(), event.getTusk());
+		} else if (action.getObjectDnd() instanceof Feature) {
+			return talentManager.featureTarget(event.getTusk());
 
-			} else if (action.condition() == 2) {
-				return talentManager.startAddProff(event.getTusk());
+		} else if (action.getObjectDnd() instanceof Spell) {
+			return talentManager.spellTarget(event.getTusk());
 
-			} else if (action.condition() == 3) {
-				if(action.getAnswers()[2].equals(Button.RETURN_TO_TALANT.NAME)) {
-					return talentManager.returnToAbility();
-
-				} else if(action.getAnswers()[2].equals(Button.HINT_LIST.NAME)) {
-					return talentManager.hintList();
-
-				} else {
-					return talentManager.endAddProff(event.getUser().getActualHero(), event.getTusk());
+		} else if (action.getAnswers()[0].equals(Button.POSSESSION.NAME)) {
+			switch (action.condition()) {
+				case 1 -> {
+					return talentManager.profMenu(event.getUser().getActualHero(), event.getTusk());
 				}
-			} else {
-				return ReturnAct.builder().target(Button.MENU.NAME).build();
+				case 2 -> {
+					return talentManager.startAddProff(event.getTusk());
+				}
+				case 3 -> {
+					if (action.getAnswers()[2].equals(Button.RETURN_TO_TALANT.NAME)) {
+						return talentManager.returnToAbility();
+
+					} else if (action.getAnswers()[2].equals(Button.HINT_LIST.NAME)) {
+						return talentManager.hintList();
+
+					} else {
+						return talentManager.endAddProff(event.getUser().getActualHero(), event.getTusk());
+					}
+				}
+				default -> {
+					return ReturnAct.builder().target(Button.MENU.NAME).build();
+				}
 			}
 
 		} else if (action.getAnswers()[0].equals(Button.SPELL.NAME)) {
@@ -62,12 +71,6 @@ public class TalentManager implements Executor {
 				|| action.getAnswers()[0].equals(Button.FEAT.NAME)) {
 			return talentManager.featureMenu(event.getUser().getActualHero(), event.getTusk());
 
-		} else if (action.getObjectDnd() instanceof Feature) {
-			return talentManager.featureTarget(event.getTusk());
-			
-		} else if (action.getObjectDnd() instanceof Spell) {
-			return talentManager.spellTarget(event.getTusk());
-			
 		} else {
 			return ReturnAct.builder().target(Button.MENU.NAME).build();
 		}

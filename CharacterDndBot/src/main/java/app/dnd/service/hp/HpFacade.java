@@ -73,7 +73,12 @@ public class HpFacade implements HpLogic {
 	public int buildValueRandomHp(ActualHero actualHero) {
 		return hpBuilder.buildRandomBase(hpService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName()));
 	}
-	
+
+	@Override
+	public boolean isReadyToGame(ActualHero actualHero) {
+		return hpService.findByIdAndOwnerName(actualHero.getId(), actualHero.getName()).getMax() > 0;
+	}
+
 
 }
 
@@ -81,7 +86,7 @@ public class HpFacade implements HpLogic {
 @Component
 class HpBuilder {
 
-	private Convertor hp = x -> x / 2 + 1;
+	private final Convertor hp = x -> x / 2 + 1;
 	@Autowired
 	private AbilityService abilityService;
 	@Autowired

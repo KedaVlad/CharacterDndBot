@@ -32,25 +32,5 @@ public class TrashService {
 	public void save(Trash trash) {
 		trashRepository.save(trash);
 	}
-	
-	public void addToCircle(Long id, List<Integer> newTrash) {
-		Trash trash = getById(id);
-		trash.getCircle().addAll(newTrash);
-		trashRepository.save(trash);
-	}
-	
-	public void addToCircle(Long id, Integer newTrash) {
-		Trash trash = getById(id);
-		trash.getCircle().add(newTrash);
-		trashRepository.save(trash);
-	}
-	
-	public List<Integer> trashThrowOut(Long id) {
-		Trash trash = getById(id);
-		List<Integer> throwed = new ArrayList<>();
-		throwed.addAll(trash.getCircle());
-		trash.getCircle().clear();
-		save(trash);
-		return throwed;
-}
+
 }

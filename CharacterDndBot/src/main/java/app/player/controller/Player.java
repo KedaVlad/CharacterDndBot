@@ -1,13 +1,13 @@
 package app.player.controller;
 
-import app.player.event.UpdateEvent;
+import app.player.model.event.UpdateEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import app.bot.event.ChatUpdate;
-import app.player.event.EndGame;
-import app.player.event.StartGame;
+import app.bot.model.event.ChatUpdate;
+import app.player.model.event.EndGame;
+import app.player.model.event.StartGame;
 
 @Service
 public class Player {

@@ -13,7 +13,6 @@ import app.bot.model.user.User;
 public class CallbackHandler {
 
 	public Stage handle(CallbackQuery callbackQuery, User user) {
-
 		String target = callbackQuery.getData().replaceAll("([a-zA-Z `�-]+)(\\d{5})(.+)", "$1");
 		Integer key = Integer.parseInt(callbackQuery.getData().replaceAll("([a-zA-Z `�-]+)(\\d{5})(.+)", "$2"));
 		String callback = callbackQuery.getData().replaceAll("([a-zA-Z `�-]+)(\\d{5})(.+)", "$3");

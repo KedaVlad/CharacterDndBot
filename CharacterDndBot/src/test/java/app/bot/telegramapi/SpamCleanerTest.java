@@ -1,6 +1,6 @@
-package app.bot.view;
+package app.bot.telegramapi;
 
-import app.bot.event.CleanSpam;
+import app.bot.model.event.CleanSpam;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

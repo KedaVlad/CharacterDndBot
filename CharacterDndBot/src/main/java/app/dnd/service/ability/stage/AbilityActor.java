@@ -46,10 +46,14 @@ public class AbilityActor implements AbilityAction {
 		} else if (action.getObjectDnd() instanceof SaveRoll) {
 			stat = ((SaveRoll)action.getObjectDnd()).getCore().getStat();
 			proficiency = ((SaveRoll)action.getObjectDnd()).getProficiency();
-		} 
+		}
+		String text = "... or roll.";
+		if(proficiency == Proficiency.COMPETENCE) {
+			text = "You are already COMPETENT in this! You just need to test your luck...";
+		}
 		
 		return PreRoll.builder()
-				.text("... or roll.")
+				.text(text)
 				.location(Location.ABILITY)
 				.roll(RollAction.buider()
 						.statDepend(stat)

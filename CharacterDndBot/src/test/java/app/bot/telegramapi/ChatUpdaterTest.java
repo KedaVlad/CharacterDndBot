@@ -1,9 +1,8 @@
-package app.bot.view;
+package app.bot.telegramapi;
 
-import app.bot.event.ChatUpdate;
-import app.bot.service.UserCacheService;
+import app.bot.model.event.ChatUpdate;
 import app.player.controller.Player;
-import app.player.event.EndGame;
+import app.player.model.event.EndGame;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

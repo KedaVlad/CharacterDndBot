@@ -1,6 +1,6 @@
 package app.player.service.stage.event.factory;
 
-import app.player.event.StageEvent;
+import app.player.model.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

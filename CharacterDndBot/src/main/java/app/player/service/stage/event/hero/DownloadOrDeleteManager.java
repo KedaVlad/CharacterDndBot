@@ -1,6 +1,6 @@
 package app.player.service.stage.event.hero;
 
-import app.player.event.StageEvent;
+import app.player.model.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,13 +75,9 @@ class DownloadOrDeleteExecutor {
 		}
 	
 	public Act download(StageEvent event, String heroName) {
-	
-		
+
 		dndFacade.hero().download(event.getUser().getActualHero(), heroName);
-		if(event.getUser().getActualHero().isReadyToGame()) {
-			return menu.execute(event);
-			
-		} else if(!dndFacade.hero().race().isReadyToGame(event.getUser().getActualHero())) {
+		if(!dndFacade.hero().race().isReadyToGame(event.getUser().getActualHero())) {
 			return raceFactory.execute(new StageEvent (this, event.getUser(), Action.builder().build()));
 			
 		} else if(!dndFacade.hero().classes().isReadyToGame(event.getUser().getActualHero())) {
@@ -90,8 +86,11 @@ class DownloadOrDeleteExecutor {
 		} else if(!dndFacade.hero().ability().stat().isReadyToGame(event.getUser().getActualHero())) {
 			return statFactory.execute(new StageEvent (this, event.getUser(), Action.builder().build()));
 			
-		} else {
+		} else if(!dndFacade.hero().hp().isReadyToGame(event.getUser().getActualHero())) {
 			return hpFactory.execute(new StageEvent (this, event.getUser(), Action.builder().build()));
+		} else {
+			event.getUser().getActualHero().setReadyToGame(true);
+			return menu.execute(event);
 		}
 	}
 	

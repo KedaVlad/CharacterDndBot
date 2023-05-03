@@ -1,4 +1,4 @@
-package app.player.event;
+package app.player.model.event;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

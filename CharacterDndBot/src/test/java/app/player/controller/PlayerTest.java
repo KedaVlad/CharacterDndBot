@@ -1,7 +1,7 @@
 package app.player.controller;
 
-import app.player.event.StartGame;
-import app.player.event.EndGame;
+import app.player.model.event.StartGame;
+import app.player.model.event.EndGame;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

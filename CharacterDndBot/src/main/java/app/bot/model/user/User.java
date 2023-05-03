@@ -2,11 +2,13 @@ package app.bot.model.user;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import app.bot.model.event.CacheClean;
 import app.bot.model.message.MessageCore;
 import lombok.Data;
 
 @Data
-public class User implements UserCore, UserCach {
+public class User implements UserCore, UserCache {
 	
 	private Long id;
 	private ActualHero actualHero;
@@ -33,11 +35,11 @@ public class User implements UserCore, UserCach {
 	}
 
 	@Override
-	public UserCore clear() {
+	public CacheClean clear() {
 		script.clear(trash);
 		actualHero.clear(trash);
 		message = null;
-		return this;
+		return new CacheClean(this, this.toDelete(), this.id);
 	}
 	
 	public void reset() {

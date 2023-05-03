@@ -4,20 +4,22 @@ package app.bot.controller;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import app.bot.event.StartSession;
+import app.bot.model.event.StartSession;
 import app.bot.service.UserCacheService;
+import lombok.Getter;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import app.bot.event.CleanSpam;
-import app.bot.event.EndSession;
-import app.player.event.StartGame;
+import app.bot.model.event.CleanSpam;
+import app.bot.model.event.EndSession;
+import app.player.model.event.StartGame;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@Getter
 public class SessionController {
 
 	private final ApplicationEventPublisher eventPublisher;
@@ -45,7 +47,7 @@ public class SessionController {
 		idInSession.remove(endSession.getId());
 	}
 
-	private Long keyByUpdate(Update update) {
+	Long keyByUpdate(Update update) {
 
 		if(update.hasCallbackQuery()) {
 			return update.getCallbackQuery().getMessage().getChatId();

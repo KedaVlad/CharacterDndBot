@@ -1,4 +1,4 @@
-package app.player.event;
+package app.player.model.event;
 
 import app.bot.model.user.User;
 import org.telegram.telegrambots.meta.api.objects.Update;
