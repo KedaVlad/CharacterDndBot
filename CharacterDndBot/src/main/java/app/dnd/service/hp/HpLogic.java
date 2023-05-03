@@ -19,4 +19,6 @@ public interface HpLogic {
 	int buildValueStableHp(ActualHero hero);
 
 	int buildValueRandomHp(ActualHero actualHero);
+
+    boolean isReadyToGame(ActualHero actualHero);
 }

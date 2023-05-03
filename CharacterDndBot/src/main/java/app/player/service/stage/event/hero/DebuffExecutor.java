@@ -37,7 +37,7 @@ public class DebuffExecutor implements Executor {
 					.build();
 		} else if (action.condition() == 1) {
 
-			String name = UUID.randomUUID().toString().substring(0, 5);
+			String name = UUID.randomUUID().toString().replaceAll("[0-9]", "").substring(0, 5);
 			return CloudAct.builder()
 					.name(name)
 					.stage(Action.builder()
