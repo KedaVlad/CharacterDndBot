@@ -1,5 +1,8 @@
 package app.bot.model.user;
 
+import app.bot.model.event.CacheClean;
+
+
 public interface UserCache {
-    UserCore clear();
+    CacheClean clear();
 }

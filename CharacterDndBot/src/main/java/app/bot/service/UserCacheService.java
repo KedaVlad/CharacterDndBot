@@ -14,8 +14,6 @@ import lombok.Data;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import app.bot.model.event.ChatUpdate;
-
 @Service
 public class UserCacheService {
 
@@ -54,9 +52,9 @@ public class UserCacheService {
 		}
 		entry.setFuture(executorService.schedule(() -> {
 			User user = entry.getUser();
-			eventPublisher.publishEvent(new ChatUpdate(this, user.clear()));
+			eventPublisher.publishEvent(user.clear());
 			userService.save(user);
-			cache.remove(user.getId(), entry);
+			cache.remove(user.getId());
 		}, CACHE_TIMER, TimeUnit.MINUTES));
 	}
 
