@@ -10,8 +10,6 @@ import app.dnd.model.ability.SaveRoll;
 import app.dnd.model.actions.Action;
 import app.dnd.model.actions.BaseAction;
 import app.dnd.model.actions.PoolActions;
-import app.dnd.model.actions.PreRoll;
-import app.dnd.model.actions.RollAction;
 import app.dnd.model.actions.SingleAction;
 import app.dnd.model.enums.Proficiency;
 import app.dnd.model.enums.SaveRolls;
@@ -48,13 +46,10 @@ class SaveRollActor implements SaveRollAction {
 	@Override
 	public BaseAction singleSaveRoll(SaveRoll saveRoll) {
 		
-		return PreRoll.builder()
+		return Action.builder()
 				.location(Location.ABILITY)
-				.text(saveRoll.getCore().getName())
-				.roll(RollAction.buider()
-						.statDepend(saveRoll.getCore().getStat())
-						.proficiency(saveRoll.getProficiency())
-						.build())
+				.text("If you have a reason to improve ...")
+				.buttons(saveRollsButtonBuilder.targetChange(saveRoll))
 				.build();
 	}
 

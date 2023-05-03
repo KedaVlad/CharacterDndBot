@@ -1,6 +1,6 @@
 package app.player.service.stage.event.hero;
 
-import app.player.event.StageEvent;
+import app.player.model.event.StageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -80,6 +80,7 @@ class AbilityExecutor {
 				.target(Button.MENU.NAME)
 				.act(SingleAct.builder()
 						.name(Button.ABILITY.NAME)
+						.reply(true)
 						.stage(dndFacade.action().ability().menu())
 						.build())
 				.build();

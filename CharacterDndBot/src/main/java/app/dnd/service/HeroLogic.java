@@ -19,21 +19,21 @@ import app.bot.model.user.ActualHero;
 
 public interface HeroLogic {
 
-	public AbilityLogic ability();
-	public TalantsLogic talants();
-	public AttackLogic attack();
-	public StuffLogic stuff();
-	public HpLogic hp();
-	public MemoirsLogic memoirs();
-	public LvlLogic lvl();
-	public RaceLogic race();
-	public ClassesLogic classes();
-	public void download(ActualHero actualHero, String heroName);
-	public void delete(ActualHero actualHero, String string);
-	public boolean isEmpty(Long id);
-	public void refresh(ActualHero actualHero, Time time);
-	public List<String> heroList(Long id);
-	public String menu(ActualHero actualHero);
+	AbilityLogic ability();
+	TalantsLogic talants();
+	AttackLogic attack();
+	StuffLogic stuff();
+	HpLogic hp();
+	MemoirsLogic memoirs();
+	LvlLogic lvl();
+	RaceLogic race();
+	ClassesLogic classes();
+	void download(ActualHero actualHero, String heroName);
+	void delete(ActualHero actualHero, String string);
+	boolean isEmpty(Long id);
+	void refresh(ActualHero actualHero, Time time);
+	List<String> heroList(Long id);
+	String menu(ActualHero actualHero);
 }
 
 @Component
