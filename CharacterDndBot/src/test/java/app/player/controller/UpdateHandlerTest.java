@@ -1,6 +1,6 @@
 package app.player.controller;
 
-import app.player.event.UserEvent;
+import app.player.model.event.UserEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
